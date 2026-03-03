@@ -1,4 +1,7 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+  // Allow other devices on your LAN to load dev assets.
+  allowedDevOrigins: ["192.168.1.8", "192.168.18.203"],
+};
 
 export default nextConfig;

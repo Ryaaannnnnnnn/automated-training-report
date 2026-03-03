@@ -1,0 +1,118 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  admin
+  staff
+}
+
+enum UserStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum TrainingStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+
+enum AttendanceStatus {
+  Present
+  Absent
+}
+
+model User {
+  id       String @id @default(cuid())
+  username String     @unique
+  email    String?    @unique
+  password String
+  role     Role       @default(staff)
+  status   UserStatus @default(PENDING)
+
+  resetToken       String?
+  resetTokenExpiry DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  trainings Training[]
+}
+
+model Training {
+  id          String         @id @default(cuid())
+  title       String
+  date        DateTime
+  venue       String
+  trainer     String
+  description String
+  startTime   String?        @default("09:00 AM")
+  status      TrainingStatus @default(PENDING)
+
+  createdById String?
+  createdBy   User?          @relation(fields: [createdById], references: [id])
+
+
+  attendances Attendance[]
+  evaluations Evaluation[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Participant {
+  id           String @id @default(cuid())
+  name         String
+  email        String @unique
+  organization String
+
+  attendances Attendance[]
+  evaluations Evaluation[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Attendance {
+  id            String           @id @default(cuid())
+  trainingId    String
+  participantId String
+  status        AttendanceStatus @default(Present)
+
+  training    Training    @relation(fields: [trainingId], references: [id], onDelete: Cascade)
+  participant Participant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([trainingId, participantId])
+  @@index([trainingId])
+  @@index([participantId])
+}
+
+model Evaluation {
+  id            String @id @default(cuid())
+  trainingId    String
+  participantId String
+  rating        Int
+  comments      String?
+
+  training    Training    @relation(fields: [trainingId], references: [id], onDelete: Cascade)
+  participant Participant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([trainingId, participantId])
+  @@index([trainingId])
+  @@index([participantId])
+}
+
