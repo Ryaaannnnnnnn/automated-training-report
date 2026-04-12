@@ -5,7 +5,7 @@
 @keyframes slideUpFade {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(15px);
   }
 
   to {
@@ -14,8 +14,108 @@
   }
 }
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes pulseGlow {
+
+  0%,
+  100% {
+    opacity: 0.5;
+    filter: blur(4px);
+  }
+
+  50% {
+    opacity: 0.8;
+    filter: blur(6px);
+  }
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes slowGlow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
+  }
+
+  50% {
+    box-shadow: 0 0 30px rgba(59, 130, 246, 0.4);
+  }
+}
+
 .animate-page-fade {
-  animation: slideUpFade 0.6s ease-out forwards;
+  animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+.animate-stagger-1 {
+  animation-delay: 50ms;
+}
+
+.animate-stagger-2 {
+  animation-delay: 100ms;
+}
+
+.animate-stagger-3 {
+  animation-delay: 150ms;
+}
+
+.animate-stagger-4 {
+  animation-delay: 200ms;
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(90deg, #f1f5f9 25%, #f8fafc 50%, #f1f5f9 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+}
+
+.glow-effect {
+  position: relative;
+}
+
+.glow-effect::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: inherit;
+  filter: blur(8px);
+  opacity: 0.4;
+  z-index: -1;
+  border-radius: inherit;
+  animation: pulseGlow 3s infinite ease-in-out;
 }
 
 @layer base {
@@ -23,11 +123,29 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
   }
 }
 
 body {
   margin: 0;
+  @apply bg-[#f8fafc] text-slate-900 antialiased transition-colors duration-300;
+}
+
+/* Premium Night Mode Base — Slate 900 palette (used by GitHub, Vercel, Linear) */
+.dark body {
+  @apply bg-slate-900 text-slate-100;
+}
+
+/* Glossy Glassmorphism Utilities */
+@layer components {
+  .glass-card {
+    @apply bg-white/70 backdrop-blur-xl border border-white shadow-sm dark:bg-slate-900/40 dark:border-slate-800/50;
+  }
+  
+  .premium-glow {
+    @apply relative after:absolute after:inset-0 after:rounded-inherit after:shadow-[0_0_20px_rgba(59,130,246,0.15)] after:opacity-0 hover:after:opacity-100 dark:after:shadow-[0_0_25px_rgba(59,130,246,0.3)] transition-all;
+  }
 }
 
 @layer utilities {

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LogoutButton } from "@/components/LogoutButton";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const navItems = [
     {
@@ -85,7 +86,7 @@ export function Sidebar({ username, role }: SidebarProps) {
     return (
         <>
             {/* ── TOP NAVBAR BAR ── */}
-            <header className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between h-16 px-4 bg-[#1a2744] shadow-lg">
+            <header className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between h-16 px-4 bg-[#0f2044] dark:bg-[#0c1a36] shadow-lg border-b border-white/5">
                 {/* Left: Hamburger + Logo */}
                 <div className="flex items-center gap-3">
                     <button
@@ -113,9 +114,10 @@ export function Sidebar({ username, role }: SidebarProps) {
                 </div>
 
                 {/* Right: User Greeting */}
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-4">
+                    <ThemeToggle />
                     {username && (
-                        <div className="hidden sm:flex items-center gap-2 text-sm text-white">
+                        <div className="hidden sm:flex items-center gap-2 text-sm text-white border-l border-white/10 pl-4">
                             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center text-white font-semibold text-sm uppercase shadow">
                                 {username.charAt(0)}
                             </div>
@@ -138,7 +140,7 @@ export function Sidebar({ username, role }: SidebarProps) {
 
             {/* ── SIDEBAR DRAWER ── */}
             <aside
-                className={`fixed top-0 left-0 z-50 h-full w-64 bg-[#1a2744] text-white flex flex-col shadow-2xl transform transition-transform duration-300 ease-in-out ${open ? "translate-x-0" : "-translate-x-full"
+                className={`fixed top-0 left-0 z-50 h-full w-64 bg-[#0f2044] dark:bg-[#0c1a36] text-white flex flex-col shadow-2xl transform transition-transform duration-300 ease-in-out border-r border-white/5 ${open ? "translate-x-0" : "-translate-x-full"
                     }`}
             >
                 {/* Sidebar Header */}
@@ -151,15 +153,18 @@ export function Sidebar({ username, role }: SidebarProps) {
                         </div>
                         <span className="text-sm font-bold leading-tight tracking-tight">ATMRS</span>
                     </div>
-                    <button
-                        onClick={() => setOpen(false)}
-                        className="p-1.5 rounded-lg hover:bg-white/10 transition-colors"
-                        aria-label="Close menu"
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
+                    <div className="flex items-center gap-2">
+                        <ThemeToggle />
+                        <button
+                            onClick={() => setOpen(false)}
+                            className="p-1.5 rounded-lg hover:bg-white/10 transition-colors"
+                            aria-label="Close menu"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
                 </div>
 
                 {/* User Profile Area */}
@@ -194,14 +199,16 @@ export function Sidebar({ username, role }: SidebarProps) {
                                         ? pathname === "/dashboard"
                                         : item.href === "/trainings"
                                             ? pathname === "/trainings"
-                                            : pathname.startsWith(item.href);
+                                            : item.href === "/trainings/new"
+                                                ? pathname === "/trainings/new" || pathname.startsWith("/trainings/new")
+                                                : pathname.startsWith(item.href);
                                 return (
                                     <li key={item.href}>
                                         <Link
                                             href={item.href}
                                             className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 group ${isActive
-                                                ? "bg-blue-600 text-white shadow-md font-bold"
-                                                : "text-slate-300/80 hover:bg-white/10 hover:text-white"
+                                                ? "bg-blue-600/20 text-blue-400 border border-blue-500/30 shadow-[0_0_15px_rgba(59,130,246,0.2)] font-bold"
+                                                : "text-slate-400 hover:bg-white/5 hover:text-white"
                                                 }`}
                                         >
                                             <span className={isActive ? "text-white" : "text-slate-400 group-hover:text-white transition-colors"}>

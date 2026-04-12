@@ -7,11 +7,21 @@ export async function POST(request: Request) {
         const user = await getCurrentUser();
 
         // Security check: Only admins can delete
-        if (!user || user.role !== "admin") {
-            return new NextResponse("Unauthorized", { status: 401 });
+        // Security check: Only admins or the creator can delete
+        const trainingId = (await request.json())?.trainingId;
+
+        if (!trainingId) {
+            return new NextResponse("Training ID is required", { status: 400 });
         }
 
-        const { trainingId } = await request.json();
+        const training = await prisma.training.findUnique({ where: { id: trainingId } });
+        if (!training) {
+            return new NextResponse("Training not found", { status: 404 });
+        }
+
+        if (!user || (user.role !== "admin" && training.createdById !== user.id)) {
+            return new NextResponse("Unauthorized", { status: 401 });
+        }
 
         if (!trainingId) {
             return new NextResponse("Training ID is required", { status: 400 });

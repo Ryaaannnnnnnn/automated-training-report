@@ -2,22 +2,130 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import Link from "next/link";
+import { AfterTrainingReportForm } from "./AfterTrainingReportForm";
+
+// Preset quick-pick times
+const TIME_PRESETS_START = [
+    { label: "8:00 AM", value: "08:00 AM" },
+    { label: "9:00 AM", value: "09:00 AM" },
+    { label: "10:00 AM", value: "10:00 AM" },
+    { label: "1:00 PM", value: "01:00 PM" },
+    { label: "2:00 PM", value: "02:00 PM" },
+];
+
+const TIME_PRESETS_END = [
+    { label: "12:00 PM", value: "12:00 PM" },
+    { label: "3:00 PM", value: "03:00 PM" },
+    { label: "4:00 PM", value: "04:00 PM" },
+    { label: "5:00 PM", value: "05:00 PM" },
+    { label: "6:00 PM", value: "06:00 PM" },
+];
+
+// Convert "09:00 AM" → "09:00" (for input[type="time"])
+function toInputTime(ampm: string): string {
+    if (!ampm) return "09:00";
+    const match = ampm.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+    if (!match) return "09:00";
+    let hours = parseInt(match[1], 10);
+    const minutes = match[2];
+    const period = match[3].toUpperCase();
+    if (period === "PM" && hours !== 12) hours += 12;
+    if (period === "AM" && hours === 12) hours = 0;
+    return `${String(hours).padStart(2, "0")}:${minutes}`;
+}
+
+// Convert "09:00" (input[type="time"]) → "09:00 AM"
+function toAmPm(inputVal: string): string {
+    if (!inputVal) return "09:00 AM";
+    const [h, m] = inputVal.split(":").map(Number);
+    const period = h >= 12 ? "PM" : "AM";
+    const hour = h % 12 === 0 ? 12 : h % 12;
+    return `${String(hour).padStart(2, "0")}:${String(m).padStart(2, "0")} ${period}`;
+}
+
+const TRAINING_TYPES = [
+    {
+        id: "provincial",
+        label: "Provincial Report",
+        subtitle: "Create After Provincial Report",
+        color: "from-blue-600 to-blue-700",
+        borderColor: "border-blue-600",
+        textColor: "text-blue-600",
+        bgColor: "bg-blue-600",
+        icon: (
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" className="w-6 h-6">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+            </svg>
+        ),
+        available: false,
+    },
+    {
+        id: "training",
+        label: "Training Report",
+        subtitle: "Create After Training Report",
+        color: "from-green-600 to-green-700",
+        borderColor: "border-green-600",
+        textColor: "text-green-600",
+        bgColor: "bg-green-600",
+        icon: (
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" className="w-6 h-6">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192A48.424 48.424 0 0012 3.75c-2.266 0-4.48.189-6.274.556A2.25 2.25 0 003.75 6.108V18.75A2.25 2.25 0 006 21h.75m3-3h6.75M9 12v2.25m3.75-2.25V15" />
+            </svg>
+        ),
+        available: true,
+    },
+    {
+        id: "activity",
+        label: "Activity Report",
+        subtitle: "Create After Activity Report",
+        color: "from-cyan-400 to-cyan-500",
+        borderColor: "border-cyan-400",
+        textColor: "text-cyan-500",
+        bgColor: "bg-cyan-400",
+        icon: (
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" className="w-6 h-6">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+            </svg>
+        ),
+        available: false,
+    },
+    {
+        id: "accomplishment",
+        label: "Accomplishment Report",
+        subtitle: "Create Accomplishment Report",
+        color: "from-red-500 to-red-600",
+        borderColor: "border-red-500",
+        textColor: "text-red-500",
+        bgColor: "bg-red-500",
+        icon: (
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" className="w-6 h-6">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
+            </svg>
+        ),
+        available: false,
+    },
+];
+
+// ── Phase type ───────────────────────────────────────────────────────────────
+type Phase = "type-select" | "core-details" | "report-form";
 
 export function NewTrainingForm() {
     const router = useRouter();
 
+    const [phase, setPhase] = useState<Phase>("type-select");
+    const [trainingType, setTrainingType] = useState("Training Report");
     const [title, setTitle] = useState("");
     const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10));
     const [venue, setVenue] = useState("");
     const [trainer, setTrainer] = useState("");
     const [description, setDescription] = useState("");
     const [startTime, setStartTime] = useState("09:00 AM");
+    const [endTime, setEndTime] = useState("05:00 PM");
     const [error, setError] = useState<string | null>(null);
     const [saving, setSaving] = useState(false);
 
-    async function onSubmit(e: React.FormEvent) {
-        e.preventDefault();
+    // Submit with optional reportData
+    async function submitTraining(reportData?: object) {
         setError(null);
         setSaving(true);
 
@@ -32,6 +140,9 @@ export function NewTrainingForm() {
                     trainer,
                     description,
                     startTime,
+                    endTime,
+                    trainingType,
+                    reportData: reportData ? JSON.stringify(reportData) : undefined,
                 }),
             });
 
@@ -47,104 +158,47 @@ export function NewTrainingForm() {
         }
     }
 
+    // Core details form submit → go to report form (for Training Report) or direct submit
+    async function onCoreSubmit(e: React.FormEvent) {
+        e.preventDefault();
+        if (trainingType === "Training Report") {
+            setPhase("report-form");
+        } else {
+            await submitTraining();
+        }
+    }
+
+    // ── PHASE: After Training Report Form ────────────────────────────────────
     return (
-        <form onSubmit={onSubmit} className="rounded-2xl border border-gray-100 bg-white p-6 sm:p-10 shadow-sm transition-all hover:shadow-md">
-            <div className="mb-8 border-b border-gray-100/50 pb-6">
-                <h3 className="text-xl font-bold text-gray-900 tracking-tight leading-none">Training Details</h3>
-                <p className="text-[12px] font-medium text-gray-400 mt-2 tracking-tight">Please provide the core information for this event.</p>
+        <div className="space-y-6">
+            {/* Progress breadcrumb */}
+            <div className="flex items-center gap-2 text-[12px] font-medium text-gray-400 dark:text-slate-500">
+                <span className="text-green-600 dark:text-green-400 font-bold">✓ Type Selected</span>
+                <span>→</span>
+                <span className="text-blue-600 dark:text-blue-400 font-bold">After Training Report</span>
             </div>
 
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                <div className="space-y-2.5 sm:col-span-2">
-                    <label className="text-[10px] font-bold text-gray-900 uppercase tracking-[0.2em] ml-1">Training Title</label>
-                    <input
-                        className="w-full rounded-2xl border-2 border-gray-100 bg-gray-50/20 px-5 py-4 text-base font-medium outline-none transition-all focus:border-blue-500/40 focus:ring-8 focus:ring-blue-500/5 focus:bg-white"
-                        placeholder="e.g. Advanced Web Development"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        required
-                    />
-                </div>
+            <AfterTrainingReportForm
+                coreTitle={title}
+                setCoreTitle={setTitle}
+                coreDate={date}
+                setCoreDate={setDate}
+                coreVenue={venue}
+                setCoreVenue={setVenue}
+                coreStartTime={startTime}
+                setCoreStartTime={setStartTime}
+                coreEndTime={endTime}
+                setCoreEndTime={setEndTime}
+                coreTrainer={trainer}
+                setCoreTrainer={setTrainer}
+                coreDescription={description}
+                setCoreDescription={setDescription}
+                saving={saving}
+                onBack={() => setPhase("type-select")}
+                onSubmit={(reportData) => submitTraining(reportData)}
+            />
 
-                <div className="space-y-2.5">
-                    <label className="text-[10px] font-bold text-gray-900 uppercase tracking-[0.2em] ml-1">Event Date</label>
-                    <input
-                        className="w-full rounded-2xl border-2 border-gray-100 bg-gray-50/20 px-5 py-4 text-base font-medium outline-none transition-all focus:border-blue-500/40 focus:ring-8 focus:ring-blue-500/5 focus:bg-white"
-                        type="date"
-                        value={date}
-                        onChange={(e) => setDate(e.target.value)}
-                        required
-                    />
-                </div>
-
-                <div className="space-y-2.5">
-                    <label className="text-[10px] font-bold text-gray-900 uppercase tracking-[0.2em] ml-1">Venue / Location</label>
-                    <input
-                        className="w-full rounded-2xl border-2 border-gray-100 bg-gray-50/20 px-5 py-4 text-base font-medium outline-none transition-all focus:border-blue-500/40 focus:ring-8 focus:ring-blue-500/5 focus:bg-white"
-                        placeholder="e.g. Conference Hall A"
-                        value={venue}
-                        onChange={(e) => setVenue(e.target.value)}
-                        required
-                    />
-                </div>
-
-                <div className="space-y-2.5">
-                    <label className="text-[10px] font-bold text-gray-900 uppercase tracking-[0.2em] ml-1">Assigned Trainer</label>
-                    <input
-                        className="w-full rounded-2xl border-2 border-gray-100 bg-gray-50/20 px-5 py-4 text-base font-medium outline-none transition-all focus:border-blue-500/40 focus:ring-8 focus:ring-blue-500/5 focus:bg-white"
-                        placeholder="e.g. John Doe"
-                        value={trainer}
-                        onChange={(e) => setTrainer(e.target.value)}
-                        required
-                    />
-                </div>
-
-                <div className="space-y-2.5">
-                    <label className="text-[10px] font-bold text-gray-900 uppercase tracking-[0.2em] ml-1">Start Time</label>
-                    <input
-                        className="w-full rounded-2xl border-2 border-gray-100 bg-gray-50/20 px-5 py-4 text-base font-medium outline-none transition-all focus:border-blue-500/40 focus:ring-8 focus:ring-blue-500/5 focus:bg-white"
-                        placeholder="e.g. 09:00 AM"
-                        value={startTime}
-                        onChange={(e) => setStartTime(e.target.value)}
-                        required
-                    />
-                </div>
-
-                <div className="space-y-2.5 sm:col-span-2">
-                    <label className="text-[10px] font-bold text-gray-900 uppercase tracking-[0.2em] ml-1">Full Description</label>
-                    <textarea
-                        className="min-h-[160px] w-full rounded-2xl border-2 border-gray-100 bg-gray-50/20 px-5 py-4 text-base font-medium outline-none transition-all focus:border-blue-500/40 focus:ring-8 focus:ring-blue-500/5 focus:bg-white"
-                        placeholder="Enter training details and objectives..."
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                        required
-                    />
-                </div>
-            </div>
-
-            {error ? <p className="mt-4 text-sm text-red-600">{error}</p> : null}
-
-            <div className="mt-8 pt-8 border-t border-gray-100 flex justify-end">
-                <button
-                    type="submit"
-                    disabled={saving}
-                    className="rounded-2xl bg-blue-600 px-8 py-4 text-[12px] font-bold text-white hover:bg-blue-700 disabled:opacity-60 shadow-lg shadow-blue-600/20 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center gap-3 uppercase tracking-[0.2em]"
-                >
-                    {saving ? (
-                        <>
-                            <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                            Saving...
-                        </>
-                    ) : (
-                        <>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                            </svg>
-                            Create Training
-                        </>
-                    )}
-                </button>
-            </div>
-        </form>
+            {error ? <p className="text-sm text-red-600">{error}</p> : null}
+        </div>
     );
 }

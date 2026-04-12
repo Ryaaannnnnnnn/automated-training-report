@@ -6,6 +6,11 @@ export async function GET(
     request: Request,
     { params }: { params: Promise<{ id: string }> }
 ) {
+    const user = await getCurrentUser();
+    if (!user) {
+        return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+    }
+
     const { id } = await params;
     const trainings = await (prisma as any).$queryRawUnsafe(
         "SELECT * FROM Training WHERE id = ?",
@@ -15,6 +20,11 @@ export async function GET(
 
     if (!training) {
         return NextResponse.json({ ok: false, error: "Training not found" }, { status: 404 });
+    }
+
+    // Visibility Check
+    if (user.role !== "admin" && training.status !== "APPROVED" && training.createdById !== user.id) {
+        return NextResponse.json({ ok: false, error: "Forbidden" }, { status: 403 });
     }
 
     return NextResponse.json({ ok: true, training });
@@ -39,7 +49,10 @@ export async function PATCH(
         const trainer = body?.trainer;
         const description = body?.description;
         const startTime = body?.startTime;
+        const endTime = body?.endTime;
         const status = body?.status;
+        const trainingType = body?.trainingType;
+        const reportData = body?.reportData;
 
         if (
             typeof title !== "string" ||
@@ -48,7 +61,8 @@ export async function PATCH(
             typeof trainer !== "string" ||
             typeof description !== "string" ||
             (startTime !== undefined && typeof startTime !== "string") ||
-            (status !== undefined && !["PENDING", "APPROVED", "REJECTED"].includes(status))
+            (status !== undefined && !["PENDING", "APPROVED", "REJECTED"].includes(status)) ||
+            (reportData !== undefined && typeof reportData !== "string")
         ) {
             return NextResponse.json({ ok: false, error: "Invalid payload" }, { status: 400 });
         }
@@ -67,12 +81,12 @@ export async function PATCH(
             return NextResponse.json({ ok: false, error: "Training not found" }, { status: 404 });
         }
 
-        // Only Admin or the creator can edit
-        if (user.role !== "admin" && existingTraining.createdById !== user.id) {
-            return NextResponse.json({ ok: false, error: "Forbidden" }, { status: 403 });
+        // ONLY the creator or an Admin can edit
+        if (existingTraining.createdById !== user.id && user.role !== "admin") {
+            return NextResponse.json({ ok: false, error: "Forbidden: Only the creator or an Admin can edit this training" }, { status: 403 });
         }
 
-        // 1. Update known fields with Prisma
+        // 1. Update with standard Prisma
         const updatedTraining = await prisma.training.update({
             where: { id },
             data: {
@@ -82,23 +96,53 @@ export async function PATCH(
                 trainer,
                 description,
                 status: status as any,
+                startTime: startTime !== undefined ? startTime : undefined,
+                endTime: endTime !== undefined ? endTime : undefined,
+                trainingType: trainingType !== undefined ? trainingType : undefined,
+                reportData: reportData !== undefined ? reportData : undefined,
             },
         });
-
-        // 2. Update startTime with Raw SQL to bypass client-side validation
-        if (startTime !== undefined) {
-            await (prisma as any).$executeRawUnsafe(
-                `UPDATE Training SET startTime = ? WHERE id = ?`,
-                startTime,
-                id
-            );
-            // Refresh updatedTraining object to include the new startTime for the response
-            (updatedTraining as any).startTime = startTime;
-        }
 
         return NextResponse.json({ ok: true, training: updatedTraining });
     } catch (error) {
         console.error("[TRAINING_PATCH_ERROR]", error);
+        return NextResponse.json({ ok: false, error: "Internal Server Error" }, { status: 500 });
+    }
+}
+
+export async function DELETE(
+    request: Request,
+    { params }: { params: Promise<{ id: string }> }
+) {
+    try {
+        const user = await getCurrentUser();
+        if (!user) {
+            return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+        }
+
+        const { id } = await params;
+
+        // Fetch existing training to check ownership/permissions
+        const existingTraining = await prisma.training.findUnique({
+            where: { id },
+        });
+
+        if (!existingTraining) {
+            return NextResponse.json({ ok: false, error: "Training not found" }, { status: 404 });
+        }
+
+        // ONLY the creator or an Admin can delete
+        if (existingTraining.createdById !== user.id && user.role !== "admin") {
+            return NextResponse.json({ ok: false, error: "Forbidden: Only the creator or an Admin can delete this training" }, { status: 403 });
+        }
+
+        await prisma.training.delete({
+            where: { id },
+        });
+
+        return NextResponse.json({ ok: true });
+    } catch (error) {
+        console.error("[TRAINING_DELETE_ERROR]", error);
         return NextResponse.json({ ok: false, error: "Internal Server Error" }, { status: 500 });
     }
 }

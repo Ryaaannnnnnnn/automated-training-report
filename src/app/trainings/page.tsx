@@ -7,6 +7,8 @@ import { Sidebar } from "@/components/Sidebar";
 import { TrainingApprovalButtons } from "@/components/AdminControls";
 import { DeleteTrainingButton } from "@/components/DeleteTrainingButton";
 import { SectionHeader, EmptyState } from "@/components/DashboardWidgets";
+import { DownloadReportButton } from "@/components/DownloadReportButton";
+import { Eye } from "lucide-react";
 
 type Status = "ALL" | "PENDING" | "APPROVED" | "REJECTED";
 
@@ -39,12 +41,20 @@ export default async function TrainingsPage({
       ? (status.toUpperCase() as Status)
       : "ALL";
 
-  // Use Raw SQL to fetch trainings to bypass Prisma Client schema limitations
+  const isAdmin = user.role === "admin";
+
+  // Visibility Logic: Staff see APPROVED or their own. Admin sees everything.
+  const visibilityFilter = isAdmin 
+    ? "" 
+    : `AND (t.status IN ('APPROVED', 'PENDING') OR t.createdById = '${user.id}')`;
+
   const rawTrainings = await (prisma as any).$queryRawUnsafe(`
     SELECT t.*, u.username as creatorUsername
     FROM Training t
     LEFT JOIN User u ON t.createdById = u.id
-    ${activeStatus !== "ALL" ? `WHERE t.status = '${activeStatus}'` : ""}
+    WHERE 1=1
+    ${activeStatus !== "ALL" ? `AND t.status = '${activeStatus}'` : ""}
+    ${visibilityFilter}
     ORDER BY t.date DESC
   `) as any[];
 
@@ -55,35 +65,35 @@ export default async function TrainingsPage({
     createdBy: t.creatorUsername ? { username: t.creatorUsername } : null
   }));
 
-  const isAdmin = user.role === "admin";
-
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#f8fafc] dark:bg-[#0f172a] transition-colors duration-300">
       <Sidebar username={user.username} role={user.role} />
 
       <main className="mx-auto max-w-7xl px-4 sm:px-6 py-6 sm:py-8 animate-page-fade">
         <div className="h-20 sm:h-24" />
 
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 sm:mb-10">
-          <div>
-            <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight leading-[1.1]">
-              Trainings <span className="text-blue-600">Management</span>
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-10 sm:mb-12">
+          <div className="animate-page-fade">
+            <h1 className="text-3xl sm:text-4xl font-black text-gray-900 dark:text-white tracking-tight leading-none mb-3">
+              Trainings <span className="text-blue-600 dark:text-blue-400">Management</span>
             </h1>
-            <p className="text-gray-500 mt-1 sm:mt-2 text-base sm:text-lg font-medium tracking-tight">Manage and review your training events & reports.</p>
+            <p className="text-gray-500 dark:text-slate-400 text-base sm:text-lg font-medium max-w-xl">
+              Review, monitor, and manage all organization training events and technical reports.
+            </p>
           </div>
           <Link
             href="/trainings/new"
-            className="rounded-2xl bg-blue-600 px-6 py-3 text-[12px] font-bold uppercase tracking-[0.2em] text-white hover:bg-blue-700 shadow-lg shadow-blue-600/20 flex items-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] w-fit"
+            className="rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-700 px-8 py-4 text-[13px] font-black uppercase tracking-[0.2em] text-white hover:shadow-2xl hover:shadow-blue-600/30 hover:-translate-y-0.5 active:translate-y-0 flex items-center gap-3 transition-all w-full sm:w-auto justify-center"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-4 h-4">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-5 h-5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
             </svg>
-            Add Training
+            Add New Training
           </Link>
         </div>
 
         {/* Filter Tabs */}
-        <div className="flex gap-2 mb-6">
+        <div className="flex flex-wrap gap-2 mb-8 animate-page-fade animate-stagger-1">
           {STATUS_TABS.map((tab) => {
             const isActive = activeStatus === tab.value;
             const href =
@@ -92,9 +102,9 @@ export default async function TrainingsPage({
               <Link
                 key={tab.value}
                 href={href}
-                className={`px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-[0.2em] transition-all ${isActive
-                  ? "bg-blue-600 text-white shadow-md shadow-blue-600/20"
-                  : "bg-white text-gray-500 border border-gray-100 hover:bg-gray-50"
+                className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] transition-all border ${isActive
+                  ? "bg-blue-600 text-white border-blue-600 shadow-lg shadow-blue-600/20"
+                  : "bg-white dark:bg-slate-900 text-gray-400 dark:text-slate-500 border-gray-100 dark:border-slate-800 hover:border-blue-200 dark:hover:border-blue-700 hover:text-blue-500 dark:hover:text-blue-400 hover:bg-blue-50/30 dark:hover:bg-blue-900/20 shadow-sm"
                   }`}
               >
                 {tab.label}
@@ -103,97 +113,134 @@ export default async function TrainingsPage({
           })}
         </div>
 
-        <div className="rounded-2xl bg-white shadow-sm border border-gray-100 overflow-hidden mb-12">
-          <div className="border-b px-6 sm:px-8 py-4 sm:py-6 flex justify-between items-center bg-gray-50/50">
-            <h3 className="font-bold text-lg sm:text-xl text-gray-900 tracking-tight">Recent Events</h3>
-            <div className="bg-blue-50 text-blue-600 text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-[0.2em] border border-blue-100">
-              {trainings.length} Total
+        <div className="rounded-3xl bg-white dark:bg-slate-900 shadow-sm border border-gray-100 dark:border-slate-800 overflow-hidden mb-12 animate-page-fade animate-stagger-2">
+          <div className="border-b dark:border-slate-800 px-6 sm:px-8 py-5 sm:py-7 flex justify-between items-center bg-gray-50/30 dark:bg-slate-800/20">
+            <h3 className="font-black text-xl text-gray-900 dark:text-white tracking-tight flex items-center gap-3">
+              <div className="p-2 rounded-xl bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 15.75h16.5m-16.5 3.75h16.5" />
+                </svg>
+              </div>
+              Organization Records
+            </h3>
+            <div className="bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 text-[10px] font-black px-4 py-2 rounded-2xl uppercase tracking-[0.2em] border border-indigo-100 dark:border-indigo-500/20 shadow-sm">
+              {trainings.length} Result{trainings.length !== 1 ? 's' : ''}
             </div>
           </div>
           <div className="overflow-x-auto">
             {trainings.length === 0 ? (
-              <EmptyState message={`No ${activeStatus !== "ALL" ? activeStatus.toLowerCase() : ""} trainings found.`} />
+              <EmptyState message={`No ${activeStatus !== "ALL" ? activeStatus.toLowerCase() : ""} trainings found in the database system.`} />
             ) : (
               <table className="w-full text-left text-sm">
-                <thead className="bg-indigo-50/50 text-indigo-900/50 border-b border-indigo-100/50">
+                <thead className="bg-[#fcfdfe] dark:bg-slate-800/50 text-slate-400 dark:text-slate-500 border-b border-gray-100 dark:border-slate-800">
                   <tr>
-                    <th className="px-6 sm:px-8 py-5 font-bold uppercase tracking-[0.2em] text-[10px]">Training Title</th>
-                    <th className="px-6 py-5 font-bold uppercase tracking-[0.2em] text-[10px] hidden lg:table-cell">Type</th>
-                    <th className="px-6 py-5 font-bold uppercase tracking-[0.2em] text-[10px]">Date & Time</th>
-                    <th className="px-6 py-5 font-bold uppercase tracking-[0.2em] text-[10px] hidden md:table-cell">Venue</th>
-                    <th className="px-6 py-5 font-bold uppercase tracking-[0.2em] text-[10px] hidden sm:table-cell">Created By</th>
-                    <th className="px-6 py-5 font-bold uppercase tracking-[0.2em] text-[10px]">Status</th>
-                    <th className="px-6 py-5 font-bold uppercase tracking-[0.2em] text-[10px] text-right">Actions</th>
+                    <th className="px-6 sm:px-8 py-6 font-black uppercase tracking-[0.2em] text-[10px]">Training Insight</th>
+                    <th className="px-6 py-6 font-black uppercase tracking-[0.2em] text-[10px] hidden lg:table-cell">Category</th>
+                    <th className="px-6 py-6 font-black uppercase tracking-[0.2em] text-[10px]">Timeline</th>
+                    <th className="px-6 py-6 font-black uppercase tracking-[0.2em] text-[10px] hidden md:table-cell">Location</th>
+                    <th className="px-6 py-6 font-black uppercase tracking-[0.2em] text-[10px] hidden sm:table-cell">Submitted By</th>
+                    <th className="px-6 py-6 font-black uppercase tracking-[0.2em] text-[10px]">Current Status</th>
+                    <th className="px-6 py-6 font-black uppercase tracking-[0.2em] text-[10px] text-right">Management</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
-                  {trainings.map((t) => {
+                  {trainings.map((t, idx) => {
                     const isCreator = t.createdById === user.id;
                     return (
-                      <tr key={t.id} className="hover:bg-blue-50/10 transition-colors even:bg-gray-50/10 group">
-                        <td className="px-6 sm:px-8 py-4 sm:py-5">
-                          <div className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors text-base tracking-tight leading-tight">{t.title}</div>
-                          <div className="text-[11px] text-gray-400 mt-1 line-clamp-1 max-w-xs font-medium uppercase tracking-wider">{t.description}</div>
+                      <tr
+                        key={t.id}
+                        className="hover:bg-blue-50/20 dark:hover:bg-blue-500/5 transition-all even:bg-slate-50/40 dark:even:bg-slate-800/20 group animate-fade-in"
+                        style={{ animationDelay: `${idx * 40}ms` }}
+                      >
+                        <td className="px-6 sm:px-8 py-5">
+                          <div className="flex flex-col">
+                            <div className="font-black text-gray-900 dark:text-slate-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors text-base tracking-tight leading-tight mb-1">{t.title}</div>
+                            <div className="text-[11px] font-bold text-gray-400 dark:text-slate-500 line-clamp-1 max-w-xs uppercase tracking-widest">{t.description}</div>
+                          </div>
                         </td>
-                        <td className="px-6 py-4 hidden lg:table-cell">
-                          <span className="inline-flex rounded-lg bg-sky-50 px-2.5 py-1 text-[10px] font-bold text-sky-600 border border-sky-100 uppercase tracking-[0.2em]">
-                            TRAINING
-                          </span>
+                        <td className="px-6 py-5 hidden lg:table-cell">
+                          {(() => {
+                            const type = (t as any).trainingType || "Training Report";
+                            const typeStyles: Record<string, string> = {
+                              "Training Report": "bg-green-100/50 text-green-700 border-green-200",
+                              "Provincial Report": "bg-blue-100/50 text-blue-700 border-blue-200",
+                              "Activity Report": "bg-cyan-100/50 text-cyan-700 border-cyan-200",
+                              "Accomplishment Report": "bg-rose-100/50 text-rose-700 border-rose-200",
+                            };
+                            const style = typeStyles[type] || "bg-slate-100/50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700";
+                            return (
+                              <span className={`inline-flex rounded-xl px-3 py-1.5 text-[9px] font-black border uppercase tracking-widest shadow-sm ${style}`}>
+                                {type}
+                              </span>
+                            );
+                          })()}
                         </td>
-                        <td className="px-6 py-4">
-                          <div className="text-sm font-bold text-gray-900 tracking-tight">{t.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</div>
-                          <div className="text-[10px] text-blue-600/60 font-bold uppercase tracking-[0.2em] mt-1.5">{(t as any).startTime || "09:00 AM"}</div>
+                        <td className="px-6 py-5">
+                          <div className="flex flex-col gap-1.5">
+                            <div className="text-sm font-black text-slate-800 dark:text-slate-200 tracking-tight flex items-center gap-2">
+                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3.5 h-3.5 text-blue-500 dark:text-blue-400">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+                              </svg>
+                              {t.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                            </div>
+                            <div className="text-[10px] text-blue-600/70 dark:text-blue-400/70 font-black uppercase tracking-widest pl-5">
+                              {(t as any).startTime || "09:00 AM"} – {(t as any).endTime || "05:00 PM"}
+                            </div>
+                          </div>
                         </td>
-                        <td className="px-6 py-4 text-[13px] text-gray-500 font-medium hidden md:table-cell tracking-tight">
-                          <div className="flex items-center gap-2">
-                            <div className="h-1 w-1 rounded-full bg-blue-300" />
+                        <td className="px-6 py-5 hidden md:table-cell">
+                          <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 font-bold text-xs uppercase tracking-widest">
+                            <div className="h-2 w-2 rounded-full bg-blue-100 dark:bg-blue-900/30 border border-blue-300 dark:border-blue-700 shadow-[0_0_8px_rgba(59,130,246,0.3)]" />
                             {t.venue}
                           </div>
                         </td>
-                        <td className="px-6 py-4 text-[13px] font-bold text-gray-900 hidden sm:table-cell tracking-tight">
+                        <td className="px-6 py-5 hidden sm:table-cell">
                           {isCreator ? (
-                            <span className="inline-flex items-center gap-1.5 text-blue-600 bg-blue-50 px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider border border-blue-100">
-                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3 h-3">
-                                <path d="M10 8a3 3 0 100-6 3 3 0 000 6zM3.465 14.493a1.23 1.23 0 00.41 1.412A9.957 9.957 0 0010 18c2.31 0 4.438-.784 6.131-2.1.43-.333.604-.903.408-1.41a7.002 7.002 0 00-13.074.003z" />
-                              </svg>
+                            <span className="inline-flex items-center gap-2 text-blue-700 dark:text-blue-300 bg-blue-100/50 dark:bg-blue-500/10 px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border border-blue-200 dark:border-blue-800 shadow-sm shadow-blue-50 dark:shadow-none">
+                              <div className="h-1.5 w-1.5 rounded-full bg-blue-600 dark:bg-blue-400 animate-pulse" />
                               You
                             </span>
                           ) : (
-                            <span className="text-gray-400 font-bold">{t.createdBy?.username || "Unknown"}</span>
+                            <span className="text-slate-400 dark:text-slate-500 font-black uppercase tracking-widest text-[11px]">{t.createdBy?.username || "System Admin"}</span>
                           )}
                         </td>
-                        <td className="px-6 py-4">
+                        <td className="px-6 py-5">
                           <span
-                            className={`inline-flex rounded-xl px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.2em] shadow-sm border ${t.status === 'APPROVED' ? 'bg-green-50 text-green-600 border-green-100' :
-                              t.status === 'PENDING' ? 'bg-orange-50 text-orange-600 border-orange-100' :
-                                'bg-red-50 text-red-600 border-red-100'
+                            className={`inline-flex rounded-xl px-3 py-1.5 text-[10px] font-black uppercase tracking-widest shadow-sm border ${t.status === 'APPROVED' ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-100 dark:border-emerald-500/20 shadow-emerald-50 dark:shadow-none' :
+                              t.status === 'PENDING' ? 'bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-100 dark:border-amber-500/20 shadow-amber-50 dark:shadow-none' :
+                                'bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-100 dark:border-rose-500/20 shadow-rose-50 dark:shadow-none'
                               }`}
                           >
                             {t.status === 'APPROVED' ? 'Approved' : t.status === 'PENDING' ? 'Pending' : 'Rejected'}
                           </span>
                         </td>
-                        <td className="px-6 py-4">
-                          <div className="flex items-center justify-end gap-2">
-                            {/* Visibility Logic: 
-                              - Edit: Creator (Anytime) or Admin (Once Approved)
-                              - Approve/Reject: Admin only (if not yet Approved)
-                              - Delete: Admin (Always) or Creator (Only if Pending)
-                          */}
-                            {(isCreator || (isAdmin && t.status === "APPROVED")) && (
+                        <td className="px-6 py-5">
+                          <div className="flex items-center justify-end gap-3 scale-90 sm:scale-100 origin-right">
+                            <Link
+                              href={`/trainings/${t.id}`}
+                              className="rounded-2xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 p-2.5 text-slate-400 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-200 dark:hover:border-blue-800 hover:bg-blue-50/50 dark:hover:bg-blue-900/20 transition-all shadow-sm group/btn"
+                              title="View Professional Report"
+                            >
+                               <Eye className="w-5 h-5 group-hover/btn:scale-110 transition-transform" />
+                            </Link>
+
+                            <DownloadReportButton training={t} />
+
+                            {(isCreator || isAdmin) && (
                               <Link
                                 href={`/trainings/${t.id}/edit`}
-                                className="rounded-xl bg-white border border-gray-100 p-2 text-gray-400 hover:text-blue-600 hover:border-blue-100 hover:bg-blue-50 transition-all shadow-sm"
-                                title="Edit Training"
+                                className="rounded-2xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 p-2.5 text-slate-400 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-200 dark:hover:border-blue-800 hover:bg-blue-50/50 dark:hover:bg-blue-900/20 transition-all shadow-sm group/btn"
+                                title="Modify Training Data"
                               >
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
-                                  <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5 group-hover/btn:scale-110 transition-transform">
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
                                 </svg>
                               </Link>
                             )}
                             {isAdmin && t.status !== "APPROVED" && (
                               <TrainingApprovalButtons trainingId={t.id} currentStatus={t.status} />
                             )}
-                            {(isAdmin || (isCreator && t.status === "PENDING")) && (
+                            {(isCreator || isAdmin) && (
                               <DeleteTrainingButton trainingId={t.id} variant="small" />
                             )}
                           </div>

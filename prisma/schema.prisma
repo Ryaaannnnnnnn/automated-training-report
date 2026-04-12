@@ -54,8 +54,11 @@ model Training {
   venue       String
   trainer     String
   description String
-  startTime   String?        @default("09:00 AM")
-  status      TrainingStatus @default(PENDING)
+  startTime    String?        @default("09:00 AM")
+  endTime      String?        @default("05:00 PM")
+  trainingType String?        @default("Training Report")
+  reportData   String?
+  status       TrainingStatus @default(PENDING)
 
   createdById String?
   createdBy   User?          @relation(fields: [createdById], references: [id])

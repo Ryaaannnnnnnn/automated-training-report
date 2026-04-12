@@ -3,8 +3,10 @@ import { getCurrentUser } from "@/lib/auth";
 import { redirect, notFound } from "next/navigation";
 import { Sidebar } from "@/components/Sidebar";
 import { ReportButtons } from "@/components/ReportButtons";
-import { Calendar, MapPin, User as UserIcon, ArrowLeft } from "lucide-react";
+import { FileText, ArrowLeft, Info, Edit } from "lucide-react";
 import Link from "next/link";
+import { AfterTrainingReportView, ReportData } from "@/components/AfterTrainingReportView";
+import { DownloadReportButton } from "@/components/DownloadReportButton";
 
 export default async function TrainingDetailPage({
     params,
@@ -45,138 +47,129 @@ export default async function TrainingDetailPage({
 
     if (!training) notFound();
 
+    const reportData: ReportData | null = training.reportData ? JSON.parse(training.reportData) : null;
+
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-slate-50/50">
             <Sidebar username={user.username} role={user.role} />
 
-            <main className="mx-auto max-w-7xl px-6 py-8 pt-20">
-                {/* Back Button & Header */}
+            <main className="mx-auto max-w-7xl px-4 sm:px-6 py-8 pt-24 animate-page-fade">
+                {/* Navigation and Actions */}
                 <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
+                    <div className="space-y-1">
                         <Link
                             href="/trainings"
-                            className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-blue-600 mb-2 transition-colors"
+                            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 bg-white text-[11px] font-black uppercase tracking-widest text-gray-500 hover:text-blue-600 hover:border-blue-100 hover:bg-blue-50/30 transition-all group shadow-sm active:scale-95"
                         >
-                            <ArrowLeft className="w-4 h-4" />
-                            Back to Trainings
+                            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+                            Back to Management
                         </Link>
-                        <h1 className="text-3xl font-bold text-gray-900">{training.title}</h1>
-                        <p className="text-gray-600 mt-1 max-w-2xl">{training.description}</p>
+                        <h1 className="text-3xl font-black text-gray-900 tracking-tight">{training.title}</h1>
+                        <div className="flex items-center gap-3">
+                            <span className={`inline-flex rounded-xl px-3 py-1 text-[9px] font-black uppercase tracking-widest border ${
+                                training.status === 'APPROVED' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
+                                training.status === 'PENDING' ? 'bg-amber-50 text-amber-600 border-amber-100' :
+                                'bg-rose-50 text-rose-600 border-rose-100'
+                            }`}>
+                                {training.status}
+                            </span>
+                            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                                {(training as any).trainingType || "Training Report"}
+                            </span>
+                        </div>
                     </div>
-                    <ReportButtons trainingId={training.id} />
+                    <div className="flex flex-wrap items-center gap-3">
+                        {reportData && (
+                            <DownloadReportButton 
+                                training={training} 
+                                showText={true}
+                                className="inline-flex h-10 items-center justify-center rounded-xl border border-emerald-100 bg-emerald-50/30 px-5 text-emerald-600 shadow-sm transition-all hover:bg-emerald-50 hover:border-emerald-200 active:scale-95"
+                            />
+                        )}
+                        <Link
+                            href={`/trainings/${training.id}/edit`}
+                            className="inline-flex h-10 items-center gap-2 rounded-xl border border-gray-200 bg-white px-5 text-xs font-black uppercase tracking-widest text-gray-700 shadow-sm transition-all hover:bg-slate-50 hover:text-blue-600 active:scale-95"
+                        >
+                            <Edit className="w-4 h-4" />
+                            Edit Record
+                        </Link>
+                        {!reportData && <ReportButtons trainingId={training.id} />}
+                    </div>
                 </div>
 
-                <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-                    {/* Left Column: Details */}
-                    <div className="lg:col-span-1 space-y-6">
-                        <div className="rounded-lg bg-white p-6 shadow-sm border border-gray-100">
-                            <h3 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Training Info</h3>
-                            <div className="space-y-4">
-                                <div className="flex items-start gap-3">
-                                    <Calendar className="w-5 h-5 text-blue-500 mt-0.5" />
-                                    <div>
-                                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Date</p>
-                                        <p className="text-gray-900">{training.date.toLocaleDateString('en-US', { dateStyle: 'long' })}</p>
-                                    </div>
+                <div className="space-y-12">
+                    {/* 1. Main Report View (If exists) */}
+                    {reportData ? (
+                        <div className="space-y-6">
+                            <div className="flex items-center gap-3 px-1">
+                                <div className="p-2 rounded-xl bg-blue-50 text-blue-600">
+                                    <FileText className="w-5 h-5" />
                                 </div>
-                                <div className="flex items-start gap-3">
-                                    <MapPin className="w-5 h-5 text-red-500 mt-0.5" />
-                                    <div>
-                                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Venue</p>
-                                        <p className="text-gray-900">{training.venue}</p>
-                                    </div>
+                                <h2 className="text-xl font-black text-gray-900 tracking-tight uppercase">Technical Report</h2>
+                            </div>
+                            <AfterTrainingReportView 
+                                data={reportData}
+                                coreTitle={training.title}
+                                coreDate={training.date.toISOString().split('T')[0]}
+                                coreStartTime={(training as any).startTime || "09:00 AM"}
+                                coreEndTime={(training as any).endTime || "05:00 PM"}
+                                coreVenue={training.venue}
+                            />
+                        </div>
+                    ) : (
+                        <div className="rounded-3xl bg-white p-8 shadow-sm border border-gray-100 flex flex-col items-center text-center max-w-2xl mx-auto py-16">
+                            <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-6">
+                                <Info className="w-8 h-8 text-slate-300" />
+                            </div>
+                            <h3 className="text-lg font-bold text-gray-900 mb-2">No Automated Report Found</h3>
+                            <p className="text-gray-500 text-sm mb-8 leading-relaxed">This training record doesn't have an automated report attached yet. Staff can create one by editing this training and filling out the After Training Report form.</p>
+                        </div>
+                    )}
+
+                    {/* 2. System Footer / Audit Trail */}
+                    <div className="mt-12 mb-8 flex flex-col items-center">
+                        <div className="w-12 h-1 bg-gray-100 rounded-full mb-8" />
+                        
+                        <div className="rounded-2xl border border-gray-100 bg-gray-50/50 p-6 w-full max-w-2xl flex flex-col sm:flex-row items-center justify-between gap-6">
+                            <div className="flex items-center gap-4">
+                                <div className="h-10 w-10 rounded-full bg-white border border-gray-100 shadow-sm flex items-center justify-center text-xs font-black text-gray-400 uppercase">
+                                    {(training.createdBy?.username?.[0] || 'U')}
                                 </div>
-                                <div className="flex items-start gap-3">
-                                    <UserIcon className="w-5 h-5 text-green-500 mt-0.5" />
-                                    <div>
-                                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Trainer</p>
-                                        <p className="text-gray-900">{training.trainer}</p>
-                                    </div>
+                                <div className="text-left">
+                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Submitted By</p>
+                                    <p className="text-sm font-bold text-gray-900">{training.createdBy?.username || "Unknown System User"}</p>
                                 </div>
-                                <div className="border-t pt-4">
-                                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Created By</p>
-                                    <p className="text-gray-700">{training.createdBy?.username || "Unknown"}</p>
-                                    <p className="text-[10px] text-gray-400">on {training.createdAt.toLocaleDateString()}</p>
+                            </div>
+
+                            <div className="h-px w-full sm:h-8 sm:w-px bg-gray-200" />
+
+                            <div className="text-center sm:text-left flex-1">
+                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Submission Date</p>
+                                <p className="text-sm font-bold text-gray-900">
+                                    {training.createdAt.toLocaleDateString('en-PH', { 
+                                        month: 'long', day: 'numeric', year: 'numeric',
+                                        hour: '2-digit', minute: '2-digit'
+                                    })}
+                                </p>
+                            </div>
+
+                            <div className="hidden lg:block lg:pl-6 border-l border-gray-200">
+                                <div className="bg-white px-3 py-1.5 rounded-lg border border-gray-100 shadow-sm">
+                                    <p className="text-[9px] font-black text-blue-600 uppercase tracking-widest leading-tight">
+                                        Automated Training<br />Report System
+                                    </p>
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    {/* Right Column: Attendance & Evaluations */}
-                    <div className="lg:col-span-2 space-y-8">
-                        {/* Attendance Table */}
-                        <div className="rounded-lg bg-white shadow-sm border border-gray-100 overflow-hidden">
-                            <div className="bg-gray-50 px-6 py-4 border-b">
-                                <h3 className="font-semibold text-gray-800">Attendance List ({training.attendances.length})</h3>
-                            </div>
-                            <div className="overflow-x-auto">
-                                <table className="w-full text-left text-sm">
-                                    <thead className="bg-gray-50/50 text-gray-500 border-b">
-                                        <tr>
-                                            <th className="px-6 py-3 font-medium">Participant</th>
-                                            <th className="px-6 py-3 font-medium">Organization</th>
-                                            <th className="px-6 py-3 font-medium text-center">Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y">
-                                        {training.attendances.length === 0 ? (
-                                            <tr>
-                                                <td colSpan={3} className="px-6 py-8 text-center text-gray-500">No attendance records found.</td>
-                                            </tr>
-                                        ) : (
-                                            training.attendances.map((a) => (
-                                                <tr key={a.id} className="hover:bg-gray-50/50 transition-colors">
-                                                    <td className="px-6 py-4">
-                                                        <p className="font-medium text-gray-900">{a.participant.name}</p>
-                                                        <p className="text-xs text-gray-500">{a.participant.email}</p>
-                                                    </td>
-                                                    <td className="px-6 py-4 text-gray-600">{a.participant.organization}</td>
-                                                    <td className="px-6 py-4 text-center">
-                                                        <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${a.status === 'Present' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
-                                                            }`}>
-                                                            {a.status}
-                                                        </span>
-                                                    </td>
-                                                </tr>
-                                            ))
-                                        )}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        {/* Evaluations Section (if any) */}
-                        {training.evaluations.length > 0 && (
-                            <div className="rounded-lg bg-white shadow-sm border border-gray-100 overflow-hidden">
-                                <div className="bg-indigo-50 px-6 py-4 border-b">
-                                    <h3 className="font-semibold text-indigo-900">Training Evaluations</h3>
-                                </div>
-                                <div className="divide-y">
-                                    {training.evaluations.map((e) => (
-                                        <div key={e.id} className="px-6 py-4 hover:bg-gray-50/50 transition-colors">
-                                            <div className="flex items-center justify-between mb-2">
-                                                <p className="font-medium text-gray-900">{e.participant.name}</p>
-                                                <div className="flex items-center gap-1">
-                                                    {[...Array(5)].map((_, i) => (
-                                                        <svg
-                                                            key={i}
-                                                            className={`w-4 h-4 ${i < e.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'}`}
-                                                            viewBox="0 0 20 20"
-                                                        >
-                                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                                        </svg>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                            <p className="text-sm text-gray-600 italic">"{e.comments || "No comments provided."}"</p>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
+                        
+                        <p className="text-[10px] text-gray-400 font-bold uppercase tracking-[0.3em] mt-8 opacity-50">
+                            End of Record — {training.id}
+                        </p>
                     </div>
                 </div>
             </main>
         </div>
     );
 }
+
+
