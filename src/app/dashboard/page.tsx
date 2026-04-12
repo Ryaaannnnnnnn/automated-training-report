@@ -21,55 +21,50 @@ export default async function DashboardPage() {
   const user = await getCurrentUser();
   if (!user) redirect("/login");
 
-  const [trainingsCount, pendingTrainingsCount, totalStaffCount] = await Promise.all([
+  const [
+    trainingsCount,
+    pendingTrainingsCount,
+    totalStaffCount,
+    recentTrainings,
+    pendingUsers,
+    pendingTrainings,
+    approvedUsers
+  ] = await Promise.all([
     prisma.training.count({ where: { status: "APPROVED" } }),
-    prisma.training.count({
-      where: {
-        status: "PENDING"
-      }
+    prisma.training.count({ where: { status: "PENDING" } }),
+    prisma.user.count({ where: { role: "staff" } }),
+    prisma.training.findMany({
+      take: 5,
+      where: user.role === "admin" ? {} : {
+        OR: [
+          { status: "APPROVED" },
+          { status: "PENDING" },
+          { createdById: user.id }
+        ]
+      },
+      orderBy: { date: "desc" },
+      include: { createdBy: true },
     }),
-    prisma.user.count({ where: { role: "staff" } })
-  ]);
-
-  // Fetch recent trainings with visibility rules
-  const recentTrainings = await prisma.training.findMany({
-    take: 5,
-    where: user.role === "admin" ? {} : {
-      OR: [
-        { status: "APPROVED" },
-        { status: "PENDING" },
-        { createdById: user.id }
-      ]
-    },
-    orderBy: { date: "desc" },
-    include: { createdBy: true },
-  });
-
-  // Admin-only data
-  const pendingUsers =
     user.role === "admin"
-      ? await prisma.user.findMany({
+      ? prisma.user.findMany({
         where: { status: "PENDING" },
         orderBy: { createdAt: "desc" },
       })
-      : [];
-
-  const pendingTrainings =
+      : Promise.resolve([]),
     user.role === "admin"
-      ? await prisma.training.findMany({
+      ? prisma.training.findMany({
         where: { status: "PENDING" },
         include: { createdBy: true },
         orderBy: { createdAt: "desc" },
       })
-      : [];
-
-  const approvedUsers =
+      : Promise.resolve([]),
     user.role === "admin"
-      ? await prisma.user.findMany({
+      ? prisma.user.findMany({
         where: { role: "staff", status: "APPROVED" },
         orderBy: { username: "asc" },
       })
-      : [];
+      : Promise.resolve([]),
+  ]);
 
   const greeting = getGreeting();
 
