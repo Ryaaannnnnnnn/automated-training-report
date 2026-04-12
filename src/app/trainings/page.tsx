@@ -43,27 +43,26 @@ export default async function TrainingsPage({
 
   const isAdmin = user.role === "admin";
 
-  // Visibility Logic: Staff see APPROVED or their own. Admin sees everything.
-  const visibilityFilter = isAdmin 
-    ? "" 
-    : `AND (t.status IN ('APPROVED', 'PENDING') OR t.createdById = '${user.id}')`;
-
-  const rawTrainings = await (prisma as any).$queryRawUnsafe(`
-    SELECT t.*, u.username as creatorUsername
-    FROM Training t
-    LEFT JOIN User u ON t.createdById = u.id
-    WHERE 1=1
-    ${activeStatus !== "ALL" ? `AND t.status = '${activeStatus}'` : ""}
-    ${visibilityFilter}
-    ORDER BY t.date DESC
-  `) as any[];
-
-  // Format raw results to match the expected structure
-  const trainings = rawTrainings.map(t => ({
-    ...t,
-    date: new Date(t.date),
-    createdBy: t.creatorUsername ? { username: t.creatorUsername } : null
-  }));
+  const trainings = await prisma.training.findMany({
+    where: {
+      ...(activeStatus !== "ALL" ? { status: activeStatus as any } : {}),
+      ...(isAdmin ? {} : {
+        OR: [
+          { status: "APPROVED" },
+          { status: "PENDING" },
+          { createdById: user.id }
+        ]
+      })
+    },
+    include: {
+      createdBy: {
+        select: { username: true }
+      }
+    },
+    orderBy: {
+      date: "desc"
+    }
+  });
 
   return (
     <div className="min-h-screen bg-[#f8fafc] dark:bg-[#0f172a] transition-colors duration-300">

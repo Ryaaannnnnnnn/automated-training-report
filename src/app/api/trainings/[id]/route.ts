@@ -12,11 +12,9 @@ export async function GET(
     }
 
     const { id } = await params;
-    const trainings = await (prisma as any).$queryRawUnsafe(
-        "SELECT * FROM Training WHERE id = ?",
-        id
-    );
-    const training = (trainings as any[])?.[0];
+    const training = await prisma.training.findUnique({
+        where: { id }
+    });
 
     if (!training) {
         return NextResponse.json({ ok: false, error: "Training not found" }, { status: 404 });
