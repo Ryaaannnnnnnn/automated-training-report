@@ -27,7 +27,7 @@ export async function POST(request: Request) {
   // Lazy migration: if bcrypt fails, try plain-text (old passwords) and upgrade
   if (!passwordMatch && user.password === password) {
     passwordMatch = true;
-    const hashedPassword = await bcrypt.hash(password, 12);
+    const hashedPassword = await bcrypt.hash(password, 10);
     await prisma.user.update({
       where: { id: user.id },
       data: { password: hashedPassword },
