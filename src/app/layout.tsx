@@ -3,12 +3,14 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { LoadingBar } from "@/components/LoadingBar";
+import { Suspense } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Automated Training Management & Reporting",
-  description: "Automated Training Management & Reporting System (Foundation)",
+  title: "DICT Training Report System",
+  description: "Automated Training Management & Reporting System",
 };
 
 export default function RootLayout({
@@ -18,13 +20,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.className} min-h-screen bg-gray-50 text-gray-900 antialiased`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          enableSystem
-          disableTransitionOnChange
-        >
+      <head>
+        <link rel="icon" href="/favicon.ico" />
+      </head>
+      <body className={`${inter.className} transition-colors duration-300`}>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+          <Suspense fallback={null}>
+            <LoadingBar />
+          </Suspense>
           {children}
         </ThemeProvider>
       </body>

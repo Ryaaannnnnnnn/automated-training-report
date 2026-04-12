@@ -1,7 +1,9 @@
 import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
 
-export async function getCurrentUser() {
+import { cache } from "react";
+
+export const getCurrentUser = cache(async () => {
   const cookieStore = await cookies();
   const userId = cookieStore.get("session")?.value;
   if (!userId) return null;
@@ -12,5 +14,5 @@ export async function getCurrentUser() {
   });
 
   return user;
-}
+});
 
