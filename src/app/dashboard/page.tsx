@@ -18,8 +18,6 @@ function getGreeting() {
 }
 
 export default async function DashboardPage() {
-  await ensureSeedData();
-
   const user = await getCurrentUser();
   if (!user) redirect("/login");
 

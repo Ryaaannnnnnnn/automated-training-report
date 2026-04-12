@@ -30,8 +30,6 @@ export default async function TrainingsPage({
 }: {
   searchParams: Promise<{ status?: string }>;
 }) {
-  await ensureSeedData();
-
   const user = await getCurrentUser();
   if (!user) redirect("/login");
 
@@ -102,9 +100,9 @@ export default async function TrainingsPage({
                 key={tab.value}
                 href={href}
                 prefetch={false}
-                className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] transition-all border ${isActive
-                  ? "bg-blue-600 text-white border-blue-600 shadow-lg shadow-blue-600/20"
-                  : "bg-white dark:bg-slate-900 text-gray-400 dark:text-slate-500 border-gray-100 dark:border-slate-800 hover:border-blue-200 dark:hover:border-blue-700 hover:text-blue-500 dark:hover:text-blue-400 hover:bg-blue-50/30 dark:hover:bg-blue-900/20 shadow-sm"
+                className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] transition-[color,background-color,border-color] duration-150 border ${isActive
+                  ? "bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-600/10"
+                  : "bg-white dark:bg-slate-900 text-gray-400 dark:text-slate-500 border-gray-100 dark:border-slate-800 hover:border-blue-200 dark:hover:border-blue-700 hover:text-blue-500 dark:hover:text-blue-400 hover:bg-blue-50/10 dark:hover:bg-blue-900/10 shadow-sm"
                   }`}
               >
                 {tab.label}
