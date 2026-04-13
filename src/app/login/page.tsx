@@ -2,16 +2,25 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { User, Lock, Eye, EyeOff, LogIn, GraduationCap } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  // Prefetch dashboard + warm up the login serverless function on mount
+  useEffect(() => {
+    router.prefetch("/dashboard");
+    // Fire a HEAD-like warm-up to wake the Vercel function before the user clicks Log In
+    fetch("/api/auth/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" }).catch(() => {});
+  }, [router]);
+
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -29,27 +38,35 @@ export default function LoginPage() {
 
       if (!res.ok || !data?.ok) {
         setError(data?.error ?? "Login failed");
+        setLoading(false);
         return;
       }
 
-      router.push("/dashboard");
-    } finally {
+      // Hard navigation is often faster for full-page transitions like login,
+      // as it bypasses SPA reconciliation and ensures a fresh server-side render.
+      window.location.assign("/dashboard");
+    } catch (err) {
+      setError("An unexpected error occurred. Please try again.");
       setLoading(false);
     }
   }
 
+  const isLoggingIn = loading || isPending;
+
   return (
     // Force light mode wrapper — this page is always light regardless of theme
     <div className="light" style={{ colorScheme: "light" }}>
-      <main className="relative flex min-h-screen items-center justify-center bg-gray-200 p-4">
-        {/* Background Image */}
-        <div
-          className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat grayscale-[0.2]"
-          style={{ backgroundImage: "url('/login-bg.jpg')", backgroundColor: "#f3f4f6" }}
-        />
-
+      <main className="relative flex min-h-screen items-center justify-center p-4"
+        style={{
+          backgroundImage: "url('/login%20bg.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          backgroundColor: "#d1d5db",
+        }}
+      >
         {/* Overlay */}
-        <div className="absolute inset-0 z-0 bg-black/5" />
+        <div className="absolute inset-0 z-0 bg-white/30 backdrop-blur-[2px]" />
 
         <div className="z-10 w-full max-w-[420px] overflow-hidden rounded-[24px] bg-white shadow-2xl border border-white">
           {/* Header Section */}
@@ -86,6 +103,7 @@ export default function LoginPage() {
                 onChange={(e) => setUsername(e.target.value)}
                 autoComplete="username"
                 placeholder="Enter your username"
+                onFocus={() => router.prefetch("/dashboard")}
                 required
               />
             </div>
@@ -104,6 +122,7 @@ export default function LoginPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   autoComplete="current-password"
                   placeholder="Enter your password"
+                  onFocus={() => router.prefetch("/dashboard")}
                   required
                 />
                 <button
@@ -130,10 +149,11 @@ export default function LoginPage() {
             {/* Login Button */}
             <button
               type="submit"
-              disabled={loading}
+              disabled={isLoggingIn}
+              onMouseEnter={() => router.prefetch("/dashboard")}
               className="group flex w-full items-center justify-center gap-3 rounded-xl bg-[#007BE6] py-3.5 text-sm font-semibold text-white shadow-lg shadow-[#007BE6]/20 transition-all hover:bg-[#006ACC] hover:translate-y-[-1px] active:translate-y-[1px] disabled:opacity-70 disabled:pointer-events-none"
             >
-              {loading ? (
+              {isLoggingIn ? (
                 <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
               ) : (
                 <>

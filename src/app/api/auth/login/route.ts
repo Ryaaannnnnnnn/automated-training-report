@@ -21,17 +21,25 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: "Invalid credentials" }, { status: 401 });
   }
 
-  // Try bcrypt compare first (new hashed passwords)
-  let passwordMatch = await bcrypt.compare(password, user.password).catch(() => false);
+  // Use async bcrypt to avoid blocking the event loop on serverless
+  let passwordMatch = false;
+  try {
+    passwordMatch = await bcrypt.compare(password, user.password);
+  } catch (err) {
+    passwordMatch = false;
+  }
 
-  // Lazy migration: if bcrypt fails, try plain-text (old passwords) and upgrade
+  // Lazy migration: if bcrypt fails, try plain-text (legacy passwords)
   if (!passwordMatch && user.password === password) {
     passwordMatch = true;
-    const hashedPassword = await bcrypt.hash(password, 10);
-    await prisma.user.update({
-      where: { id: user.id },
-      data: { password: hashedPassword },
-    });
+    // Fire-and-forget: upgrade the password in the background.
+    // Cost factor 8 is sufficient and ~4x faster than 10 on serverless.
+    bcrypt.hash(password, 8).then((hashedPassword) => {
+      prisma.user.update({
+        where: { id: user.id },
+        data: { password: hashedPassword },
+      }).catch(() => {});
+    }).catch(() => {});
   }
 
   if (!passwordMatch) {
@@ -45,13 +53,16 @@ export async function POST(request: Request) {
     );
   }
 
-  const res = NextResponse.json({ ok: true, role: user.role });
-  res.cookies.set({
-    name: "session",
-    value: user.id,
+  // Create response and set cookie immediately
+  const response = NextResponse.json({ ok: true, role: user.role });
+  
+  response.cookies.set("session", user.id, {
     httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
+    maxAge: 60 * 60 * 24 * 7, // 1 week
     path: "/",
   });
-  return res;
+
+  return response;
 }

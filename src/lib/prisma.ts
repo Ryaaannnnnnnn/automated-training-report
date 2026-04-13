@@ -10,3 +10,6 @@ export const prisma =
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 
+// Pre-warm the connection pool immediately on module load.
+// This runs in the background so the first DB query doesn't pay the cold-start penalty.
+prisma.$connect().catch(() => {});
