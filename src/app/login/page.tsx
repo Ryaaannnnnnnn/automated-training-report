@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState, useTransition, useEffect } from "react";
 import { User, Lock, Eye, EyeOff, LogIn, GraduationCap } from "lucide-react";
@@ -56,19 +57,20 @@ export default function LoginPage() {
   return (
     // Force light mode wrapper — this page is always light regardless of theme
     <div className="light" style={{ colorScheme: "light" }}>
-      <main className="relative flex min-h-screen items-center justify-center p-4"
-        style={{
-          backgroundImage: "url('/login-bg.jpg')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-          backgroundColor: "#d1d5db",
-        }}
-      >
+      <main className="relative flex min-h-screen items-center justify-center p-4">
+        {/* Background Image */}
+        <Image
+          src="/login-bg.jpg"
+          alt="DICT Building Background"
+          fill
+          priority
+          className="object-cover object-center"
+          style={{ zIndex: 0 }}
+        />
         {/* Overlay */}
-        <div className="absolute inset-0 z-0 bg-white/30 backdrop-blur-[2px]" />
+        <div className="absolute inset-0 bg-white/25" style={{ zIndex: 1 }} />
 
-        <div className="z-10 w-full max-w-[420px] overflow-hidden rounded-[24px] bg-white shadow-2xl border border-white">
+        <div className="relative w-full max-w-[420px] overflow-hidden rounded-[24px] bg-white shadow-2xl border border-white" style={{ zIndex: 2 }}>
           {/* Header Section */}
           <div className="bg-[#007BE6] py-10 px-8 text-center text-white">
             <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-white p-2 shadow-inner">
