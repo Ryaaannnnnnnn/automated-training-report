@@ -58,7 +58,7 @@ export default function LoginPage() {
     <div className="light" style={{ colorScheme: "light" }}>
       <main className="relative flex min-h-screen items-center justify-center p-4"
         style={{
-          backgroundImage: "url('/login%20bg.jpg')",
+          backgroundImage: "url('/login-bg.jpg')",
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
