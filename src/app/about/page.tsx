@@ -75,7 +75,7 @@ export default async function AboutPage() {
             The Developers
           </div>
           <h1 className="text-4xl sm:text-7xl font-black text-gray-900 dark:text-white tracking-tighter mb-6 leading-none">
-            About <span className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent italic">Us</span>
+            About <span className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent italic pr-2">Us</span>
           </h1>
           <p className="max-w-2xl mx-auto text-gray-500 dark:text-slate-400 font-medium text-lg leading-relaxed">
             The dedicated team behind the modern automation system for DICT Region VI Aklan.
@@ -102,7 +102,7 @@ export default async function AboutPage() {
 
               {/* Info Area */}
               <div className="px-6 space-y-2">
-                <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight leading-tight">{member.name}</h3>
+                <h3 className="text-xl xl:text-2xl font-black text-gray-900 dark:text-white tracking-tight leading-tight">{member.name}</h3>
                 <p className="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest leading-none">{member.role}</p>
                 <p className="text-[13px] text-gray-500 dark:text-slate-400 leading-relaxed pt-3">
                   {member.description}
