@@ -17,19 +17,15 @@ import {
   AdminPanels 
 } from "./DashboardSections";
 import { QuickActionBtn } from "@/components/DashboardWidgets";
+import { GreetingText } from "@/components/GreetingText";
 
-function getGreeting() {
-  const hour = new Date().getHours();
-  if (hour < 12) return "Good morning";
-  if (hour < 18) return "Good afternoon";
-  return "Good evening";
-}
+
 
 export default async function DashboardPage() {
   const user = await getCurrentUser();
   if (!user) redirect("/login");
 
-  const greeting = getGreeting();
+
 
   return (
     <div className="min-h-screen bg-[#f8fafc] dark:bg-slate-900 transition-colors duration-300">
@@ -43,7 +39,7 @@ export default async function DashboardPage() {
         <div className="mb-8 sm:mb-12 flex flex-col md:flex-row items-start justify-between gap-6">
           <div className="animate-page-fade">
             <h1 className="text-4xl sm:text-5xl font-black text-gray-900 dark:text-white tracking-tight leading-none">
-              {greeting}, <span className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">{user.username}</span>!
+              <GreetingText />, <span className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">{user.username}</span>!
             </h1>
             <p className="text-gray-500 dark:text-slate-400 mt-3 text-lg font-medium max-w-2xl">
               Welcome back to the <span className="text-blue-600 dark:text-blue-400 font-bold">Automated Training Report</span> system.
