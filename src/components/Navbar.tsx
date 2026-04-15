@@ -22,7 +22,7 @@ export function Navbar() {
                         />
                     </svg>
                     <span className="text-lg font-semibold tracking-wide">
-                        Automated Training Management & Reporting System
+                        Region VI AKLAN
                     </span>
                 </div>
                 <div className="flex items-center gap-6 text-sm font-medium">

@@ -224,7 +224,7 @@ export default function RegisterPage() {
                                     <GraduationCap size={16} fill="currentColor" className="opacity-80" />
                                     <span className="text-[11px] font-bold uppercase tracking-tight">Department of Information and Communications Technology</span>
                                 </div>
-                                <span className="text-[10px] font-semibold text-blue-400 capitalize">Automated Training Management &amp; Reporting System</span>
+                                <span className="text-[10px] font-semibold text-blue-400 capitalize">Region VI AKLAN</span>
                             </div>
                         </div>
 

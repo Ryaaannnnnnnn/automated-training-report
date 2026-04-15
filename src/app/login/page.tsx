@@ -103,8 +103,8 @@ export default function LoginPage() {
           <form onSubmit={onSubmit} className="space-y-6 p-8 sm:p-10 bg-white">
             {/* Username Field */}
             <div className="space-y-2">
-              <label className="flex items-center gap-2 text-[11px] sm:text-[13px] font-black sm:font-semibold uppercase sm:capitalize tracking-widest sm:tracking-normal text-[#007BE6] sm:text-gray-800">
-                <User size={14} strokeWidth={3} className="sm:text-gray-600 sm:stroke-[1.5]" />
+              <label className="flex items-center gap-2 text-[13px] font-semibold text-gray-800">
+                <User size={14} className="text-gray-600 font-bold" />
                 Username
               </label>
               <input
@@ -120,8 +120,8 @@ export default function LoginPage() {
 
             {/* Password Field */}
             <div className="space-y-2">
-              <label className="flex items-center gap-2 text-[11px] sm:text-[13px] font-black sm:font-semibold uppercase sm:capitalize tracking-widest sm:tracking-normal text-[#007BE6] sm:text-gray-800">
-                <Lock size={14} strokeWidth={3} className="sm:text-gray-600 sm:stroke-[1.5]" />
+              <label className="flex items-center gap-2 text-[13px] font-semibold text-gray-800">
+                <Lock size={14} className="text-gray-600 font-bold" />
                 Access Key
               </label>
               <div className="relative">
@@ -169,25 +169,18 @@ export default function LoginPage() {
               )}
             </button>
 
-            {/* Desktop Institutional Footer Box */}
-            <div className="hidden sm:block mt-4 overflow-hidden rounded-xl border border-blue-50 bg-[#F0F7FF] p-4 text-center">
+            {/* Institutional Footer Box - Responsive */}
+            <div className="mt-4 overflow-hidden rounded-xl border border-blue-50 bg-[#F0F7FF] p-4 text-center">
               <div className="flex flex-col items-center gap-1">
                 <div className="flex items-center justify-center gap-1.5 text-[#0060B8]">
                   <GraduationCap size={16} fill="currentColor" className="opacity-80" />
                   <span className="text-[11px] font-bold uppercase tracking-tight">Department of Information and Communications Technology</span>
                 </div>
-                <span className="text-[10px] font-semibold text-blue-400 capitalize whitespace-nowrap">Automated Training Management & Reporting System</span>
+                <span className="text-[10px] font-semibold text-blue-400 capitalize whitespace-nowrap">Region VI AKLAN</span>
               </div>
             </div>
 
-            {/* Mobile Footer (Hidden on Desktop) */}
-            <div className="sm:hidden mt-8 pt-6 border-t border-gray-50 flex flex-col items-center gap-3 opacity-50">
-              <GraduationCap size={24} className="text-blue-900" />
-              <div className="text-center">
-                <p className="text-[9px] font-black uppercase tracking-[0.2em] text-blue-900">Department of Information & Communications Technology</p>
-                <p className="text-[8px] font-bold text-blue-400 mt-1">Region IV-A CALABARZON</p>
-              </div>
-            </div>
+
 
             <p className="text-center text-[13px] font-medium text-gray-400 pt-2">
               Don&apos;t have an account?{" "}
