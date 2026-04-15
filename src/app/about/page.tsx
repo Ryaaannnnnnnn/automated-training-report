@@ -20,7 +20,7 @@ const teamMembers: TeamMember[] = [
   {
     name: "Jhon Ryan Solis",
     role: "Developer",
-    description: "Contributing to the automation and technical architecture of the ATMRS project.",
+    description: "Leading the technical development and system architecture to ensure a robust and scalable platform.",
     image: "/ryan.jpeg",
     socials: {
       facebook: "https://www.facebook.com/share/18TUnjvie6/",
@@ -30,7 +30,7 @@ const teamMembers: TeamMember[] = [
   {
     name: "Franzel Itulid",
     role: "UI/UX Designer",
-    description: "Focused on ensuring the system meets the high standards and reporting needs of the team.",
+    description: "Crafting intuitive and aesthetically pleasing user interfaces that provide a seamless experience for all users.",
     image: "/franzel.jpeg",
     socials: {
       facebook: "https://www.facebook.com/share/1G5sxLDRGu/",
@@ -40,7 +40,7 @@ const teamMembers: TeamMember[] = [
   {
     name: "Wendell Arellano",
     role: "Quality Assurance",
-    description: "Dedicated to creating seamless user flows and efficient data management logic.",
+    description: "Meticulously testing every feature to maintain the highest standards of system reliability and performance.",
     image: "/wendell.jpeg",
     socials: {
       facebook: "https://www.facebook.com/share/1CfZ2iGQXf/",
@@ -50,7 +50,7 @@ const teamMembers: TeamMember[] = [
   {
     name: "Paul Andrew Tiopes",
     role: "System Tester",
-    description: "Committed to the accurate automation of DICT training reports and system stability.",
+    description: "Executing comprehensive test plans to identify and resolve issues, ensuring a bug-free and stable system.",
     image: "/paul.jpeg",
     socials: {
       facebook: "https://www.facebook.com/share/188988wvv5/",
@@ -146,8 +146,8 @@ export default async function AboutPage() {
           <div className="relative z-10">
             <h2 className="text-xs font-black mb-8 tracking-[0.4em] uppercase text-gray-400 dark:text-slate-500">The Mission</h2>
             <p className="max-w-3xl mx-auto text-gray-900 dark:text-white text-2xl sm:text-4xl font-black tracking-tighter leading-[1.1]">
-              Driven by <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent italic">Innovation</span>, <br className="hidden sm:block" />
-              Committed to <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent italic">Accuracy</span>.
+              Driven by <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent italic pr-2">Innovation</span>, <br className="hidden sm:block" />
+              Committed to <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent italic pr-2">Accuracy</span>.
             </p>
             <p className="max-w-xl mx-auto mt-8 text-gray-500 dark:text-slate-400 font-medium text-lg">
                 Empowering the DICT workforce with efficient, reliable, and innovative tools to ensure excellence in every report.
