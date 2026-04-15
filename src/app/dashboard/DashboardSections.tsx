@@ -74,43 +74,71 @@ export async function RecentTrainingsList({ userId, userRole }: { userId: string
           {pendingCount} Pending
         </div>
       </div>
-      <div className="p-0 overflow-x-auto">
+      <div className="p-0">
         {recentTrainings.length === 0 ? (
           <EmptyState message="No trainings found in the records." />
         ) : (
-          <table className="w-full text-left text-sm">
-            <thead className="bg-indigo-50/50 dark:bg-slate-700/50 text-indigo-900/50 dark:text-slate-400 border-b border-indigo-100/50 dark:border-slate-700">
-              <tr>
-                <th className="px-6 sm:px-8 py-5 font-bold uppercase tracking-[0.2em] text-[10px]">Training Title</th>
-                <th className="px-6 py-5 font-bold uppercase tracking-[0.2em] text-[10px]">Date & Time</th>
-                <th className="px-6 py-5 font-bold uppercase tracking-[0.2em] text-[10px] text-right">Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-50 dark:divide-slate-700/50">
+          <>
+            {/* Desktop View */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full text-left text-sm">
+                <thead className="bg-indigo-50/50 dark:bg-slate-700/50 text-indigo-900/50 dark:text-slate-400 border-b border-indigo-100/50 dark:border-slate-700">
+                  <tr>
+                    <th className="px-6 sm:px-8 py-5 font-bold uppercase tracking-[0.2em] text-[10px]">Training Title</th>
+                    <th className="px-6 py-5 font-bold uppercase tracking-[0.2em] text-[10px]">Date & Time</th>
+                    <th className="px-6 py-5 font-bold uppercase tracking-[0.2em] text-[10px] text-right">Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-50 dark:divide-slate-700/50">
+                  {recentTrainings.map((t) => (
+                    <tr key={t.id} className="hover:bg-blue-50/10 dark:hover:bg-blue-500/5 transition-colors even:bg-gray-50/10 dark:even:bg-slate-700/20 group">
+                      <td className="px-6 sm:px-8 py-4 sm:py-5">
+                        <div className="font-bold text-gray-900 dark:text-slate-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors text-base tracking-tight leading-tight">{t.title}</div>
+                        <div className="text-[11px] text-gray-400 dark:text-slate-500 mt-1 line-clamp-1 max-w-xs font-medium uppercase tracking-wider">{t.description}</div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="text-sm font-bold text-gray-900 dark:text-slate-100 tracking-tight">{t.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</div>
+                        <div className="text-[10px] text-blue-600/60 dark:text-blue-400/60 font-bold uppercase tracking-[0.2em] mt-1.5">{(t as any).startTime || "09:00 AM"}</div>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <span
+                          className={`inline-flex rounded-xl px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.2em] shadow-sm border ${t.status === 'APPROVED' ? 'bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 border-green-100 dark:border-green-500/20' :
+                            t.status === 'PENDING' ? 'bg-orange-50 dark:bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-100 dark:border-orange-500/20' :
+                              'bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 border-red-100 dark:border-red-500/20'
+                            }`}
+                        >
+                          {t.status === 'APPROVED' ? 'Approved' : t.status === 'PENDING' ? 'Pending' : 'Rejected'}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile View */}
+            <div className="md:hidden divide-y divide-gray-50 dark:divide-slate-700/50">
               {recentTrainings.map((t) => (
-                <tr key={t.id} className="hover:bg-blue-50/10 dark:hover:bg-blue-500/5 transition-colors even:bg-gray-50/10 dark:even:bg-slate-700/20 group">
-                  <td className="px-6 sm:px-8 py-4 sm:py-5">
-                    <div className="font-bold text-gray-900 dark:text-slate-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors text-base tracking-tight leading-tight">{t.title}</div>
-                    <div className="text-[11px] text-gray-400 dark:text-slate-500 mt-1 line-clamp-1 max-w-xs font-medium uppercase tracking-wider">{t.description}</div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="text-sm font-bold text-gray-900 dark:text-slate-100 tracking-tight">{t.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</div>
-                    <div className="text-[10px] text-blue-600/60 dark:text-blue-400/60 font-bold uppercase tracking-[0.2em] mt-1.5">{(t as any).startTime || "09:00 AM"}</div>
-                  </td>
-                  <td className="px-6 py-4 text-right">
+                <div key={t.id} className="p-5 hover:bg-gray-50/30 dark:hover:bg-slate-700/30 transition-colors">
+                  <div className="flex justify-between items-start mb-3">
+                    <h4 className="font-bold text-gray-900 dark:text-white leading-tight pr-4">{t.title}</h4>
                     <span
-                      className={`inline-flex rounded-xl px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.2em] shadow-sm border ${t.status === 'APPROVED' ? 'bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 border-green-100 dark:border-green-500/20' :
+                      className={`shrink-0 inline-flex rounded-xl px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider border ${t.status === 'APPROVED' ? 'bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 border-green-100 dark:border-green-500/20' :
                         t.status === 'PENDING' ? 'bg-orange-50 dark:bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-100 dark:border-orange-500/20' :
                           'bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 border-red-100 dark:border-red-500/20'
                         }`}
                     >
                       {t.status === 'APPROVED' ? 'Approved' : t.status === 'PENDING' ? 'Pending' : 'Rejected'}
                     </span>
-                  </td>
-                </tr>
+                  </div>
+                  <div className="flex items-center justify-between text-[11px]">
+                    <span className="text-gray-400 dark:text-slate-500 font-bold uppercase tracking-widest">{t.date.toLocaleDateString()}</span>
+                    <span className="text-blue-500/70 font-bold uppercase tracking-widest">{(t as any).startTime || "09:00 AM"}</span>
+                  </div>
+                </div>
               ))}
-            </tbody>
-          </table>
+            </div>
+          </>
         )}
       </div>
       <div className="border-t border-gray-100 dark:border-slate-700 px-8 py-4 text-center bg-white dark:bg-slate-800/50">
@@ -160,9 +188,9 @@ export async function AdminPanels() {
             <ul className="divide-y divide-gray-50 dark:divide-slate-700/50">
               {pendingUsers.map((u) => (
                 <li key={u.id} className="flex items-center justify-between p-4 sm:p-6 bg-white dark:bg-slate-800 hover:bg-gray-50/50 dark:hover:bg-slate-700/50 transition-colors">
-                  <div>
+                  <div className="pr-4">
                     <p className="font-bold text-gray-900 dark:text-slate-100 capitalize text-base tracking-tight">{u.username}</p>
-                    <p className="text-[10px] text-gray-400 dark:text-slate-500 font-bold uppercase tracking-widest mt-0.5">{u.email || "No email provided"}</p>
+                    <p className="text-[10px] text-gray-400 dark:text-slate-500 font-bold uppercase tracking-widest mt-0.5 max-w-[150px] truncate sm:max-w-none">{u.email || "No email provided"}</p>
                   </div>
                   <UserApprovalButtons userId={u.id} currentStatus={u.status} />
                 </li>
@@ -187,21 +215,21 @@ export async function AdminPanels() {
             <ul className="divide-y divide-gray-50 dark:divide-slate-700/50">
               {pendingTrainings.map((t) => (
                 <li key={t.id} className="flex flex-col gap-3 p-4 sm:p-6 bg-white dark:bg-slate-800 hover:bg-gray-50/50 dark:hover:bg-slate-700/50 transition-colors">
-                  <div className="flex justify-between items-start">
-                    <div className="max-w-[70%]">
+                  <div className="flex justify-between items-start gap-3">
+                    <div className="flex-1">
                       <p className="font-bold text-gray-900 dark:text-slate-100 leading-tight tracking-tight">{t.title}</p>
-                      <div className="flex items-center gap-2 mt-1.5">
+                      <div className="flex flex-wrap items-center gap-2 mt-2">
                         <span className="text-[9px] font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10 px-2 py-0.5 rounded uppercase tracking-wider border border-blue-100 dark:border-blue-500/20">{t.createdBy?.username ?? "System"}</span>
-                        <span className="text-[9px] text-gray-400 dark:text-slate-500 font-bold tracking-widest uppercase">• {t.date.toLocaleDateString()}</span>
+                        <span className="text-[9px] text-gray-400 dark:text-slate-500 font-bold tracking-widest uppercase line-clamp-1">• {t.date.toLocaleDateString()}</span>
                       </div>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex gap-1.5 shrink-0">
                       <Link
                         href={`/trainings/${t.id}/edit`}
-                        className="rounded-xl bg-white dark:bg-slate-700 border border-gray-100 dark:border-slate-600 p-2 text-gray-400 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-100 dark:hover:border-blue-900 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all shadow-sm"
+                        className="rounded-xl bg-white dark:bg-slate-700 border border-gray-100 dark:border-slate-600 p-2 text-gray-400 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 shadow-sm"
                         title="Edit Training"
                       >
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3.5 h-3.5">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
                         </svg>
                       </Link>
@@ -209,7 +237,7 @@ export async function AdminPanels() {
                       <DeleteTrainingButton trainingId={t.id} variant="small" />
                     </div>
                   </div>
-                  <p className="text-[11px] text-gray-400 dark:text-slate-500 line-clamp-2 leading-relaxed italic border-t border-gray-50 dark:border-slate-800 pt-3">"{t.description}"</p>
+                  <p className="text-[11px] text-gray-400 dark:text-slate-500 line-clamp-2 leading-relaxed italic border-t border-gray-50 dark:border-slate-800/50 pt-2.5">"{t.description}"</p>
                 </li>
               ))}
             </ul>
@@ -229,35 +257,51 @@ export async function AdminPanels() {
           {approvedUsers.length === 0 ? (
             <EmptyState message="No active staff members currently registered." />
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm">
-                <thead className="bg-indigo-50/50 dark:bg-slate-700/50 text-indigo-900/50 dark:text-slate-400 border-b border-indigo-100/50 dark:border-slate-700">
-                  <tr>
-                    <th className="px-6 sm:px-8 py-5 font-bold uppercase tracking-[0.2em] text-[10px]">Staff Member</th>
-                    <th className="px-6 sm:px-8 py-5 font-bold uppercase tracking-[0.2em] text-[10px] hidden sm:table-cell">Joined Date</th>
-                    <th className="px-6 sm:px-8 py-5 font-bold uppercase tracking-[0.2em] text-[10px]">Security Control</th>
-                    <th className="px-6 sm:px-8 py-5 font-bold uppercase tracking-[0.2em] text-[10px] text-right">Administrative</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-50 dark:divide-slate-700/50">
-                  {approvedUsers.map((u) => (
-                    <tr key={u.id} className="hover:bg-blue-50/10 dark:hover:bg-blue-500/5 transition-colors even:bg-gray-50/10 dark:even:bg-slate-700/20">
-                      <td className="px-6 sm:px-8 py-4 sm:py-5 font-bold text-gray-900 dark:text-slate-100 tracking-tight">
-                        {u.username}
-                        <div className="sm:hidden text-[10px] font-bold text-gray-400 dark:text-slate-500 mt-1 uppercase tracking-wider">Joined {u.createdAt.toLocaleDateString()}</div>
-                      </td>
-                      <td className="px-6 sm:px-8 py-4 sm:py-5 text-gray-400 dark:text-slate-500 font-medium hidden sm:table-cell text-xs">{u.createdAt.toLocaleDateString('en-US', { dateStyle: 'medium' })}</td>
-                      <td className="px-6 sm:px-8 py-4 sm:py-5">
-                        <ResetPasswordButton userId={u.id} username={u.username} />
-                      </td>
-                      <td className="px-6 sm:px-8 py-4 sm:py-5 text-right">
-                        <DeleteUserButton userId={u.id} />
-                      </td>
+            <>
+              {/* Desktop Table */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full text-left text-sm">
+                  <thead className="bg-indigo-50/50 dark:bg-slate-700/50 text-indigo-900/50 dark:text-slate-400 border-b border-indigo-100/50 dark:border-slate-700">
+                    <tr>
+                      <th className="px-6 sm:px-8 py-5 font-bold uppercase tracking-[0.2em] text-[10px]">Staff Member</th>
+                      <th className="px-6 sm:px-8 py-5 font-bold uppercase tracking-[0.2em] text-[10px]">Joined Date</th>
+                      <th className="px-6 sm:px-8 py-5 font-bold uppercase tracking-[0.2em] text-[10px]">Security Control</th>
+                      <th className="px-6 sm:px-8 py-5 font-bold uppercase tracking-[0.2em] text-[10px] text-right">Administrative</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody className="divide-y divide-gray-50 dark:divide-slate-700/50">
+                    {approvedUsers.map((u) => (
+                      <tr key={u.id} className="hover:bg-blue-50/10 dark:hover:bg-blue-500/5 transition-colors even:bg-gray-50/10 dark:even:bg-slate-700/20">
+                        <td className="px-6 sm:px-8 py-4 sm:py-5 font-bold text-gray-900 dark:text-slate-100 tracking-tight">{u.username}</td>
+                        <td className="px-6 sm:px-8 py-4 sm:py-5 text-gray-400 dark:text-slate-500 font-medium text-xs">{u.createdAt.toLocaleDateString('en-US', { dateStyle: 'medium' })}</td>
+                        <td className="px-6 sm:px-8 py-4 sm:py-5">
+                          <ResetPasswordButton userId={u.id} username={u.username} />
+                        </td>
+                        <td className="px-6 sm:px-8 py-4 sm:py-5 text-right">
+                          <DeleteUserButton userId={u.id} />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile Card View */}
+              <div className="md:hidden divide-y divide-gray-50 dark:divide-slate-700/50">
+                {approvedUsers.map((u) => (
+                  <div key={u.id} className="p-5 flex flex-col gap-4">
+                    <div className="flex justify-between items-center">
+                      <p className="font-bold text-gray-900 dark:text-slate-100 text-base">{u.username}</p>
+                      <p className="text-[10px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-widest">Joined {u.createdAt.toLocaleDateString()}</p>
+                    </div>
+                    <div className="flex justify-between items-center bg-gray-50/50 dark:bg-slate-700/30 p-3 rounded-xl border border-gray-100 dark:border-slate-700">
+                      <ResetPasswordButton userId={u.id} username={u.username} />
+                      <DeleteUserButton userId={u.id} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
           )}
         </div>
       </div>

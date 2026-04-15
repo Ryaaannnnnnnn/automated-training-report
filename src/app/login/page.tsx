@@ -57,7 +57,7 @@ export default function LoginPage() {
   return (
     // Force light mode wrapper — this page is always light regardless of theme
     <div className="light" style={{ colorScheme: "light" }}>
-      <main className="relative flex min-h-screen items-center justify-center p-4">
+      <main className="relative flex min-h-screen items-center justify-center p-0 sm:p-4">
         {/* Background Image */}
         <Image
           src="/login-bg.jpg"
@@ -67,10 +67,10 @@ export default function LoginPage() {
           className="object-cover object-center"
           style={{ zIndex: 0 }}
         />
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-white/25" style={{ zIndex: 1 }} />
+        {/* Advanced Glass Backdrop Overlay */}
+        <div className="absolute inset-0 bg-white/30 backdrop-blur-[8px]" style={{ zIndex: 1 }} />
 
-        <div className="relative w-full max-w-[420px] overflow-hidden rounded-[24px] bg-white shadow-2xl border border-white" style={{ zIndex: 2 }}>
+        <div className="relative w-full max-w-[420px] overflow-hidden rounded-none sm:rounded-[28px] bg-white shadow-2xl border-none sm:border sm:border-white shadow-blue-900/10" style={{ zIndex: 2 }}>
           {/* Header Section */}
           <div className="bg-[#007BE6] py-10 px-8 text-center text-white">
             <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-white p-2 shadow-inner">
@@ -87,20 +87,20 @@ export default function LoginPage() {
                 }}
               />
             </div>
-            <h1 className="text-xl font-bold tracking-wide">DICT Training Report System</h1>
-            <p className="mt-2 text-sm text-blue-50/80 font-medium">Please login to continue</p>
+            <h1 className="text-2xl font-black tracking-tighter leading-none mb-1">DICT ATMRS</h1>
+            <p className="text-[12px] text-blue-50/70 font-bold uppercase tracking-[0.2em]">Reporting & Management</p>
           </div>
 
           {/* Form Section */}
-          <form onSubmit={onSubmit} className="space-y-6 p-10 bg-white">
+          <form onSubmit={onSubmit} className="space-y-6 p-8 sm:p-12 bg-white">
             {/* Username Field */}
             <div className="space-y-2">
-              <label className="flex items-center gap-2 text-[13px] font-semibold text-gray-800">
-                <User size={16} className="text-gray-600" />
+              <label className="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-[#007BE6]">
+                <User size={14} strokeWidth={3} />
                 Username
               </label>
               <input
-                className="w-full rounded-xl border-2 border-gray-100 bg-white px-4 py-3 text-sm font-medium text-gray-900 outline-none transition-all placeholder:text-gray-300 focus:border-[#007BE6]/30 focus:ring-4 focus:ring-[#007BE6]/5"
+                className="w-full rounded-2xl border-2 border-gray-50 bg-gray-50/50 px-4 py-3.5 text-sm font-bold text-gray-900 outline-none transition-all placeholder:text-gray-300 focus:border-[#007BE6]/30 focus:bg-white focus:ring-4 focus:ring-[#007BE6]/5 shadow-sm"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 autoComplete="username"
@@ -112,25 +112,25 @@ export default function LoginPage() {
 
             {/* Password Field */}
             <div className="space-y-2">
-              <label className="flex items-center gap-2 text-[13px] font-semibold text-gray-800">
-                <Lock size={16} className="text-gray-600" />
-                Password
+              <label className="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-[#007BE6]">
+                <Lock size={14} strokeWidth={3} />
+                Access Key
               </label>
               <div className="relative">
                 <input
-                  className="w-full rounded-xl border-2 border-gray-100 bg-white px-4 py-3 pr-12 text-sm font-medium text-gray-900 outline-none transition-all placeholder:text-gray-300 focus:border-[#007BE6]/30 focus:ring-4 focus:ring-[#007BE6]/5"
+                  className="w-full rounded-2xl border-2 border-gray-50 bg-gray-50/50 px-4 py-3.5 pr-12 text-sm font-bold text-gray-900 outline-none transition-all placeholder:text-gray-300 focus:border-[#007BE6]/30 focus:bg-white focus:ring-4 focus:ring-[#007BE6]/5 shadow-sm"
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   autoComplete="current-password"
-                  placeholder="Enter your password"
+                  placeholder="Password"
                   onFocus={() => router.prefetch("/dashboard")}
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword((v) => !v)}
-                  className="absolute inset-y-0 right-3 my-auto flex h-9 w-9 items-center justify-center rounded-lg text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
+                  className="absolute inset-y-0 right-2 my-auto flex h-10 w-10 items-center justify-center rounded-xl text-gray-400 transition-colors hover:text-[#007BE6] hover:bg-[#007BE6]/5"
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -153,28 +153,26 @@ export default function LoginPage() {
               type="submit"
               disabled={isLoggingIn}
               onMouseEnter={() => router.prefetch("/dashboard")}
-              className="group flex w-full items-center justify-center gap-3 rounded-xl bg-[#007BE6] py-3.5 text-sm font-semibold text-white shadow-lg shadow-[#007BE6]/20 transition-all hover:bg-[#006ACC] hover:translate-y-[-1px] active:translate-y-[1px] disabled:opacity-70 disabled:pointer-events-none"
+              className="group flex w-full items-center justify-center gap-3 rounded-2xl bg-[#007BE6] py-4 text-sm font-black uppercase tracking-[0.2em] text-white shadow-xl shadow-blue-500/30 transition-all hover:bg-[#006ACC] hover:translate-y-[-2px] active:translate-y-[1px] disabled:opacity-70 disabled:pointer-events-none"
             >
               {isLoggingIn ? (
                 <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
               ) : (
                 <>
-                  <LogIn size={18} className="transition-transform group-hover:translate-x-1" />
-                  Log in
+                  Log into System
+                  <LogIn size={18} strokeWidth={3} className="transition-transform group-hover:translate-x-1" />
                 </>
               )}
             </button>
 
-            {/* Institutional Footer Box */}
-            <div className="mt-4 overflow-hidden rounded-xl border border-blue-50 bg-[#F0F7FF] p-4 text-center">
-              <div className="flex flex-col items-center gap-1">
-                <div className="flex items-center justify-center gap-1.5 text-[#0060B8]">
-                  <GraduationCap size={16} fill="currentColor" className="opacity-80" />
-                  <span className="text-[11px] font-bold uppercase tracking-tight">Department of Information and Communications Technology</span>
-                </div>
-                <span className="text-[10px] font-semibold text-blue-400 capitalize">Automated Training Management &amp; Reporting System</span>
-              </div>
-            </div>
+            {/* Institutional Footer Box - More subtle */}
+             <div className="mt-8 pt-6 border-t border-gray-50 flex flex-col items-center gap-3 opacity-50 hover:opacity-100 transition-opacity">
+               <GraduationCap size={24} className="text-blue-900" />
+               <div className="text-center">
+                 <p className="text-[9px] font-black uppercase tracking-[0.2em] text-blue-900">Department of Information & Communications Technology</p>
+                 <p className="text-[8px] font-bold text-blue-400 mt-1">Region IV-A CALABARZON</p>
+               </div>
+             </div>
 
             <p className="text-center text-[13px] font-medium text-gray-400 pt-2">
               Don&apos;t have an account?{" "}
