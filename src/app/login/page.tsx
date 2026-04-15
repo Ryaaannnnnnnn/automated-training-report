@@ -64,13 +64,14 @@ export default function LoginPage() {
           alt="DICT Building Background"
           fill
           priority
-          className="object-cover object-center"
+          className="object-cover object-center sm:grayscale-[0.2]"
           style={{ zIndex: 0 }}
         />
-        {/* Advanced Glass Backdrop Overlay */}
-        <div className="absolute inset-0 bg-white/30 backdrop-blur-[8px]" style={{ zIndex: 1 }} />
+        <div className="absolute inset-0 z-0 hidden sm:block bg-black/5" />
+        {/* Advanced Glass Backdrop Overlay - Mobile Only */}
+        <div className="absolute inset-0 bg-white/30 backdrop-blur-[8px] sm:hidden" style={{ zIndex: 1 }} />
 
-        <div className="relative w-full max-w-[420px] overflow-hidden rounded-none sm:rounded-[28px] bg-white shadow-2xl border-none sm:border sm:border-white shadow-blue-900/10" style={{ zIndex: 2 }}>
+        <div className="relative w-full max-w-[420px] overflow-hidden rounded-none sm:rounded-[24px] bg-white shadow-2xl border-none sm:border sm:border-white shadow-blue-900/10 transition-all duration-500" style={{ zIndex: 2 }}>
           {/* Header Section */}
           <div className="bg-[#007BE6] py-10 px-8 text-center text-white">
             <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-white p-2 shadow-inner">
@@ -87,20 +88,27 @@ export default function LoginPage() {
                 }}
               />
             </div>
-            <h1 className="text-2xl font-black tracking-tighter leading-none mb-1">DICT ATMRS</h1>
-            <p className="text-[12px] text-blue-50/70 font-bold uppercase tracking-[0.2em]">Reporting & Management</p>
+            {/* Desktop Brand */}
+            <h1 className="hidden sm:block text-xl font-semibold tracking-wide">DICT Training Report System</h1>
+            <p className="hidden sm:block mt-2 text-sm text-blue-50/80 font-medium">Log in to your account</p>
+            
+            {/* Mobile Brand */}
+            <div className="sm:hidden">
+              <h1 className="text-2xl font-black tracking-tighter leading-none mb-1">DICT ATMRS</h1>
+              <p className="text-[12px] text-blue-50/70 font-bold uppercase tracking-[0.2em]">Reporting & Management</p>
+            </div>
           </div>
 
           {/* Form Section */}
-          <form onSubmit={onSubmit} className="space-y-6 p-8 sm:p-12 bg-white">
+          <form onSubmit={onSubmit} className="space-y-6 p-8 sm:p-10 bg-white">
             {/* Username Field */}
             <div className="space-y-2">
-              <label className="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-[#007BE6]">
-                <User size={14} strokeWidth={3} />
+              <label className="flex items-center gap-2 text-[11px] sm:text-[13px] font-black sm:font-semibold uppercase sm:capitalize tracking-widest sm:tracking-normal text-[#007BE6] sm:text-gray-800">
+                <User size={14} strokeWidth={3} className="sm:text-gray-600 sm:stroke-[1.5]" />
                 Username
               </label>
               <input
-                className="w-full rounded-2xl border-2 border-gray-50 bg-gray-50/50 px-4 py-3.5 text-sm font-bold text-gray-900 outline-none transition-all placeholder:text-gray-300 focus:border-[#007BE6]/30 focus:bg-white focus:ring-4 focus:ring-[#007BE6]/5 shadow-sm"
+                className="w-full rounded-2xl sm:rounded-xl border-2 border-gray-50 sm:border-gray-100 bg-gray-50/50 sm:bg-white px-4 py-3.5 sm:py-3 text-sm font-bold sm:font-medium text-gray-900 outline-none transition-all placeholder:text-gray-300 focus:border-[#007BE6]/30 focus:bg-white focus:ring-4 focus:ring-[#007BE6]/5 shadow-sm sm:shadow-none"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 autoComplete="username"
@@ -112,13 +120,13 @@ export default function LoginPage() {
 
             {/* Password Field */}
             <div className="space-y-2">
-              <label className="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-[#007BE6]">
-                <Lock size={14} strokeWidth={3} />
+              <label className="flex items-center gap-2 text-[11px] sm:text-[13px] font-black sm:font-semibold uppercase sm:capitalize tracking-widest sm:tracking-normal text-[#007BE6] sm:text-gray-800">
+                <Lock size={14} strokeWidth={3} className="sm:text-gray-600 sm:stroke-[1.5]" />
                 Access Key
               </label>
               <div className="relative">
                 <input
-                  className="w-full rounded-2xl border-2 border-gray-50 bg-gray-50/50 px-4 py-3.5 pr-12 text-sm font-bold text-gray-900 outline-none transition-all placeholder:text-gray-300 focus:border-[#007BE6]/30 focus:bg-white focus:ring-4 focus:ring-[#007BE6]/5 shadow-sm"
+                  className="w-full rounded-2xl sm:rounded-xl border-2 border-gray-50 sm:border-gray-100 bg-gray-50/50 sm:bg-white px-4 py-3.5 sm:py-3 pr-12 text-sm font-bold sm:font-medium text-gray-900 outline-none transition-all placeholder:text-gray-300 focus:border-[#007BE6]/30 focus:bg-white focus:ring-4 focus:ring-[#007BE6]/5 shadow-sm sm:shadow-none"
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -138,10 +146,6 @@ export default function LoginPage() {
               </div>
             </div>
 
-            <div className="flex justify-end pt-1">
-              {/* Removed Forgot Password Link */}
-            </div>
-
             {error ? (
               <div className="rounded-xl border border-red-100 bg-red-50 p-4 text-center text-sm font-semibold text-red-600">
                 {error}
@@ -153,7 +157,7 @@ export default function LoginPage() {
               type="submit"
               disabled={isLoggingIn}
               onMouseEnter={() => router.prefetch("/dashboard")}
-              className="group flex w-full items-center justify-center gap-3 rounded-2xl bg-[#007BE6] py-4 text-sm font-black uppercase tracking-[0.2em] text-white shadow-xl shadow-blue-500/30 transition-all hover:bg-[#006ACC] hover:translate-y-[-2px] active:translate-y-[1px] disabled:opacity-70 disabled:pointer-events-none"
+              className="group flex w-full items-center justify-center gap-3 rounded-2xl bg-[#007BE6] py-3.5 sm:py-4 text-sm font-black uppercase tracking-[0.2em] text-white shadow-xl shadow-blue-500/30 transition-all hover:bg-[#006ACC] hover:translate-y-[-2px] active:translate-y-[1px] disabled:opacity-70 disabled:pointer-events-none"
             >
               {isLoggingIn ? (
                 <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
@@ -165,14 +169,25 @@ export default function LoginPage() {
               )}
             </button>
 
-            {/* Institutional Footer Box - More subtle */}
-             <div className="mt-8 pt-6 border-t border-gray-50 flex flex-col items-center gap-3 opacity-50 hover:opacity-100 transition-opacity">
-               <GraduationCap size={24} className="text-blue-900" />
-               <div className="text-center">
-                 <p className="text-[9px] font-black uppercase tracking-[0.2em] text-blue-900">Department of Information & Communications Technology</p>
-                 <p className="text-[8px] font-bold text-blue-400 mt-1">Region IV-A CALABARZON</p>
-               </div>
-             </div>
+            {/* Desktop Institutional Footer Box */}
+            <div className="hidden sm:block mt-4 overflow-hidden rounded-xl border border-blue-50 bg-[#F0F7FF] p-4 text-center">
+              <div className="flex flex-col items-center gap-1">
+                <div className="flex items-center justify-center gap-1.5 text-[#0060B8]">
+                  <GraduationCap size={16} fill="currentColor" className="opacity-80" />
+                  <span className="text-[11px] font-bold uppercase tracking-tight">Department of Information and Communications Technology</span>
+                </div>
+                <span className="text-[10px] font-semibold text-blue-400 capitalize whitespace-nowrap">Automated Training Management & Reporting System</span>
+              </div>
+            </div>
+
+            {/* Mobile Footer (Hidden on Desktop) */}
+            <div className="sm:hidden mt-8 pt-6 border-t border-gray-50 flex flex-col items-center gap-3 opacity-50">
+              <GraduationCap size={24} className="text-blue-900" />
+              <div className="text-center">
+                <p className="text-[9px] font-black uppercase tracking-[0.2em] text-blue-900">Department of Information & Communications Technology</p>
+                <p className="text-[8px] font-bold text-blue-400 mt-1">Region IV-A CALABARZON</p>
+              </div>
+            </div>
 
             <p className="text-center text-[13px] font-medium text-gray-400 pt-2">
               Don&apos;t have an account?{" "}
