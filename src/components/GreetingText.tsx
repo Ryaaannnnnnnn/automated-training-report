@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
 function getGreeting(): string {
   const hour = new Date().getHours();
   if (hour < 12) return "Good morning";
@@ -8,5 +10,14 @@ function getGreeting(): string {
 }
 
 export function GreetingText() {
-  return <span suppressHydrationWarning>{getGreeting()}</span>;
+  const [greeting, setGreeting] = useState<string>("");
+
+  useEffect(() => {
+    // Runs in the user's browser — reads their LOCAL time
+    setGreeting(getGreeting());
+  }, []);
+
+  if (!greeting) return <span>Good day</span>;
+
+  return <span>{greeting}</span>;
 }
