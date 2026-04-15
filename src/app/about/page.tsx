@@ -101,8 +101,8 @@ export default async function AboutPage() {
               </div>
 
               {/* Info Area */}
-              <div className="px-6 space-y-2">
-                <h3 className="text-xl xl:text-2xl font-black text-gray-900 dark:text-white tracking-tight leading-tight">{member.name}</h3>
+              <div className="px-4 xl:px-6 space-y-2">
+                <h3 className="text-xl xl:text-2xl font-black text-gray-900 dark:text-white tracking-tight leading-tight whitespace-nowrap">{member.name}</h3>
                 <p className="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest leading-none">{member.role}</p>
                 <p className="text-[13px] text-gray-500 dark:text-slate-400 leading-relaxed pt-3">
                   {member.description}
