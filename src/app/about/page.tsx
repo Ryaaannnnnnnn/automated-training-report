@@ -18,7 +18,7 @@ interface TeamMember {
 
 const teamMembers: TeamMember[] = [
   {
-    name: "Ryan",
+    name: "Jhon Ryan Solis",
     role: "Developer",
     description: "Contributing to the automation and technical architecture of the ATMRS project.",
     image: "/ryan.jpeg",
@@ -28,8 +28,8 @@ const teamMembers: TeamMember[] = [
     }
   },
   {
-    name: "Franzel",
-    role: "Developer",
+    name: "Franzel Itulid",
+    role: "UI/UX Designer",
     description: "Focused on ensuring the system meets the high standards and reporting needs of the team.",
     image: "/franzel.jpeg",
     socials: {
@@ -38,8 +38,8 @@ const teamMembers: TeamMember[] = [
     }
   },
   {
-    name: "Wendell",
-    role: "Developer",
+    name: "Wendell Arellano",
+    role: "Quality Assurance",
     description: "Dedicated to creating seamless user flows and efficient data management logic.",
     image: "/wendell.jpeg",
     socials: {
@@ -48,8 +48,8 @@ const teamMembers: TeamMember[] = [
     }
   },
   {
-    name: "Paul",
-    role: "Developer",
+    name: "Paul Andrew Tiopes",
+    role: "System Tester",
     description: "Committed to the accurate automation of DICT training reports and system stability.",
     image: "/paul.jpeg",
     socials: {
@@ -75,10 +75,10 @@ export default async function AboutPage() {
             The Developers
           </div>
           <h1 className="text-4xl sm:text-7xl font-black text-gray-900 dark:text-white tracking-tighter mb-6 leading-none">
-            Meet the <span className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent italic">Visionaries</span>
+            About <span className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent italic">Us</span>
           </h1>
           <p className="max-w-2xl mx-auto text-gray-500 dark:text-slate-400 font-medium text-lg leading-relaxed">
-            A specialized group of 4 dedicated individuals building modern automation solutions for the DICT ATMRS platform.
+            The dedicated team behind the modern automation system for DICT Region VI Aklan.
           </p>
         </div>
 
@@ -150,7 +150,7 @@ export default async function AboutPage() {
               Committed to <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent italic">Accuracy</span>.
             </p>
             <p className="max-w-xl mx-auto mt-8 text-gray-500 dark:text-slate-400 font-medium text-lg">
-                We are building tools that empower the DICT workforce to process training reports with unprecedented speed and reliability.
+                Empowering the DICT workforce with efficient, reliable, and innovative tools to ensure excellence in every report.
             </p>
           </div>
         </div>
