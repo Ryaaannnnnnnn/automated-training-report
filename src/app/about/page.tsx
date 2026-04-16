@@ -70,10 +70,7 @@ export default async function AboutPage() {
       <main className="mx-auto max-w-7xl px-4 sm:px-6 py-6 sm:py-10 pt-24">
         {/* Header Section */}
         <div className="text-center mb-12 sm:mb-20">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-[11px] font-black uppercase tracking-widest mb-6 border border-blue-100 dark:border-blue-800 shadow-sm">
-            <Users size={14} />
-            The Developers
-          </div>
+
           <h1 className="text-4xl sm:text-7xl font-black text-gray-900 dark:text-white tracking-tighter mb-6 leading-none">
             About <span className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent italic pr-2">Us</span>
           </h1>
