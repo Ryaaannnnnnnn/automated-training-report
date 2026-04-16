@@ -74,7 +74,7 @@ export default function LoginPage() {
         <div className="relative w-full max-w-[420px] overflow-hidden rounded-none sm:rounded-[24px] bg-white shadow-2xl border-none sm:border sm:border-white shadow-blue-900/10 transition-all duration-500" style={{ zIndex: 2 }}>
           {/* Header Section */}
           <div className="bg-[#007BE6] py-10 px-8 text-center text-white">
-            <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-white p-2 shadow-inner">
+            <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-white/20 sm:bg-white p-1 sm:p-2 shadow-inner">
               <img
                 src="/logo.png"
                 alt="System Logo"
@@ -89,12 +89,12 @@ export default function LoginPage() {
               />
             </div>
             {/* Desktop Brand */}
-            <h1 className="hidden sm:block text-xl font-semibold tracking-wide">DICT Training Report System</h1>
+            <h1 className="hidden sm:block text-xl font-semibold tracking-wide">After Training Report System</h1>
             <p className="hidden sm:block mt-2 text-sm text-blue-50/80 font-medium">Log in to your account</p>
             
             {/* Mobile Brand */}
             <div className="sm:hidden">
-              <h1 className="text-2xl font-black tracking-tighter leading-none mb-1">DICT ATMRS</h1>
+              <h1 className="text-2xl font-black tracking-tighter leading-none mb-1">After Training Report System</h1>
               <p className="text-[12px] text-blue-50/70 font-bold uppercase tracking-[0.2em]">Reporting & Management</p>
             </div>
           </div>
