@@ -39,7 +39,7 @@ const teamMembers: TeamMember[] = [
   },
   {
     name: "Wendell Arellano",
-    role: "Quality Assurance",
+    role: "System Tester",
     description: "Meticulously testing every feature to maintain the highest standards of system reliability and performance.",
     image: "/wendell.jpeg",
     socials: {
@@ -49,7 +49,7 @@ const teamMembers: TeamMember[] = [
   },
   {
     name: "Paul Andrew Tiopes",
-    role: "System Tester",
+    role: "Quality Assurance",
     description: "Executing comprehensive test plans to identify and resolve issues, ensuring a bug-free and stable system.",
     image: "/paul.jpeg",
     socials: {
@@ -78,7 +78,7 @@ export default async function AboutPage() {
             About <span className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent italic pr-2">Us</span>
           </h1>
           <p className="max-w-2xl mx-auto text-gray-500 dark:text-slate-400 font-medium text-lg leading-relaxed">
-            The dedicated team behind the modern automation system for DICT Region VI Aklan.
+            The dedicated team behind the after training report system for DICT Region VI Aklan.
           </p>
         </div>
 
