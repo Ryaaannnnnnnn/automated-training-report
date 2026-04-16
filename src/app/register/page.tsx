@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { User, Lock, Eye, EyeOff, UserPlus, CheckCircle, GraduationCap } from "lucide-react";
 
 export default function RegisterPage() {
@@ -58,7 +59,7 @@ export default function RegisterPage() {
                     />
                     <div className="absolute inset-0 z-0 bg-black/5" />
 
-                    <div className="z-10 w-full max-w-[420px] overflow-hidden rounded-[24px] bg-white shadow-2xl border border-white p-10 text-center">
+                    <div className="relative w-full max-w-[420px] overflow-hidden rounded-none sm:rounded-[24px] bg-white shadow-2xl border-none sm:border sm:border-white shadow-blue-900/10 transition-all duration-500" style={{ zIndex: 2 }}>
                         <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-green-50 text-green-500">
                             <CheckCircle size={48} />
                         </div>
@@ -81,17 +82,23 @@ export default function RegisterPage() {
     return (
         // Force light mode — always light regardless of theme setting
         <div className="light" style={{ colorScheme: "light" }}>
-            <main className="relative flex min-h-screen items-center justify-center bg-gray-200 p-4">
-                {/* Background Image */}
-                <div
-                    className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat grayscale-[0.2]"
-                    style={{ backgroundImage: "url('/login-bg.jpg')", backgroundColor: "#f3f4f6" }}
-                />
+            <main className="relative flex min-h-screen items-center justify-center p-0 sm:p-4">
+            {/* Background Image */}
+            <Image
+                src="/login-bg.jpg"
+                alt="DICT Building Background"
+                fill
+                priority
+                className="object-cover object-center sm:grayscale-[0.2]"
+                style={{ zIndex: 0 }}
+            />
+            {/* Background Overlay - Desktop */}
+            <div className="absolute inset-0 z-0 hidden sm:block bg-black/5" />
+            
+            {/* Advanced Glass Backdrop Overlay - Mobile Only */}
+            <div className="absolute inset-0 bg-white/30 backdrop-blur-[8px] sm:hidden" style={{ zIndex: 1 }} />
 
-                {/* Overlay */}
-                <div className="absolute inset-0 z-0 bg-black/5" />
-
-                <div className="z-10 w-full max-w-[420px] overflow-hidden rounded-[24px] bg-white shadow-2xl border border-white">
+            <div className="relative w-full max-w-[420px] overflow-hidden rounded-none sm:rounded-[24px] bg-white shadow-2xl border-none sm:border sm:border-white shadow-blue-900/10 transition-all duration-500" style={{ zIndex: 2 }}>
                     {/* Header Section */}
                     <div className="bg-[#007BE6] py-10 px-8 text-center text-white">
                         <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-white p-2 shadow-inner">
@@ -108,21 +115,28 @@ export default function RegisterPage() {
                                 }}
                             />
                         </div>
-                        <h1 className="text-xl font-semibold tracking-wide">DICT Training Report System</h1>
-                        <p className="mt-2 text-sm text-blue-50/80 font-medium">Create a new account</p>
+                        {/* Desktop Brand */}
+                        <h1 className="hidden sm:block text-xl font-semibold tracking-wide">DICT Training Report System</h1>
+                        <p className="hidden sm:block mt-2 text-sm text-blue-50/80 font-medium">Create a new account</p>
+                        
+                        {/* Mobile Brand */}
+                        <div className="sm:hidden">
+                            <h1 className="text-2xl font-black tracking-tighter leading-none mb-1">DICT ATMRS</h1>
+                            <p className="text-[12px] text-blue-50/70 font-bold uppercase tracking-[0.2em]">Registration</p>
+                        </div>
                     </div>
 
                     {/* Form Section */}
-                    <form onSubmit={onSubmit} className="space-y-5 p-10 bg-white">
+                    <form onSubmit={onSubmit} className="space-y-6 p-8 sm:p-10 bg-white">
                         {/* Email Field */}
                         <div className="space-y-2">
                             <label className="flex items-center gap-2 text-[13px] font-semibold text-gray-800">
-                                <span className="text-gray-600 font-bold">@</span>
+                                <span className="text-gray-600 font-black">@</span>
                                 Email Address
                             </label>
                             <input
                                 type="email"
-                                className="w-full rounded-xl border-2 border-gray-100 bg-white px-4 py-3 text-sm font-medium text-gray-900 outline-none transition-all placeholder:text-gray-300 focus:border-[#007BE6]/30 focus:ring-4 focus:ring-[#007BE6]/5"
+                                className="w-full rounded-2xl sm:rounded-xl border-2 border-gray-50 sm:border-gray-100 bg-gray-50/50 sm:bg-white px-4 py-3.5 sm:py-3 text-sm font-bold sm:font-medium text-gray-900 outline-none transition-all placeholder:text-gray-300 focus:border-[#007BE6]/30 focus:bg-white focus:ring-4 focus:ring-[#007BE6]/5 shadow-sm sm:shadow-none"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 autoComplete="email"
@@ -134,11 +148,11 @@ export default function RegisterPage() {
                         {/* Username Field */}
                         <div className="space-y-2">
                             <label className="flex items-center gap-2 text-[13px] font-semibold text-gray-800">
-                                <User size={16} className="text-gray-600" />
+                                <User size={14} className="text-gray-600 font-bold" />
                                 Username
                             </label>
                             <input
-                                className="w-full rounded-xl border-2 border-gray-100 bg-white px-4 py-3 text-sm font-medium text-gray-900 outline-none transition-all placeholder:text-gray-300 focus:border-[#007BE6]/30 focus:ring-4 focus:ring-[#007BE6]/5"
+                                className="w-full rounded-2xl sm:rounded-xl border-2 border-gray-50 sm:border-gray-100 bg-gray-50/50 sm:bg-white px-4 py-3.5 sm:py-3 text-sm font-bold sm:font-medium text-gray-900 outline-none transition-all placeholder:text-gray-300 focus:border-[#007BE6]/30 focus:bg-white focus:ring-4 focus:ring-[#007BE6]/5 shadow-sm sm:shadow-none"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
                                 autoComplete="username"
@@ -150,12 +164,12 @@ export default function RegisterPage() {
                         {/* Password Field */}
                         <div className="space-y-2">
                             <label className="flex items-center gap-2 text-[13px] font-semibold text-gray-800">
-                                <Lock size={16} className="text-gray-600" />
+                                <Lock size={14} className="text-gray-600 font-bold" />
                                 Password
                             </label>
                             <div className="relative">
                                 <input
-                                    className="w-full rounded-xl border-2 border-gray-100 bg-white px-4 py-3 pr-12 text-sm font-medium text-gray-900 outline-none transition-all placeholder:text-gray-300 focus:border-[#007BE6]/30 focus:ring-4 focus:ring-[#007BE6]/5"
+                                    className="w-full rounded-2xl sm:rounded-xl border-2 border-gray-50 sm:border-gray-100 bg-gray-50/50 sm:bg-white px-4 py-3.5 sm:py-3 pr-12 text-sm font-bold sm:font-medium text-gray-900 outline-none transition-all placeholder:text-gray-300 focus:border-[#007BE6]/30 focus:bg-white focus:ring-4 focus:ring-[#007BE6]/5 shadow-sm sm:shadow-none"
                                     type={showPassword ? "text" : "password"}
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
@@ -167,7 +181,7 @@ export default function RegisterPage() {
                                 <button
                                     type="button"
                                     onClick={() => setShowPassword((v) => !v)}
-                                    className="absolute inset-y-0 right-3 my-auto flex h-9 w-9 items-center justify-center rounded-lg text-gray-400 transition-colors hover:bg-gray-100"
+                                    className="absolute inset-y-0 right-2 my-auto flex h-10 w-10 items-center justify-center rounded-xl text-gray-400 transition-colors hover:text-[#007BE6] hover:bg-[#007BE6]/5"
                                     aria-label={showPassword ? "Hide password" : "Show password"}
                                 >
                                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -178,12 +192,12 @@ export default function RegisterPage() {
                         {/* Confirm Password Field */}
                         <div className="space-y-2">
                             <label className="flex items-center gap-2 text-[13px] font-semibold text-gray-800">
-                                <Lock size={16} className="text-gray-600" />
+                                <Lock size={14} className="text-gray-600 font-bold" />
                                 Confirm Password
                             </label>
                             <div className="relative">
                                 <input
-                                    className="w-full rounded-xl border-2 border-gray-100 bg-white px-4 py-3 pr-12 text-sm font-medium text-gray-900 outline-none transition-all placeholder:text-gray-300 focus:border-[#007BE6]/30 focus:ring-4 focus:ring-[#007BE6]/5"
+                                    className="w-full rounded-2xl sm:rounded-xl border-2 border-gray-50 sm:border-gray-100 bg-gray-50/50 sm:bg-white px-4 py-3.5 sm:py-3 pr-12 text-sm font-bold sm:font-medium text-gray-900 outline-none transition-all placeholder:text-gray-300 focus:border-[#007BE6]/30 focus:bg-white focus:ring-4 focus:ring-[#007BE6]/5 shadow-sm sm:shadow-none"
                                     type={showPassword ? "text" : "password"}
                                     value={confirmPassword}
                                     onChange={(e) => setConfirmPassword(e.target.value)}
@@ -205,14 +219,14 @@ export default function RegisterPage() {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="group flex w-full items-center justify-center gap-3 rounded-xl bg-[#007BE6] py-3.5 text-sm font-semibold text-white shadow-lg shadow-[#007BE6]/20 transition-all hover:bg-[#006ACC] active:scale-[0.98] disabled:opacity-70 disabled:pointer-events-none"
+                            className="group flex w-full items-center justify-center gap-3 rounded-2xl bg-[#007BE6] py-3.5 sm:py-4 text-sm font-black uppercase tracking-[0.2em] text-white shadow-xl shadow-blue-500/30 transition-all hover:bg-[#006ACC] hover:translate-y-[-2px] active:translate-y-[1px] disabled:opacity-70 disabled:pointer-events-none"
                         >
                             {loading ? (
                                 <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
                             ) : (
                                 <>
-                                    <UserPlus size={18} className="transition-transform group-hover:scale-110" />
                                     Create Account
+                                    <UserPlus size={18} strokeWidth={3} className="transition-transform group-hover:scale-110" />
                                 </>
                             )}
                         </button>
