@@ -67,15 +67,15 @@ export default async function AboutPage() {
     <div className="min-h-screen bg-[#f8fafc] dark:bg-slate-900 transition-colors duration-300 text-slate-900 dark:text-slate-100">
       <Sidebar username={user.username} role={user.role} avatarUrl={user.avatarUrl} />
 
-      <main className="mx-auto max-w-7xl px-4 sm:px-6 py-6 sm:py-10 pt-24">
+      <main className="mx-auto max-w-7xl px-4 sm:px-6 py-12 sm:py-20 pt-32 sm:pt-44 animate-page-fade">
         {/* Header Section */}
-        <div className="text-center mb-12 sm:mb-20">
+        <div className="text-center mb-16 sm:mb-24">
 
-          <h1 className="text-4xl sm:text-7xl font-black text-gray-900 dark:text-white tracking-tighter mb-6 leading-none">
-            About <span className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent italic pr-2">Us</span>
+          <h1 className="text-5xl sm:text-8xl font-black text-gray-900 dark:text-white tracking-tighter mb-8 leading-[0.9]">
+            About <span className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent italic pr-3">Us</span>
           </h1>
-          <p className="max-w-2xl mx-auto text-gray-500 dark:text-slate-400 font-medium text-lg leading-relaxed">
-            The dedicated team behind the after training report system for DICT Region VI Aklan.
+          <p className="max-w-2xl mx-auto text-gray-500 dark:text-slate-400 font-bold text-lg sm:text-xl leading-relaxed">
+            The dedicated team behind the <span className="text-blue-600 dark:text-blue-400">Automated Training Report</span> system for DICT Region VI Aklan.
           </p>
         </div>
 
