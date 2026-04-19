@@ -15,10 +15,10 @@ export const getCurrentUser = cache(async () => {
 
   if (user) {
     const now = new Date();
-    const fiveMinutesAgo = new Date(now.getTime() - 5 * 60 * 1000);
+    const oneMinuteAgo = new Date(now.getTime() - 1 * 60 * 1000);
 
-    // Refresh lastActive if it's older than 5 minutes
-    if (user.lastActive < fiveMinutesAgo) {
+    // Refresh lastActive if it's older than 1 minute
+    if (user.lastActive < oneMinuteAgo) {
       prisma.user.update({
         where: { id: user.id },
         data: { lastActive: now },

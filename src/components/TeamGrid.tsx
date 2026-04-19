@@ -12,6 +12,7 @@ interface TeamMember {
     avatarUrl: string | null;
     createdAt: Date;
     lastActive: Date;
+    isOnline: boolean;
 }
 
 interface TeamGridProps {
@@ -27,13 +28,6 @@ export function TeamGrid({ members }: TeamGridProps) {
             member.role.toLowerCase().includes(searchQuery.toLowerCase())
         );
     }, [members, searchQuery]);
-
-    const isOnline = (lastActive: Date) => {
-        const now = new Date();
-        const lastActiveDate = new Date(lastActive);
-        const diffInMinutes = (now.getTime() - lastActiveDate.getTime()) / (1000 * 60);
-        return diffInMinutes < 5;
-    };
 
     return (
         <div className="space-y-12">
@@ -54,7 +48,7 @@ export function TeamGrid({ members }: TeamGridProps) {
             {/* Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8">
                 {filteredMembers.map((member, idx) => {
-                    const online = isOnline(member.lastActive);
+                    const online = member.isOnline;
                     return (
                         <div 
                             key={member.id}

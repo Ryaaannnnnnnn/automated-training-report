@@ -8,7 +8,7 @@ export default async function TeamPage() {
     const currentUser = await getCurrentUser();
     if (!currentUser) redirect("/login");
 
-    const teamMembers = await prisma.user.findMany({
+    const teamData = await prisma.user.findMany({
         where: {
             status: "APPROVED",
         },
@@ -26,6 +26,12 @@ export default async function TeamPage() {
             { username: "asc" },
         ],
     });
+
+    const now = new Date();
+    const teamMembers = teamData.map(member => ({
+        ...member,
+        isOnline: (now.getTime() - new Date(member.lastActive).getTime()) / (1000 * 60) < 5
+    }));
 
     return (
         <div className="min-h-screen bg-[#f8fafc] dark:bg-slate-900 transition-colors duration-300">
