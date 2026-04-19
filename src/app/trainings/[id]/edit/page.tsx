@@ -28,7 +28,7 @@ export default async function EditTrainingPage({
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-[#0f172a] transition-colors duration-300">
-            <Sidebar username={user.username} role={user.role} />
+            <Sidebar username={user.username} role={user.role} avatarUrl={user.avatarUrl} />
 
             <main className="mx-auto max-w-3xl px-6 py-10 pt-20">
                 <div className="flex items-center justify-between mb-8">

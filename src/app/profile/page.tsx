@@ -11,7 +11,7 @@ export default async function ProfilePage() {
 
     return (
         <div className="min-h-screen bg-[#f8fafc] dark:bg-slate-900 transition-colors duration-300">
-            <Sidebar username={user.username} role={user.role} />
+            <Sidebar username={user.username} role={user.role} avatarUrl={user.avatarUrl} />
 
             <main className="mx-auto max-w-3xl px-6 py-8 animate-page-fade">
                 <div className="h-16 md:h-20" />
@@ -29,7 +29,7 @@ export default async function ProfilePage() {
                     <p className="text-gray-500 dark:text-slate-400 text-base sm:text-lg font-medium">Update your security settings and manage your account information.</p>
                 </div>
 
-                <ProfileForm />
+                <ProfileForm user={user} />
             </main>
         </div>
     );

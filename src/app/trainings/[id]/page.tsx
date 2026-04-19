@@ -51,7 +51,7 @@ export default async function TrainingDetailPage({
 
     return (
         <div className="min-h-screen bg-slate-50/50">
-            <Sidebar username={user.username} role={user.role} />
+            <Sidebar username={user.username} role={user.role} avatarUrl={user.avatarUrl} />
 
             <main className="mx-auto max-w-7xl px-4 sm:px-6 py-8 pt-24 animate-page-fade">
                 {/* Navigation and Actions */}

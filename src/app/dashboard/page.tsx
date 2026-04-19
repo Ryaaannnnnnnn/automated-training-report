@@ -29,7 +29,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-[#f8fafc] dark:bg-slate-900 transition-colors duration-300">
-      <Sidebar username={user.username} role={user.role} />
+      <Sidebar username={user.username} role={user.role} avatarUrl={user.avatarUrl} />
 
       <main className="mx-auto max-w-7xl px-4 sm:px-6 py-6 sm:py-8 animate-page-fade">
         {/* Spacer for fixed header */}

@@ -1,15 +1,106 @@
 "use client";
 
 import { useState } from "react";
-import { Lock, Save, AlertCircle, CheckCircle } from "lucide-react";
+import { Lock, Save, AlertCircle, CheckCircle, Camera, User, Trash2 } from "lucide-react";
+import Script from "next/script";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 
-export function ProfileForm() {
+interface ProfileFormProps {
+    user: {
+        id: string;
+        username: string;
+        role: string;
+        avatarUrl: string | null;
+    };
+}
+
+export function ProfileForm({ user }: ProfileFormProps) {
+    const router = useRouter();
     const [currentPassword, setCurrentPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
+    const [uploading, setUploading] = useState(false);
+
+    const handleUpload = () => {
+        // @ts-ignore
+        const myWidget = window.cloudinary.createUploadWidget(
+            {
+                cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || "demo",
+                uploadPreset: process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "unsigned_preset",
+                cropping: true,
+                multiple: false,
+                clientAllowedFormats: ["jpg", "png", "jpeg", "webp"],
+                maxFileSize: 2000000, // 2MB
+                styles: {
+                    palette: {
+                        window: "#0f2044",
+                        windowBorder: "#1e293b",
+                        tabIcon: "#3b82f6",
+                        menuIcons: "#cbd5e1",
+                        textDark: "#000000",
+                        textLight: "#ffffff",
+                        link: "#3b82f6",
+                        action: "#3b82f6",
+                        inactiveTabIcon: "#64748b",
+                        error: "#f43f5e",
+                        inProgress: "#3b82f6",
+                        complete: "#10b981",
+                        sourceBg: "#1e293b"
+                    }
+                }
+            },
+            async (error: any, result: any) => {
+                if (!error && result && result.event === "success") {
+                    setUploading(true);
+                    try {
+                        const res = await fetch("/api/user/update-avatar", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ avatarUrl: result.info.secure_url }),
+                        });
+
+                        if (res.ok) {
+                            setSuccess("Profile picture updated!");
+                            router.refresh();
+                        } else {
+                            setError("Failed to save avatar URL");
+                        }
+                    } catch (err) {
+                        setError("Error updating profile picture");
+                    } finally {
+                        setUploading(false);
+                    }
+                }
+            }
+        );
+        myWidget.open();
+    };
+
+    const handleRemoveAvatar = async () => {
+        if (!confirm("Are you sure you want to remove your profile picture?")) return;
+
+        setUploading(true);
+        try {
+            const res = await fetch("/api/user/update-avatar", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ avatarUrl: null }),
+            });
+
+            if (res.ok) {
+                setSuccess("Profile picture removed");
+                router.refresh();
+            }
+        } catch (err) {
+            setError("Error removing profile picture");
+        } finally {
+            setUploading(false);
+        }
+    };
 
     const handleChangePassword = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -46,7 +137,80 @@ export function ProfileForm() {
     };
 
     return (
-        <div className="rounded-3xl border border-gray-100 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm overflow-hidden mb-12 animate-page-fade">
+        <div className="space-y-12">
+            <Script src="https://upload-widget.cloudinary.com/global/all.js" strategy="lazyOnload" />
+
+            {/* Avatar Section */}
+            <div className="rounded-3xl border border-gray-100 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm overflow-hidden animate-page-fade">
+                <div className="border-b border-gray-100 dark:border-slate-700 px-8 py-7 bg-gray-50/30 dark:bg-slate-800/50">
+                    <h3 className="font-black text-xl text-gray-900 dark:text-white tracking-tight flex items-center gap-4 leading-none">
+                        <div className="p-2.5 rounded-2xl bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 shadow-inner">
+                            <User size={20} strokeWidth={2.5} />
+                        </div>
+                        Personal Identity
+                    </h3>
+                    <p className="text-[11px] font-black text-gray-400 dark:text-slate-500 mt-2 uppercase tracking-widest pl-1">Customize how you appear to other members</p>
+                </div>
+
+                <div className="p-8">
+                    <div className="flex flex-col md:flex-row items-center gap-8">
+                        <div className="relative group">
+                            <div className="w-32 h-32 rounded-full border-4 border-gray-50 dark:border-slate-700 overflow-hidden bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center text-white text-4xl font-black shadow-2xl transition-transform group-hover:scale-105 duration-500 relative">
+                                {user.avatarUrl ? (
+                                    <Image
+                                        src={user.avatarUrl}
+                                        alt={user.username}
+                                        fill
+                                        className="object-cover"
+                                    />
+                                ) : (
+                                    user.username.charAt(0).toUpperCase()
+                                )}
+                                {uploading && (
+                                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center backdrop-blur-[2px]">
+                                        <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                                    </div>
+                                )}
+                            </div>
+                            <button
+                                onClick={handleUpload}
+                                disabled={uploading}
+                                className="absolute -right-1 -bottom-1 p-3 rounded-2xl bg-blue-600 text-white shadow-xl hover:bg-blue-500 hover:scale-110 active:scale-95 transition-all z-10 border-4 border-white dark:border-slate-800"
+                            >
+                                <Camera size={18} strokeWidth={3} />
+                            </button>
+                        </div>
+
+                        <div className="flex-1 text-center md:text-left space-y-4">
+                            <div>
+                                <h4 className="text-lg font-black text-gray-900 dark:text-white capitalize">@{user.username}</h4>
+                                <p className="text-xs font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest mt-1">{user.role}</p>
+                            </div>
+                            <div className="flex flex-wrap justify-center md:justify-start gap-4">
+                                <button
+                                    onClick={handleUpload}
+                                    disabled={uploading}
+                                    className="px-6 py-3 rounded-xl bg-gray-50 dark:bg-slate-900 border border-gray-100 dark:border-slate-700 text-[11px] font-black uppercase tracking-widest text-gray-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-950 hover:border-blue-200 dark:hover:border-blue-500/50 hover:text-blue-600 dark:hover:text-blue-400 transition-all shadow-sm"
+                                >
+                                    Change Photo
+                                </button>
+                                {user.avatarUrl && (
+                                    <button
+                                        onClick={handleRemoveAvatar}
+                                        disabled={uploading}
+                                        className="px-6 py-3 rounded-xl bg-red-50 dark:bg-red-500/5 border border-red-100 dark:border-red-500/20 text-[11px] font-black uppercase tracking-widest text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-500/10 transition-all flex items-center gap-2"
+                                    >
+                                        <Trash2 size={14} />
+                                        Remove
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="rounded-3xl border border-gray-100 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm overflow-hidden mb-12 animate-page-fade">
             <div className="border-b border-gray-100 dark:border-slate-700 px-8 py-7 bg-gray-50/30 dark:bg-slate-800/50">
                 <h3 className="font-black text-xl text-gray-900 dark:text-white tracking-tight flex items-center gap-4 leading-none">
                     <div className="p-2.5 rounded-2xl bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 shadow-inner">

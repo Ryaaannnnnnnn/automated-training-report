@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LogoutButton } from "@/components/LogoutButton";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import Image from "next/image";
 
 const navItems = [
     {
@@ -72,9 +73,10 @@ const systemItems = [
 interface SidebarProps {
     username?: string;
     role?: string;
+    avatarUrl?: string | null;
 }
 
-export function Sidebar({ username, role }: SidebarProps) {
+export function Sidebar({ username, role, avatarUrl }: SidebarProps) {
     const [open, setOpen] = useState(false);
     const pathname = usePathname();
 
@@ -127,9 +129,20 @@ export function Sidebar({ username, role }: SidebarProps) {
                     <ThemeToggle />
                     {username && (
                         <div className="hidden sm:flex items-center gap-2 text-sm text-white border-l border-white/10 pl-4">
-                            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center text-white font-semibold text-sm uppercase shadow">
-                                {username.charAt(0)}
-                            </div>
+                            {avatarUrl ? (
+                                <div className="relative w-8 h-8 rounded-full overflow-hidden shadow border border-white/20">
+                                    <Image
+                                        src={avatarUrl}
+                                        alt={username || "User"}
+                                        fill
+                                        className="object-cover"
+                                    />
+                                </div>
+                            ) : (
+                                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center text-white font-semibold text-sm uppercase shadow">
+                                    {username?.charAt(0)}
+                                </div>
+                            )}
                             <div className="text-right leading-tight">
                                 <p className="text-[10px] font-bold text-blue-300/60 uppercase tracking-widest">Hi,</p>
                                 <p className="font-semibold capitalize text-sm">{username}</p>
@@ -180,9 +193,20 @@ export function Sidebar({ username, role }: SidebarProps) {
                 {username && (
                     <div className="px-5 py-4 border-b border-white/10 bg-white/5">
                         <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center text-white font-semibold text-base uppercase shadow-lg">
-                                {username.charAt(0)}
-                            </div>
+                            {avatarUrl ? (
+                                <div className="relative w-10 h-10 rounded-full overflow-hidden shadow-lg border border-white/10">
+                                    <Image
+                                        src={avatarUrl}
+                                        alt={username || "User"}
+                                        fill
+                                        className="object-cover"
+                                    />
+                                </div>
+                            ) : (
+                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center text-white font-semibold text-base uppercase shadow-lg">
+                                    {username?.charAt(0)}
+                                </div>
+                            )}
                             <div>
                                 <p className="font-bold capitalize text-sm tracking-tight">{username}</p>
                                 <span className={`inline-block text-[10px] px-2 py-0.5 rounded-full font-bold mt-1 uppercase tracking-wider ${role === "admin"
