@@ -15,7 +15,19 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
-  return NextResponse.next();
+  // 3. Sliding Session - Refresh the 20-minute timer on every active request
+  const response = NextResponse.next();
+  if (session) {
+    response.cookies.set("session", session, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 1200, // Refresh to 20 minutes
+      path: "/",
+    });
+  }
+
+  return response;
 }
 
 export const config = {
