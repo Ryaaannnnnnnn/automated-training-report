@@ -106,7 +106,7 @@ export function Sidebar({ username, role, avatarUrl }: SidebarProps) {
     return (
         <>
             {/* ── TOP NAVBAR BAR ── */}
-            <header className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between h-16 px-4 bg-[#0f2044] dark:bg-[#0c1a36] shadow-lg border-b border-white/5 text-slate-100">
+            <header className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between h-16 px-4 bg-[#0f2044]/95 backdrop-blur-md dark:bg-[#0c1a36]/95 shadow-lg border-b border-white/5 text-slate-100 transition-all duration-300">
                 {/* Left: Hamburger + Logo */}
                 <div className="flex items-center gap-3">
                     <button
@@ -171,7 +171,7 @@ export function Sidebar({ username, role, avatarUrl }: SidebarProps) {
 
             {/* ── SIDEBAR DRAWER ── */}
             <aside
-                className={`fixed top-0 left-0 z-50 h-full w-64 bg-[#0f2044] dark:bg-[#0c1a36] text-white flex flex-col shadow-2xl transform transition-transform duration-300 ease-in-out border-r border-white/5 ${open ? "translate-x-0" : "-translate-x-full"
+                className={`fixed top-0 left-0 z-50 h-full w-64 bg-[#0f2044] dark:bg-[#0c1a36] text-white flex flex-col shadow-2xl transform transition-transform duration-200 ease-out border-r border-white/5 ${open ? "translate-x-0" : "-translate-x-full"
                     }`}
             >
                 {/* Sidebar Header */}

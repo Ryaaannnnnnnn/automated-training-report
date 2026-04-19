@@ -5,7 +5,7 @@
 @keyframes slideUpFade {
   from {
     opacity: 0;
-    transform: translateY(15px);
+    transform: translateY(8px);
   }
 
   to {
@@ -73,7 +73,8 @@
 }
 
 .animate-page-fade {
-  animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
 }
 
 .animate-fade-in {
@@ -129,7 +130,7 @@
 
 body {
   margin: 0;
-  @apply bg-[#f8fafc] text-slate-900 antialiased transition-colors duration-300;
+  @apply bg-[#f8fafc] text-slate-900 antialiased;
 }
 
 /* Premium Night Mode Base — Slate 900 palette (used by GitHub, Vercel, Linear) */

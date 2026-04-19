@@ -23,7 +23,7 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/favicon.ico" />
       </head>
-      <body className={`${inter.className} transition-colors duration-300`}>
+      <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
           <Suspense fallback={null}>
             <LoadingBar />

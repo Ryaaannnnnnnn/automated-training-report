@@ -2,10 +2,7 @@ import { StatCardSkeleton, TrainingsTableSkeleton, AdminPanelSkeleton } from "@/
 
 export default function DashboardLoading() {
   return (
-    <div className="min-h-screen bg-[#f8fafc] dark:bg-slate-900 transition-colors duration-300">
-      {/* Sidebar placeholder — same width as the real sidebar */}
-      <div className="fixed inset-y-0 left-0 z-30 w-64 border-r border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900 animate-pulse" />
-
+    <div className="min-h-screen bg-[#f8fafc] dark:bg-slate-900">
       <main className="mx-auto max-w-7xl px-4 sm:px-6 py-6 sm:py-8">
         {/* Spacer for fixed header */}
         <div className="h-20 sm:h-24" />
