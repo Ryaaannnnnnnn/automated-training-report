@@ -9,8 +9,8 @@ import { Suspense } from "react";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Region VI AKLAN",
-  description: "Region VI AKLAN",
+  title: "After Training Report System | Region VI AKLAN",
+  description: "Advanced Training Management & Reporting System - Region VI AKLAN",
 };
 
 export default function RootLayout({

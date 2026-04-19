@@ -120,15 +120,19 @@ export function Sidebar({ username, role, avatarUrl }: SidebarProps) {
                         </svg>
                     </button>
 
-                    <div className="flex items-center gap-2">
-                        <div className="w-9 h-9 sm:w-8 sm:h-8 rounded-full bg-blue-500 flex items-center justify-center shadow-lg shadow-blue-500/20">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="white" className="w-6 h-6 sm:w-5 sm:h-5">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.499 5.24 50.552 50.552 0 00-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5" />
-                            </svg>
+                    <div className="flex items-center gap-3">
+                        <div className="relative w-10 h-10 sm:w-9 sm:h-9 bg-white rounded-full p-1 shadow-lg shadow-blue-500/20 flex items-center justify-center overflow-hidden">
+                            <Image 
+                                src="/logo.png" 
+                                alt="DICT Logo" 
+                                width={40} 
+                                height={40} 
+                                className="object-contain"
+                            />
                         </div>
-                        <span className="text-white font-black text-[14px] sm:text-[13px] tracking-tight hidden sm:block leading-[1.1]">
-                            Automated Training<br />
-                            <span className="font-bold text-blue-300/80 text-[10px] uppercase tracking-wider">Management & Reporting</span>
+                        <span className="text-white font-black text-[15px] sm:text-[14px] tracking-tight leading-[1.1] uppercase">
+                            After Training<br />
+                            <span className="font-bold text-blue-300/80 text-[10px] tracking-wider">Report System</span>
                         </span>
                     </div>
                 </div>
@@ -176,13 +180,20 @@ export function Sidebar({ username, role, avatarUrl }: SidebarProps) {
             >
                 {/* Sidebar Header */}
                 <div className="flex items-center justify-between px-5 py-4 border-b border-white/10">
-                    <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="white" className="w-5 h-5">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.499 5.24 50.552 50.552 0 00-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5" />
-                            </svg>
+                    <div className="flex items-center gap-3">
+                        <div className="relative w-8 h-8 bg-white rounded-full p-0.5 flex items-center justify-center overflow-hidden">
+                            <Image 
+                                src="/logo.png" 
+                                alt="DICT Logo" 
+                                width={32} 
+                                height={32} 
+                                className="object-contain"
+                            />
                         </div>
-                        <span className="text-sm font-bold leading-tight tracking-tight">ATMRS</span>
+                        <div className="flex flex-col">
+                            <span className="text-[13px] font-black leading-none uppercase tracking-tight">After Training</span>
+                            <span className="text-[10px] font-bold text-blue-400 uppercase tracking-wider mt-0.5">Report System</span>
+                        </div>
                     </div>
                     <div className="flex items-center gap-2">
                         <ThemeToggle />
