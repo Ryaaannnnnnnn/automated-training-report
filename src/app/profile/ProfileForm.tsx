@@ -308,5 +308,6 @@ export function ProfileForm({ user }: ProfileFormProps) {
                 </div>
             </form >
         </div >
+        </div >
     );
 }
