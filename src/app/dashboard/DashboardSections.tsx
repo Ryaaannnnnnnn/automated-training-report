@@ -38,7 +38,7 @@ export async function DashboardStats({ userId, userRole }: { userId: string, use
         colorClass="emerald"
       />
       <StatCard
-        label={isAdmin ? "Pending Approvals" : "Awaiting Review"}
+        label={isAdmin ? "Pending Approvals" : "Pending Trainings"}
         value={pendingTrainingsCount}
         icon={
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
