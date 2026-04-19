@@ -121,12 +121,12 @@ export function Sidebar({ username, role, avatarUrl }: SidebarProps) {
                     </button>
 
                     <div className="flex items-center gap-3">
-                        <div className="relative w-10 h-10 sm:w-9 sm:h-9 bg-white rounded-full p-1 shadow-lg shadow-blue-500/20 flex items-center justify-center overflow-hidden">
+                        <div className="relative w-12 h-12 flex items-center justify-center overflow-hidden">
                             <Image 
                                 src="/logo.png" 
                                 alt="DICT Logo" 
-                                width={40} 
-                                height={40} 
+                                width={48} 
+                                height={48} 
                                 className="object-contain"
                             />
                         </div>
@@ -181,17 +181,17 @@ export function Sidebar({ username, role, avatarUrl }: SidebarProps) {
                 {/* Sidebar Header */}
                 <div className="flex items-center justify-between px-5 py-4 border-b border-white/10">
                     <div className="flex items-center gap-3">
-                        <div className="relative w-8 h-8 bg-white rounded-full p-0.5 flex items-center justify-center overflow-hidden">
+                        <div className="relative w-10 h-10 flex items-center justify-center overflow-hidden">
                             <Image 
                                 src="/logo.png" 
                                 alt="DICT Logo" 
-                                width={32} 
-                                height={32} 
+                                width={40} 
+                                height={40} 
                                 className="object-contain"
                             />
                         </div>
                         <div className="flex flex-col">
-                            <span className="text-[13px] font-black leading-none uppercase tracking-tight">After Training</span>
+                            <span className="text-[14px] font-black leading-none uppercase tracking-tight text-white">After Training</span>
                             <span className="text-[10px] font-bold text-blue-400 uppercase tracking-wider mt-0.5">Report System</span>
                         </div>
                     </div>

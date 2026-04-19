@@ -6,7 +6,7 @@ export function Navbar() {
         <nav className="bg-blue-800 text-white shadow-md">
             <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
                 <div className="flex items-center gap-3">
-                    <div className="relative w-9 h-9 bg-white rounded-full p-1 flex items-center justify-center overflow-hidden">
+                    <div className="relative w-11 h-11 flex items-center justify-center overflow-hidden">
                         <img 
                             src="/logo.png" 
                             alt="DICT Logo" 
