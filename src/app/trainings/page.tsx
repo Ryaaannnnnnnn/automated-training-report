@@ -14,13 +14,7 @@ export default async function TrainingsPage() {
   // Fetch all relevant trainings at once to allow instant client-side filtering
   const trainings = await prisma.training.findMany({
     where: {
-      ...(isAdmin ? {} : {
-        OR: [
-          { status: "APPROVED" },
-          { status: "PENDING" },
-          { createdById: user.id }
-        ]
-      })
+      ...(isAdmin ? {} : { createdById: user.id })
     },
     include: {
       createdBy: {

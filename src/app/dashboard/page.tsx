@@ -65,7 +65,7 @@ export default async function DashboardPage() {
             <StatCardSkeleton />
           </div>
         }>
-          <DashboardStats userRole={user.role} />
+          <DashboardStats userId={user.id} userRole={user.role} />
         </Suspense>
 
         {/* Main Content Grid: Recent Trainings & Quick Actions */}
