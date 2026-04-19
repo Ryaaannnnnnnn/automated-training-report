@@ -16,6 +16,7 @@ export default function RegisterPage() {
     const [success, setSuccess] = useState(false);
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     async function onSubmit(e: React.FormEvent) {
         e.preventDefault();
@@ -198,7 +199,7 @@ export default function RegisterPage() {
                             <div className="relative">
                                 <input
                                     className="w-full rounded-2xl sm:rounded-xl border-2 border-gray-50 sm:border-gray-100 bg-gray-50/50 sm:bg-white px-4 py-3.5 sm:py-3 pr-12 text-sm font-bold sm:font-medium text-gray-900 outline-none transition-all placeholder:text-gray-300 focus:border-[#007BE6]/30 focus:bg-white focus:ring-4 focus:ring-[#007BE6]/5 shadow-sm sm:shadow-none"
-                                    type={showPassword ? "text" : "password"}
+                                    type={showConfirmPassword ? "text" : "password"}
                                     value={confirmPassword}
                                     onChange={(e) => setConfirmPassword(e.target.value)}
                                     autoComplete="new-password"
@@ -208,11 +209,11 @@ export default function RegisterPage() {
                                 />
                                 <button
                                     type="button"
-                                    onClick={() => setShowPassword((v) => !v)}
+                                    onClick={() => setShowConfirmPassword((v) => !v)}
                                     className="absolute inset-y-0 right-2 my-auto flex h-10 w-10 items-center justify-center rounded-xl text-gray-400 transition-colors hover:text-[#007BE6] hover:bg-[#007BE6]/5"
-                                    aria-label={showPassword ? "Hide password" : "Show password"}
+                                    aria-label={showConfirmPassword ? "Hide password" : "Show password"}
                                 >
-                                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                    {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                                 </button>
                             </div>
                         </div>
