@@ -42,7 +42,7 @@ export default async function TeamPage() {
                 
                 <div className="mb-12">
                     <h1 className="text-3xl sm:text-4xl font-black text-gray-900 dark:text-white tracking-tight leading-none mb-3">
-                        Our <span className="text-blue-600 dark:text-blue-400">Team</span>
+                        Our <span className="text-blue-600 dark:text-blue-400">Staff</span>
                     </h1>
                     <p className="text-gray-500 dark:text-slate-400 text-base sm:text-lg font-medium">Meet the professional staff members of the DICT Aklan Training System.</p>
                 </div>
