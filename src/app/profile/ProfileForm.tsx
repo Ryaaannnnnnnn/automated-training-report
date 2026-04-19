@@ -56,6 +56,8 @@ export function ProfileForm({ user }: ProfileFormProps) {
             async (error: any, result: any) => {
                 if (!error && result && result.event === "success") {
                     setUploading(true);
+                    setError(null);
+                    setSuccess(null);
                     try {
                         const res = await fetch("/api/user/update-avatar", {
                             method: "POST",
@@ -63,11 +65,12 @@ export function ProfileForm({ user }: ProfileFormProps) {
                             body: JSON.stringify({ avatarUrl: result.info.secure_url }),
                         });
 
+                        const data = await res.json();
                         if (res.ok) {
                             setSuccess("Profile picture updated!");
                             router.refresh();
                         } else {
-                            setError("Failed to save avatar URL");
+                            setError(data.error || "Failed to save avatar URL");
                         }
                     } catch (err) {
                         setError("Error updating profile picture");
@@ -84,6 +87,8 @@ export function ProfileForm({ user }: ProfileFormProps) {
         if (!confirm("Are you sure you want to remove your profile picture?")) return;
 
         setUploading(true);
+        setError(null);
+        setSuccess(null);
         try {
             const res = await fetch("/api/user/update-avatar", {
                 method: "POST",
@@ -91,9 +96,12 @@ export function ProfileForm({ user }: ProfileFormProps) {
                 body: JSON.stringify({ avatarUrl: null }),
             });
 
+            const data = await res.json();
             if (res.ok) {
                 setSuccess("Profile picture removed");
                 router.refresh();
+            } else {
+                setError(data.error || "Failed to remove profile picture");
             }
         } catch (err) {
             setError("Error removing profile picture");
@@ -181,27 +189,27 @@ export function ProfileForm({ user }: ProfileFormProps) {
                             </button>
                         </div>
 
-                        <div className="flex-1 text-center md:text-left space-y-4">
+                        <div className="flex-1 text-center md:text-left space-y-6">
                             <div>
-                                <h4 className="text-lg font-black text-gray-900 dark:text-white capitalize">@{user.username}</h4>
-                                <p className="text-xs font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest mt-1">{user.role}</p>
+                                <h4 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white capitalize tracking-tight leading-none">@{user.username}</h4>
+                                <p className="text-[10px] sm:text-xs font-black text-blue-600 dark:text-blue-400 uppercase tracking-[0.2em] mt-2 block">{user.role}</p>
                             </div>
-                            <div className="flex flex-wrap justify-center md:justify-start gap-4">
+                            <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4">
                                 <button
                                     onClick={handleUpload}
                                     disabled={uploading}
-                                    className="px-6 py-3 rounded-xl bg-gray-50 dark:bg-slate-900 border border-gray-100 dark:border-slate-700 text-[11px] font-black uppercase tracking-widest text-gray-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-950 hover:border-blue-200 dark:hover:border-blue-500/50 hover:text-blue-600 dark:hover:text-blue-400 transition-all shadow-sm"
+                                    className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white dark:bg-slate-900 border-2 border-gray-100 dark:border-slate-700 text-[11px] font-black uppercase tracking-widest text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-950 hover:border-blue-500/40 hover:text-blue-600 dark:hover:text-blue-400 transition-all shadow-sm active:scale-95 disabled:opacity-50"
                                 >
-                                    Change Photo
+                                    {uploading ? "Updating..." : "Change Photo"}
                                 </button>
                                 {user.avatarUrl && (
                                     <button
                                         onClick={handleRemoveAvatar}
                                         disabled={uploading}
-                                        className="px-6 py-3 rounded-xl bg-red-50 dark:bg-red-500/5 border border-red-100 dark:border-red-500/20 text-[11px] font-black uppercase tracking-widest text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-500/10 transition-all flex items-center gap-2"
+                                        className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-red-50/50 dark:bg-red-500/5 border-2 border-red-100/50 dark:border-red-500/20 text-[11px] font-black uppercase tracking-widest text-red-600 dark:text-red-400 hover:bg-red-100/50 dark:hover:bg-red-500/10 transition-all flex items-center justify-center gap-3 active:scale-95 disabled:opacity-50"
                                     >
-                                        <Trash2 size={14} />
-                                        Remove
+                                        <Trash2 size={16} strokeWidth={2.5} />
+                                        Remove Photo
                                     </button>
                                 )}
                             </div>

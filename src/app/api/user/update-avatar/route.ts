@@ -13,7 +13,7 @@ export async function POST(request: Request) {
         const body = await request.json();
         const { avatarUrl } = body;
 
-        if (!avatarUrl) {
+        if (avatarUrl === undefined) {
             return NextResponse.json({ ok: false, error: "No avatar URL provided" }, { status: 400 });
         }
 
