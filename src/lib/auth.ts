@@ -10,8 +10,21 @@ export const getCurrentUser = cache(async () => {
 
   const user = await prisma.user.findUnique({
     where: { id: userId },
-    select: { id: true, username: true, role: true, avatarUrl: true },
+    select: { id: true, username: true, role: true, avatarUrl: true, lastActive: true },
   });
+
+  if (user) {
+    const now = new Date();
+    const fiveMinutesAgo = new Date(now.getTime() - 5 * 60 * 1000);
+
+    // Refresh lastActive if it's older than 5 minutes
+    if (user.lastActive < fiveMinutesAgo) {
+      prisma.user.update({
+        where: { id: user.id },
+        data: { lastActive: now },
+      }).catch(error => console.error("Failed to update lastActive:", error));
+    }
+  }
 
   return user;
 });

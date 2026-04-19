@@ -38,6 +38,7 @@ model User {
   role     Role       @default(staff)
   status   UserStatus @default(PENDING)
   avatarUrl String?
+  lastActive DateTime @default(now())
 
   resetToken       String?
   resetTokenExpiry DateTime?
