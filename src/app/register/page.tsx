@@ -206,6 +206,14 @@ export default function RegisterPage() {
                                     required
                                     minLength={6}
                                 />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword((v) => !v)}
+                                    className="absolute inset-y-0 right-2 my-auto flex h-10 w-10 items-center justify-center rounded-xl text-gray-400 transition-colors hover:text-[#007BE6] hover:bg-[#007BE6]/5"
+                                    aria-label={showPassword ? "Hide password" : "Show password"}
+                                >
+                                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                </button>
                             </div>
                         </div>
 
