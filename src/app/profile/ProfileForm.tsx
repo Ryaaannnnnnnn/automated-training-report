@@ -164,7 +164,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
                     <div className="flex flex-col md:flex-row items-center gap-8">
                         <div className="relative group">
                             <div className="w-32 h-32 rounded-full border-4 border-gray-50 dark:border-slate-700 overflow-hidden bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center text-white text-4xl font-black shadow-2xl transition-transform group-hover:scale-105 duration-500 relative">
-                                {user.avatarUrl ? (
+                                {user.avatarUrl && user.avatarUrl.length > 5 ? (
                                     <Image
                                         src={user.avatarUrl}
                                         alt={user.username}
