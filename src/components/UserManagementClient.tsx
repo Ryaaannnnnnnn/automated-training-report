@@ -6,6 +6,7 @@ import { DeleteUserButton } from "./DeleteUserButton";
 import { ResetPasswordButton } from "./ResetPasswordButton";
 import { EmptyState, Skeleton } from "./DashboardWidgets";
 import { Search, Filter, Shield, User as UserIcon, Calendar } from "lucide-react";
+import Image from "next/image";
 
 interface User {
     id: string;
@@ -13,6 +14,7 @@ interface User {
     email: string | null;
     role: string;
     status: string;
+    avatarUrl: string | null;
     createdAt: Date;
 }
 
@@ -106,9 +108,20 @@ export function UserManagementClient({ users, currentUser }: UserManagementClien
                                         <td className="px-6 sm:px-8 py-4 sm:py-5">
                                             <div className="flex items-center gap-4">
                                                 <div className="relative group-hover:scale-110 transition-transform duration-300">
-                                                    <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center font-bold text-lg text-white uppercase shadow-md shadow-blue-200 dark:shadow-blue-900/30">
-                                                        {user.username.charAt(0)}
-                                                    </div>
+                                                    {user.avatarUrl ? (
+                                                        <div className="w-11 h-11 rounded-2xl overflow-hidden shadow-md shadow-blue-200 dark:shadow-blue-900/30 border-2 border-white dark:border-slate-700 relative">
+                                                            <Image
+                                                                src={user.avatarUrl}
+                                                                alt={user.username}
+                                                                fill
+                                                                className="object-cover"
+                                                            />
+                                                        </div>
+                                                    ) : (
+                                                        <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center font-bold text-lg text-white uppercase shadow-md shadow-blue-200 dark:shadow-blue-900/30">
+                                                            {user.username.charAt(0)}
+                                                        </div>
+                                                    )}
                                                 </div>
                                                 <div>
                                                     <div className="flex items-center gap-2">
