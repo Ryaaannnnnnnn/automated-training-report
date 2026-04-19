@@ -122,7 +122,7 @@ export default function RegisterPage() {
                         {/* Mobile Brand */}
                         <div className="sm:hidden">
                             <h1 className="text-2xl font-black tracking-tighter leading-none mb-1">After Training Report System</h1>
-                            <p className="text-[12px] text-blue-50/70 font-bold uppercase tracking-[0.2em]">Registration</p>
+                            <p className="mt-2 text-sm text-blue-50/80 font-medium">Create a new account</p>
                         </div>
                     </div>
 
