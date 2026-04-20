@@ -4,8 +4,9 @@ import { useState, useMemo } from "react";
 import { UserApprovalButtons } from "./AdminControls";
 import { DeleteUserButton } from "./DeleteUserButton";
 import { ResetPasswordButton } from "./ResetPasswordButton";
+import { EditUserModal } from "./EditUserModal";
 import { EmptyState, Skeleton } from "./DashboardWidgets";
-import { Search, Filter, Shield, User as UserIcon, Calendar } from "lucide-react";
+import { Search, Filter, Shield, User as UserIcon, Calendar, Pencil, Briefcase } from "lucide-react";
 import Image from "next/image";
 
 interface User {
@@ -14,6 +15,7 @@ interface User {
     email: string | null;
     role: string;
     status: string;
+    designation: string | null;
     avatarUrl: string | null;
     createdAt: Date;
 }
@@ -26,12 +28,14 @@ interface UserManagementClientProps {
 export function UserManagementClient({ users, currentUser }: UserManagementClientProps) {
     const [searchQuery, setSearchQuery] = useState("");
     const [statusFilter, setStatusFilter] = useState<string>("ALL");
+    const [editingUser, setEditingUser] = useState<User | null>(null);
 
     const filteredUsers = useMemo(() => {
         return users.filter((user) => {
             const matchesSearch =
                 user.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                (user.email?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false);
+                (user.email?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||
+                (user.designation?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false);
 
             const matchesStatus = statusFilter === "ALL" || user.status === statusFilter;
 
@@ -41,6 +45,14 @@ export function UserManagementClient({ users, currentUser }: UserManagementClien
 
     return (
         <div className="space-y-6">
+            {/* Edit Modal */}
+            {editingUser && (
+                <EditUserModal
+                    user={editingUser}
+                    onClose={() => setEditingUser(null)}
+                />
+            )}
+
             {/* Search and Filters Bar */}
             <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-white dark:bg-slate-800 p-4 rounded-2xl border border-gray-100 dark:border-slate-700 shadow-sm animate-page-fade">
                 <div className="relative w-full md:w-96 group">
@@ -49,7 +61,7 @@ export function UserManagementClient({ users, currentUser }: UserManagementClien
                     </div>
                     <input
                         type="text"
-                        placeholder="Search by username or email..."
+                        placeholder="Search by username, email or designation..."
                         className="block w-full pl-11 pr-4 py-2.5 bg-gray-50 dark:bg-slate-700 border border-gray-100 dark:border-slate-600 rounded-xl text-sm text-gray-900 dark:text-slate-100 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all placeholder:text-gray-300 dark:placeholder:text-slate-500"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
@@ -76,7 +88,7 @@ export function UserManagementClient({ users, currentUser }: UserManagementClien
                 <div className="border-b border-gray-100 dark:border-slate-700 px-6 sm:px-8 py-4 sm:py-6 flex justify-between items-center bg-gray-50/50 dark:bg-slate-800/80">
                     <h3 className="font-bold text-lg sm:text-xl text-gray-900 dark:text-white tracking-tight flex items-center gap-2">
                         <Shield size={20} className="text-blue-600 dark:text-blue-400" />
-                        Active & Pending Staff
+                        Active &amp; Pending Staff
                     </h3>
                     <div className="bg-indigo-100 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest border border-indigo-200 dark:border-indigo-500/20">
                         {filteredUsers.length} Result{filteredUsers.length !== 1 ? 's' : ''}
@@ -91,11 +103,12 @@ export function UserManagementClient({ users, currentUser }: UserManagementClien
                             <thead className="bg-[#f8fafc] dark:bg-slate-700/50 text-indigo-900/60 dark:text-slate-400 border-b border-gray-100 dark:border-slate-700">
                                 <tr>
                                     <th className="px-6 sm:px-8 py-5 font-bold uppercase tracking-[0.2em] text-[10px]">Staff Profile</th>
+                                    <th className="px-6 py-5 font-bold uppercase tracking-[0.2em] text-[10px] hidden sm:table-cell">Designation</th>
                                     <th className="px-6 py-5 font-bold uppercase tracking-[0.2em] text-[10px]">System Role</th>
                                     <th className="px-6 py-5 font-bold uppercase tracking-[0.2em] text-[10px]">Account Status</th>
                                     <th className="px-6 py-5 font-bold uppercase tracking-[0.2em] text-[10px] hidden md:table-cell">Joined Date</th>
                                     <th className="px-6 py-5 font-bold uppercase tracking-[0.2em] text-[10px]">Security</th>
-                                    <th className="px-6 py-5 font-bold uppercase tracking-[0.2em] text-[10px] text-right">Administrative</th>
+                                    <th className="px-6 py-5 font-bold uppercase tracking-[0.2em] text-[10px] text-right">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-50 dark:divide-slate-700/50">
@@ -105,6 +118,7 @@ export function UserManagementClient({ users, currentUser }: UserManagementClien
                                         className="hover:bg-blue-50/20 dark:hover:bg-blue-500/5 transition-all even:bg-slate-50/30 dark:even:bg-slate-700/20 group animate-fade-in"
                                         style={{ animationDelay: `${idx * 40}ms` }}
                                     >
+                                        {/* Staff Profile */}
                                         <td className="px-6 sm:px-8 py-4 sm:py-5">
                                             <div className="flex items-center gap-4">
                                                 <div className="relative group-hover:scale-110 transition-transform duration-300">
@@ -134,6 +148,20 @@ export function UserManagementClient({ users, currentUser }: UserManagementClien
                                                 </div>
                                             </div>
                                         </td>
+
+                                        {/* Designation */}
+                                        <td className="px-6 py-4 hidden sm:table-cell">
+                                            {user.designation ? (
+                                                <div className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-slate-300 font-semibold">
+                                                    <Briefcase size={13} className="text-gray-400 dark:text-slate-500 shrink-0" />
+                                                    <span className="truncate max-w-[140px]">{user.designation}</span>
+                                                </div>
+                                            ) : (
+                                                <span className="text-[10px] font-black text-gray-300 dark:text-slate-600 uppercase tracking-widest italic">—</span>
+                                            )}
+                                        </td>
+
+                                        {/* System Role */}
                                         <td className="px-6 py-4">
                                             <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-sm border ${user.role === "admin"
                                                 ? "bg-purple-100 dark:bg-purple-500/10 text-purple-700 dark:text-purple-400 border-purple-200 dark:border-purple-500/20"
@@ -143,6 +171,8 @@ export function UserManagementClient({ users, currentUser }: UserManagementClien
                                                 {user.role}
                                             </div>
                                         </td>
+
+                                        {/* Account Status */}
                                         <td className="px-6 py-4">
                                             {user.role === "admin" ? (
                                                 <span className="inline-flex items-center px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-sm border bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-100 dark:border-purple-500/20">
@@ -157,6 +187,8 @@ export function UserManagementClient({ users, currentUser }: UserManagementClien
                                                 </span>
                                             )}
                                         </td>
+
+                                        {/* Joined Date */}
                                         <td className="px-6 py-4 hidden md:table-cell">
                                             <div className="flex items-center gap-2 text-slate-400 dark:text-slate-500">
                                                 <Calendar size={14} className="opacity-50" />
@@ -165,6 +197,8 @@ export function UserManagementClient({ users, currentUser }: UserManagementClien
                                                 </span>
                                             </div>
                                         </td>
+
+                                        {/* Security */}
                                         <td className="px-6 py-4">
                                             {user.role !== "admin" ? (
                                                 <ResetPasswordButton userId={user.id} username={user.username} />
@@ -172,11 +206,21 @@ export function UserManagementClient({ users, currentUser }: UserManagementClien
                                                 <span className="text-[10px] font-black text-slate-300 dark:text-slate-600 uppercase tracking-widest italic">Self-managed</span>
                                             )}
                                         </td>
+
+                                        {/* Actions */}
                                         <td className="px-6 py-4 text-right">
-                                            <div className="flex items-center justify-end gap-3 scale-90 sm:scale-100">
+                                            <div className="flex items-center justify-end gap-2 scale-90 sm:scale-100">
                                                 {user.status === "PENDING" && (
                                                     <UserApprovalButtons userId={user.id} currentStatus={user.status} />
                                                 )}
+                                                {/* Edit button — always visible */}
+                                                <button
+                                                    onClick={() => setEditingUser(user)}
+                                                    className="p-2 rounded-xl bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-500/20 hover:bg-blue-100 dark:hover:bg-blue-500/20 hover:scale-110 active:scale-95 transition-all shadow-sm"
+                                                    title="Edit user"
+                                                >
+                                                    <Pencil size={14} strokeWidth={2.5} />
+                                                </button>
                                                 {user.id !== currentUser.id && (
                                                     <DeleteUserButton userId={user.id} />
                                                 )}

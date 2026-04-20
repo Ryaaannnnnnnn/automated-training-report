@@ -19,7 +19,17 @@ export default async function UsersManagementPage() {
             { status: "asc" }, // Pending first
             { role: "asc" },   // Admin before staff
             { username: "asc" }
-        ]
+        ],
+        select: {
+            id: true,
+            username: true,
+            email: true,
+            role: true,
+            status: true,
+            designation: true,
+            avatarUrl: true,
+            createdAt: true,
+        }
     });
 
     return (

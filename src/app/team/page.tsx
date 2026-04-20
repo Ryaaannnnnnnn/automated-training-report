@@ -17,6 +17,7 @@ export default async function TeamPage() {
             username: true,
             email: true,
             role: true,
+            designation: true,
             avatarUrl: true,
             createdAt: true,
             lastActive: true,

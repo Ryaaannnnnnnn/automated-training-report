@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { User, Shield, Search, Mail, Calendar } from "lucide-react";
+import { User, Shield, Search, Mail, Calendar, Briefcase } from "lucide-react";
 import Image from "next/image";
 
 interface TeamMember {
@@ -9,6 +9,7 @@ interface TeamMember {
     username: string;
     email: string | null;
     role: string;
+    designation: string | null;
     avatarUrl: string | null;
     createdAt: Date;
     lastActive: Date;
@@ -92,6 +93,12 @@ export function TeamGrid({ members }: TeamGridProps) {
                                     <div className="inline-block px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[10px] font-black uppercase tracking-widest border border-blue-100 dark:border-blue-500/20">
                                         {member.role}
                                     </div>
+                                    {member.designation && (
+                                        <div className="flex items-center justify-center gap-1.5 mt-1">
+                                            <Briefcase size={11} className="text-gray-400 dark:text-slate-500" />
+                                            <span className="text-[11px] text-gray-500 dark:text-slate-400 font-semibold italic truncate max-w-[140px]">{member.designation}</span>
+                                        </div>
+                                    )}
                                 </div>
 
                                 {/* Status Label */}

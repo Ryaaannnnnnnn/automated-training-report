@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>After Training Report System — Tech Stack</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f4f6fb;
+      color: #1e293b;
+      padding: 40px 20px;
+    }
+
+    .page {
+      max-width: 860px;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.10);
+    }
+
+    /* HEADER */
+    .header {
+      background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 60%, #0ea5e9 100%);
+      padding: 48px 48px 36px;
+      color: white;
+    }
+    .header .badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.35);
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .header h1 {
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 8px;
+    }
+    .header p {
+      font-size: 13.5px;
+      opacity: 0.82;
+      font-weight: 400;
+    }
+    .header .meta {
+      margin-top: 24px;
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .meta-item {
+      background: rgba(255,255,255,0.15);
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-size: 12px;
+    }
+    .meta-item span { display: block; font-weight: 700; font-size: 14px; margin-top: 2px; }
+
+    /* CONTENT */
+    .content { padding: 40px 48px 48px; }
+
+    /* SECTION */
+    .section { margin-bottom: 36px; }
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #2563eb;
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #e0eaff;
+    }
+    .section-title .icon {
+      width: 26px;
+      height: 26px;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    /* TABLE */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    thead tr {
+      background: #eff6ff;
+    }
+    thead th {
+      text-align: left;
+      padding: 10px 14px;
+      font-weight: 700;
+      font-size: 11.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #1e40af;
+      border-bottom: 2px solid #bfdbfe;
+    }
+    tbody tr {
+      border-bottom: 1px solid #f1f5f9;
+      transition: background 0.15s;
+    }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: #f8faff; }
+    tbody td {
+      padding: 10px 14px;
+      color: #334155;
+      vertical-align: top;
+    }
+    tbody td:first-child {
+      font-weight: 600;
+      color: #1e293b;
+    }
+    .tag {
+      display: inline-block;
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+      border-radius: 5px;
+      padding: 2px 8px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .tag.green { background: #f0fdf4; color: #15803d; border-color: #bbf7d0; }
+    .tag.purple { background: #faf5ff; color: #7e22ce; border-color: #e9d5ff; }
+    .tag.orange { background: #fff7ed; color: #c2410c; border-color: #fed7aa; }
+    .tag.sky { background: #f0f9ff; color: #0369a1; border-color: #bae6fd; }
+
+    /* CHIPS ROW */
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+    .chip {
+      background: linear-gradient(135deg, #eff6ff, #dbeafe);
+      border: 1px solid #bfdbfe;
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #1d4ed8;
+    }
+
+    /* FOOTER */
+    .footer {
+      background: #f8faff;
+      border-top: 1px solid #e2e8f0;
+      padding: 22px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11.5px;
+      color: #94a3b8;
+    }
+    .footer strong { color: #475569; }
+
+    /* PRINT */
+    @media print {
+      body { background: white; padding: 0; }
+      .page { box-shadow: none; border-radius: 0; }
+      .header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      thead tr { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .chip { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .tag { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="badge">DICT Region VI — Aklan</div>
+    <h1>After Training Report System<br>Technology Stack Overview</h1>
+    <p>A complete breakdown of all languages, frameworks, libraries, and tools used in the system.</p>
+    <div class="meta">
+      <div class="meta-item">Project Type <span>Web Application</span></div>
+      <div class="meta-item">Architecture <span>Full-Stack (Next.js)</span></div>
+      <div class="meta-item">Database <span>PostgreSQL</span></div>
+      <div class="meta-item">Deployment <span>Vercel + Neon</span></div>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- PROGRAMMING LANGUAGES -->
+    <div class="section">
+      <div class="section-title"><div class="icon">💻</div> Programming Languages</div>
+      <table>
+        <thead><tr><th>Language</th><th>Where It's Used</th></tr></thead>
+        <tbody>
+          <tr><td>TypeScript</td><td>Primary language for all frontend and backend logic</td></tr>
+          <tr><td>TSX (TypeScript + JSX)</td><td>React UI components — pages, forms, navbar, dashboards</td></tr>
+          <tr><td>SQL</td><td>Database queries, managed through Prisma ORM</td></tr>
+          <tr><td>CSS</td><td>Global styles and Tailwind CSS utility classes</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- FRAMEWORKS & RUNTIMES -->
+    <div class="section">
+      <div class="section-title"><div class="icon">⚙️</div> Frameworks &amp; Runtimes</div>
+      <table>
+        <thead><tr><th>Technology</th><th>Version</th><th>Role</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Next.js</td>
+            <td><span class="tag">v16</span></td>
+            <td>Full-stack framework — handles frontend pages/routing AND backend API routes</td>
+          </tr>
+          <tr>
+            <td>React</td>
+            <td><span class="tag">v19</span></td>
+            <td>UI component library powering all pages and interactions</td>
+          </tr>
+          <tr>
+            <td>Node.js</td>
+            <td><span class="tag">Runtime</span></td>
+            <td>JavaScript runtime that Next.js runs on (server-side execution)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- FRONTEND -->
+    <div class="section">
+      <div class="section-title"><div class="icon">🎨</div> Frontend Libraries &amp; Tools</div>
+      <table>
+        <thead><tr><th>Library</th><th>Version</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td>Tailwind CSS</td><td><span class="tag sky">^3.4.1</span></td><td>Utility-first CSS framework for styling and responsive layout</td></tr>
+          <tr><td>next-themes</td><td><span class="tag sky">^0.4.6</span></td><td>Dark mode / Light mode theme switching</td></tr>
+          <tr><td>Lucide React</td><td><span class="tag sky">^0.575.0</span></td><td>Icon library used throughout the entire interface</td></tr>
+          <tr><td>html2canvas</td><td><span class="tag sky">^1.4.1</span></td><td>Converts HTML elements into canvas images for report rendering</td></tr>
+          <tr><td>jsPDF</td><td><span class="tag sky">^4.2.1</span></td><td>Generates downloadable PDF training reports</td></tr>
+          <tr><td>jsPDF-AutoTable</td><td><span class="tag sky">^5.0.7</span></td><td>Adds formatted tables inside PDF exports</td></tr>
+          <tr><td>XLSX (SheetJS)</td><td><span class="tag sky">^0.18.5</span></td><td>Exports training data to Excel spreadsheet files</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- BACKEND -->
+    <div class="section">
+      <div class="section-title"><div class="icon">🔧</div> Backend Libraries &amp; Tools</div>
+      <table>
+        <thead><tr><th>Library</th><th>Version</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td>Next.js API Routes</td><td><span class="tag green">Built-in</span></td><td>REST API endpoints located under <code>/app/api/</code></td></tr>
+          <tr><td>Prisma ORM</td><td><span class="tag green">^6.16.1</span></td><td>Database access layer — schema management, queries, migrations</td></tr>
+          <tr><td>bcryptjs</td><td><span class="tag green">^3.0.3</span></td><td>Secure password hashing for user authentication</td></tr>
+          <tr><td>Nodemailer</td><td><span class="tag green">^8.0.1</span></td><td>Sends automated emails (e.g., password reset links)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- DATABASE -->
+    <div class="section">
+      <div class="section-title"><div class="icon">🗄️</div> Database — PostgreSQL</div>
+      <table>
+        <thead><tr><th>Data Model</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>User</td><td>System accounts with roles (Admin / Staff) and approval status (Pending / Approved / Rejected)</td></tr>
+          <tr><td>Training</td><td>Training report records — title, date, venue, trainer, status, type, and report data</td></tr>
+          <tr><td>Participant</td><td>Individuals who attended training sessions</td></tr>
+          <tr><td>Attendance</td><td>Links participants to trainings with status (Present / Absent)</td></tr>
+          <tr><td>Evaluation</td><td>Participant ratings and comments per training session</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- DEV TOOLS -->
+    <div class="section">
+      <div class="section-title"><div class="icon">🛠️</div> Development Tools</div>
+      <table>
+        <thead><tr><th>Tool</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td>Visual Studio Code</td><td>Primary code editor used for development</td></tr>
+          <tr><td>TypeScript</td><td>Static type checking for safer and more maintainable code</td></tr>
+          <tr><td>ESLint</td><td>Code linting and quality enforcement</td></tr>
+          <tr><td>PostCSS</td><td>CSS processing pipeline (required by Tailwind CSS)</td></tr>
+          <tr><td>Prisma CLI</td><td>Manages database schema migrations (<code>prisma db push</code>, <code>prisma generate</code>)</td></tr>
+          <tr><td>Git</td><td>Version control for source code</td></tr>
+          <tr><td>npm</td><td>Node.js package manager</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- DEPLOYMENT -->
+    <div class="section">
+      <div class="section-title"><div class="icon">☁️</div> Deployment &amp; Hosting</div>
+      <table>
+        <thead><tr><th>Platform</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td>Vercel</td><td>Cloud hosting and continuous deployment of the Next.js application</td></tr>
+          <tr><td>Neon (PostgreSQL)</td><td>Serverless cloud-hosted PostgreSQL database</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- SUMMARY CHIPS -->
+    <div class="section">
+      <div class="section-title"><div class="icon">📦</div> Full Technology Summary</div>
+      <div class="chips">
+        <div class="chip">TypeScript</div>
+        <div class="chip">TSX / JSX</div>
+        <div class="chip">Next.js 16</div>
+        <div class="chip">React 19</div>
+        <div class="chip">Node.js</div>
+        <div class="chip">Tailwind CSS</div>
+        <div class="chip">Prisma ORM</div>
+        <div class="chip">PostgreSQL</div>
+        <div class="chip">bcryptjs</div>
+        <div class="chip">Nodemailer</div>
+        <div class="chip">jsPDF</div>
+        <div class="chip">html2canvas</div>
+        <div class="chip">XLSX / SheetJS</div>
+        <div class="chip">Lucide React</div>
+        <div class="chip">next-themes</div>
+        <div class="chip">ESLint</div>
+        <div class="chip">Git</div>
+        <div class="chip">Vercel</div>
+        <div class="chip">Neon DB</div>
+      </div>
+    </div>
+
+  </div><!-- end content -->
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div><strong>After Training Report System</strong> — DICT Region VI, Aklan</div>
+    <div>Generated: April 2026</div>
+  </div>
+
+</div>
+</body>
+</html>
