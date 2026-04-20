@@ -93,7 +93,7 @@ export function AfterTrainingReportView({
 
   const ReportFooter = ({ page }: { page: number }) => (
     <div style={{ 
-      marginTop: "24px", 
+      marginTop: "auto", 
       paddingTop: "8px", 
       borderTop: "2px solid #3b82f6", 
       display: "flex", 
@@ -111,7 +111,7 @@ export function AfterTrainingReportView({
         <div><span style={{ opacity: 0.8 }}>facebook.com/</span><span style={{ color: "#2563eb" }}>dictaklanprovince</span></div>
         <div>268 6273</div>
         <div style={{ marginTop: "2px", fontWeight: "bold", textTransform: "uppercase", fontSize: "8px" }}>
-          AFTER TRAINING REPORT - {coreTitle} | <span style={{ textDecoration: "underline" }}>Page {page} of 4</span>
+          AFTER TRAINING REPORT - {coreTitle} | Page {page} of 4
         </div>
       </div>
     </div>
@@ -157,7 +157,7 @@ export function AfterTrainingReportView({
           }
         `}</style>
         {/* Section 1 — Header + Training Details */}
-        <div data-pdf-section style={{ padding: "24px", background: isDownloadMode ? "white" : "transparent" }}>
+        <div data-pdf-section style={{ padding: isDownloadMode ? "10px 24px 24px 24px" : "16px 24px 24px 24px", background: isDownloadMode ? "white" : "transparent", display: "flex", flexDirection: "column", minHeight: isDownloadMode ? "1056px" : "auto" }}>
           <div style={{ marginBottom: "16px" }}>
             <img src="/header.png" alt="DICT Header" style={{ width: "100%", display: "block" }} />
           </div>
@@ -248,7 +248,7 @@ export function AfterTrainingReportView({
         </div>
 
         {/* Section 2 — Rationale, Objectives, Topics */}
-        <div data-pdf-section style={{ padding: "24px", background: isDownloadMode ? "white" : "transparent" }}>
+        <div data-pdf-section style={{ padding: "24px", background: isDownloadMode ? "white" : "transparent", display: "flex", flexDirection: "column", minHeight: isDownloadMode ? "1056px" : "auto" }}>
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "11px", color: isDownloadMode ? "#333" : "var(--report-text)" }}>
             <tbody>
               <tr>
@@ -280,7 +280,7 @@ export function AfterTrainingReportView({
         </div>
 
         {/* Section 3 — Issues, Recommendations, Plans */}
-        <div data-pdf-section style={{ padding: "24px", background: isDownloadMode ? "white" : "transparent" }}>
+        <div data-pdf-section style={{ padding: "24px", background: isDownloadMode ? "white" : "transparent", display: "flex", flexDirection: "column", minHeight: isDownloadMode ? "1056px" : "auto" }}>
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "11px", color: isDownloadMode ? "#333" : "var(--report-text)" }}>
             <tbody>
               <tr>
@@ -315,7 +315,7 @@ export function AfterTrainingReportView({
         </div>
 
         {/* Section 4 — Photo Documentation + Signatories */}
-        <div data-pdf-section style={{ padding: "24px", background: isDownloadMode ? "white" : "transparent" }}>
+        <div data-pdf-section style={{ padding: "24px", background: isDownloadMode ? "white" : "transparent", display: "flex", flexDirection: "column", minHeight: isDownloadMode ? "1056px" : "auto" }}>
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "11px", color: isDownloadMode ? "#333" : "var(--report-text)" }}>
             <tbody>
               <tr>
