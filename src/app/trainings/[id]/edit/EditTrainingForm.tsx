@@ -13,6 +13,7 @@ export function EditTrainingForm({ id }: EditTrainingFormProps) {
 
     const [title, setTitle] = useState("");
     const [date, setDate] = useState("");
+    const [endDate, setEndDate] = useState("");
     const [venue, setVenue] = useState("");
     const [trainer, setTrainer] = useState("");
     const [description, setDescription] = useState("");
@@ -34,6 +35,7 @@ export function EditTrainingForm({ id }: EditTrainingFormProps) {
                 if (data?.training) {
                     setTitle(data.training.title ?? "");
                     setDate(data.training.date?.slice(0, 10) ?? "");
+                    setEndDate(data.training.endDate?.slice(0, 10) ?? "");
                     setVenue(data.training.venue ?? "");
                     setTrainer(data.training.trainer ?? "");
                     setDescription(data.training.description ?? "");
@@ -66,6 +68,7 @@ export function EditTrainingForm({ id }: EditTrainingFormProps) {
                 body: JSON.stringify({ 
                     title, 
                     date, 
+                    endDate: endDate || null,
                     venue, 
                     trainer, 
                     description, 
@@ -113,6 +116,8 @@ export function EditTrainingForm({ id }: EditTrainingFormProps) {
                 setCoreTitle={setTitle}
                 coreDate={date}
                 setCoreDate={setDate}
+                coreEndDate={endDate}
+                setCoreEndDate={setEndDate}
                 coreVenue={venue}
                 setCoreVenue={setVenue}
                 coreStartTime={startTime}

@@ -52,6 +52,7 @@ interface Props {
   data: ReportData;
   coreTitle: string;
   coreDate: string;
+  coreEndDate?: string;
   coreStartTime: string;
   coreEndTime: string;
   coreVenue: string;
@@ -62,6 +63,7 @@ export function AfterTrainingReportView({
   data, 
   coreTitle, 
   coreDate, 
+  coreEndDate,
   coreStartTime, 
   coreEndTime, 
   coreVenue,
@@ -79,6 +81,43 @@ export function AfterTrainingReportView({
       }); 
     } catch { 
       return d; 
+    }
+  };
+
+  const formatDateRange = (startStr: string, endStr?: string) => {
+    if (!startStr) return "";
+    if (!endStr || startStr === endStr) return formatDate(startStr);
+
+    try {
+      const start = new Date(startStr + "T00:00:00");
+      const end = new Date(endStr + "T00:00:00");
+
+      const sMonth = start.toLocaleDateString("en-PH", { month: "long" });
+      const sDay = start.getDate();
+      const sYear = start.getFullYear();
+
+      const eMonth = end.toLocaleDateString("en-PH", { month: "long" });
+      const eDay = end.getDate();
+      const eYear = end.getFullYear();
+
+      if (sYear === eYear) {
+        if (sMonth === eMonth) {
+          // Same month: "February 17-18, 2026"
+          return `${sMonth} ${sDay}-${eDay}, ${sYear}`;
+        } else {
+          // Different months, same year: "Feb 28 - Mar 1, 2026"
+          const sMonthShort = start.toLocaleDateString("en-PH", { month: "short" });
+          const eMonthShort = end.toLocaleDateString("en-PH", { month: "short" });
+          return `${sMonthShort} ${sDay} - ${eMonthShort} ${eDay}, ${sYear}`;
+        }
+      } else {
+        // Different years: "Dec 30, 2025 - Jan 2, 2026"
+        const sMonthShort = start.toLocaleDateString("en-PH", { month: "short" });
+        const eMonthShort = end.toLocaleDateString("en-PH", { month: "short" });
+        return `${sMonthShort} ${sDay}, ${sYear} - ${eMonthShort} ${eDay}, ${eYear}`;
+      }
+    } catch {
+      return `${startStr} - ${endStr}`;
     }
   };
 
@@ -181,7 +220,7 @@ export function AfterTrainingReportView({
               </tr>
               <tr style={{ border: isDownloadMode ? "1px solid #ccc" : "1px solid var(--report-border)" }}>
                 <td style={{ padding: "5px 8px", fontWeight: "600", border: isDownloadMode ? "1px solid #ccc" : "1px solid var(--report-border)" }}>Date:</td>
-                <td style={{ padding: "5px 8px", border: isDownloadMode ? "1px solid #ccc" : "1px solid var(--report-border)" }}>{formatDate(coreDate)}</td>
+                <td style={{ padding: "5px 8px", border: isDownloadMode ? "1px solid #ccc" : "1px solid var(--report-border)" }}>{formatDateRange(coreDate, coreEndDate)}</td>
                 <td style={{ padding: "5px 8px", fontWeight: "600", border: isDownloadMode ? "1px solid #ccc" : "1px solid var(--report-border)" }}>Time:</td>
                 <td colSpan={3} style={{ padding: "5px 8px" }}>{coreStartTime} to {coreEndTime}</td>
               </tr>

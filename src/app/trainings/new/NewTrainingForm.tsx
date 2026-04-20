@@ -116,6 +116,7 @@ export function NewTrainingForm() {
     const [trainingType, setTrainingType] = useState("Training Report");
     const [title, setTitle] = useState("");
     const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10));
+    const [endDate, setEndDate] = useState<string>("");
     const [venue, setVenue] = useState("");
     const [trainer, setTrainer] = useState("");
     const [description, setDescription] = useState("");
@@ -136,6 +137,7 @@ export function NewTrainingForm() {
                 body: JSON.stringify({
                     title,
                     date,
+                    endDate: endDate || null,
                     venue,
                     trainer,
                     description,
@@ -183,6 +185,8 @@ export function NewTrainingForm() {
                 setCoreTitle={setTitle}
                 coreDate={date}
                 setCoreDate={setDate}
+                coreEndDate={endDate}
+                setCoreEndDate={setEndDate}
                 coreVenue={venue}
                 setCoreVenue={setVenue}
                 coreStartTime={startTime}

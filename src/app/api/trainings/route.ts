@@ -32,6 +32,7 @@ export async function POST(request: Request) {
 
   const title = body?.title;
   const dateRaw = body?.date;
+  const endDateRaw = body?.endDate;
   const venue = body?.venue;
   const trainer = body?.trainer;
   const description = body?.description;
@@ -55,6 +56,14 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: "Invalid date" }, { status: 400 });
   }
 
+  let endDate = null;
+  if (endDateRaw) {
+    const parsedEnd = new Date(endDateRaw);
+    if (!Number.isNaN(parsedEnd.getTime())) {
+      endDate = parsedEnd;
+    }
+  }
+
   const status = user.role === "admin" ? "APPROVED" : "PENDING";
 
   // Create training with all fields in one go using standard Prisma
@@ -62,6 +71,7 @@ export async function POST(request: Request) {
     data: {
       title,
       date,
+      endDate,
       venue,
       trainer,
       description,

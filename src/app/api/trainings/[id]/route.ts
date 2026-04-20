@@ -43,6 +43,7 @@ export async function PATCH(
 
         const title = body?.title;
         const dateRaw = body?.date;
+        const endDateRaw = body?.endDate;
         const venue = body?.venue;
         const trainer = body?.trainer;
         const description = body?.description;
@@ -70,6 +71,18 @@ export async function PATCH(
             return NextResponse.json({ ok: false, error: "Invalid date" }, { status: 400 });
         }
 
+        let endDate = undefined;
+        if (endDateRaw !== undefined) {
+            if (endDateRaw === null) {
+                endDate = null;
+            } else {
+                const parsedEnd = new Date(endDateRaw);
+                if (!Number.isNaN(parsedEnd.getTime())) {
+                    endDate = parsedEnd;
+                }
+            }
+        }
+
         // Fetch existing training to check ownership/permissions
         const existingTraining = await prisma.training.findUnique({
             where: { id },
@@ -90,6 +103,7 @@ export async function PATCH(
             data: {
                 title,
                 date,
+                endDate,
                 venue,
                 trainer,
                 description,

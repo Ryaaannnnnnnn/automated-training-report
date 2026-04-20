@@ -12,6 +12,8 @@ interface Props {
   setCoreTitle: (v: string) => void;
   coreDate: string;
   setCoreDate: (v: string) => void;
+  coreEndDate?: string;
+  setCoreEndDate?: (v: string) => void;
   coreVenue: string;
   setCoreVenue: (v: string) => void;
   coreStartTime: string;
@@ -219,6 +221,8 @@ export function AfterTrainingReportForm({
   setCoreTitle,
   coreDate,
   setCoreDate,
+  coreEndDate,
+  setCoreEndDate,
   coreVenue,
   setCoreVenue,
   coreStartTime,
@@ -500,6 +504,7 @@ export function AfterTrainingReportForm({
             }}
             coreTitle={coreTitle}
             coreDate={coreDate}
+            coreEndDate={coreEndDate}
             coreStartTime={coreStartTime}
             coreEndTime={coreEndTime}
             coreVenue={coreVenue}
@@ -551,15 +556,26 @@ export function AfterTrainingReportForm({
 
             {/* Date and Time (Row 3) */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:col-span-2">
-              <Field label="Date">
-                <input
-                  className={inp}
-                  type="date"
-                  value={coreDate}
-                  onChange={(e) => setCoreDate(e.target.value)}
-                  required
-                />
-              </Field>
+              <div className="grid grid-cols-2 gap-3">
+                <Field label="Start Date">
+                  <input
+                    className={inp}
+                    type="date"
+                    value={coreDate}
+                    onChange={(e) => setCoreDate(e.target.value)}
+                    required
+                  />
+                </Field>
+                <Field label="End Date (Optional)">
+                  <input
+                    className={inp}
+                    type="date"
+                    value={coreEndDate || ""}
+                    onChange={(e) => setCoreEndDate?.(e.target.value)}
+                    placeholder="Same as start"
+                  />
+                </Field>
+              </div>
               <div className="space-y-2.5">
                 <label className="text-[10px] font-bold text-gray-900 dark:text-slate-300 uppercase tracking-[0.2em] ml-1 text-blue-600 dark:text-blue-400">Training Time</label>
                 <div className="flex items-center gap-3">
