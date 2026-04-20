@@ -305,6 +305,8 @@ export function AfterTrainingReportForm({
   const [approvedByPosition, setApprovedByPosition] = useState("Provincial Officer");
 
   const [downloadingPdf, setDownloadingPdf] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<Record<string, boolean>>({});
+  const [showValidationError, setShowValidationError] = useState(false);
 
   // ── Initialization Logic for Editing ────────────────
   useState(() => {
@@ -450,6 +452,49 @@ export function AfterTrainingReportForm({
     return diffDays + 1;
   };
 
+  const validateStep = (s: number) => {
+    const errors: Record<string, boolean> = {};
+    setShowValidationError(false);
+
+    if (s === 0) {
+      if (!coreTitle.trim()) errors.coreTitle = true;
+      if (!coreDate) errors.coreDate = true;
+      if (!coreVenue.trim()) errors.coreVenue = true;
+      if (!coreTrainer.trim() && !resourcePerson.trim()) errors.resourcePerson = true;
+      if (!attendeesTotal || parseInt(attendeesTotal) <= 0) errors.attendeesTotal = true;
+    } else if (s === 1) {
+      if (!rationale.trim()) errors.rationale = true;
+      if (objectives.filter(o => o.trim()).length === 0) errors.objectives = true;
+    } else if (s === 2) {
+      if (!topicsCovered.trim()) errors.topicsCovered = true;
+    } else if (s === 3) {
+      if (!preparedByName.trim()) errors.preparedByName = true;
+      if (!approvedByName.trim()) errors.approvedByName = true;
+    }
+
+    setValidationErrors(errors);
+    const hasErrors = Object.keys(errors).length > 0;
+    if (hasErrors) {
+      setShowValidationError(true);
+      // Auto-hide error alert after 4s
+      setTimeout(() => setShowValidationError(false), 4000);
+    }
+    return !hasErrors;
+  };
+
+  const handleNext = () => {
+    if (validateStep(step)) {
+      setStep((s) => s + 1);
+    }
+  };
+
+  const wrapInputStyle = (fieldName: string, base: string) => {
+    if (validationErrors[fieldName]) {
+      return `${base} border-red-500 focus:border-red-600 focus:ring-red-500/10 bg-red-50/10`;
+    }
+    return base;
+  };
+
   // ── Render ───────────────────────────
 
   return (
@@ -537,12 +582,15 @@ export function AfterTrainingReportForm({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             {/* Course Title (Row 1) */}
             <div className="sm:col-span-2 space-y-2.5">
-              <label className="text-[10px] font-bold text-gray-900 dark:text-slate-300 uppercase tracking-[0.2em] ml-1 text-blue-600 dark:text-blue-400">Course Title</label>
+              <label className="text-[10px] font-bold text-gray-900 dark:text-slate-300 uppercase tracking-[0.2em] ml-1 text-blue-600 dark:text-blue-400">Course Title <span className="text-red-500">*</span></label>
               <input
-                className="w-full rounded-2xl border-2 border-blue-50 dark:border-blue-900/30 bg-blue-50/20 dark:bg-blue-900/10 px-5 py-4 text-base font-bold dark:text-white outline-none transition-all focus:border-blue-500/40 focus:ring-8 focus:ring-blue-500/5 focus:bg-white dark:focus:bg-slate-800"
+                className={wrapInputStyle("coreTitle", "w-full rounded-2xl border-2 border-blue-50 dark:border-blue-900/30 bg-blue-50/20 dark:bg-blue-900/10 px-5 py-4 text-base font-bold dark:text-white outline-none transition-all focus:border-blue-500/40 focus:ring-8 focus:ring-blue-500/5 focus:bg-white dark:focus:bg-slate-800")}
                 placeholder="e.g. BASIC GRAPHIC DESIGN USING CANVA"
                 value={coreTitle}
-                onChange={(e) => setCoreTitle(e.target.value)}
+                onChange={(e) => {
+                   setCoreTitle(e.target.value);
+                   if (validationErrors.coreTitle) setValidationErrors({...validationErrors, coreTitle: false});
+                }}
                 required
               />
             </div>
@@ -557,12 +605,15 @@ export function AfterTrainingReportForm({
             {/* Date and Time (Row 3) */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:col-span-2">
               <div className="grid grid-cols-2 gap-3">
-                <Field label="Start Date">
+                <Field label="Start Date *">
                   <input
-                    className={inp}
+                    className={wrapInputStyle("coreDate", inp)}
                     type="date"
                     value={coreDate}
-                    onChange={(e) => setCoreDate(e.target.value)}
+                    onChange={(e) => {
+                      setCoreDate(e.target.value);
+                      if (validationErrors.coreDate) setValidationErrors({...validationErrors, coreDate: false});
+                    }}
                     required
                   />
                 </Field>
@@ -611,12 +662,15 @@ export function AfterTrainingReportForm({
 
             {/* Venue (Row 5) */}
             <div className="sm:col-span-2">
-              <Field label="Venue">
+              <Field label="Venue *">
                 <input
-                  className={inp}
+                  className={wrapInputStyle("coreVenue", inp)}
                   placeholder="e.g. Conference Hall A"
                   value={coreVenue}
-                  onChange={(e) => setCoreVenue(e.target.value)}
+                  onChange={(e) => {
+                    setCoreVenue(e.target.value);
+                    if (validationErrors.coreVenue) setValidationErrors({...validationErrors, coreVenue: false});
+                  }}
                   required
                 />
               </Field>
@@ -667,11 +721,11 @@ export function AfterTrainingReportForm({
 
           {/* Attendees */}
           <div>
-            <p className="text-[10px] font-bold text-gray-900 dark:text-slate-200 uppercase tracking-[0.2em] ml-1 mb-3">Total # of Attendees <span className="text-gray-400 dark:text-slate-500 normal-case tracking-normal font-medium">(with/without submitted Evaluation Form/Output)</span></p>
+            <p className="text-[10px] font-bold text-gray-900 dark:text-slate-200 uppercase tracking-[0.2em] ml-1 mb-3">Total # of Attendees <span className="text-gray-400 dark:text-slate-500 normal-case tracking-normal font-medium">(with/without submitted Evaluation Form/Output)</span> <span className="text-red-500">*</span></p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <Field label="Total"><input className={inp + " text-center bg-gray-100/50 dark:bg-slate-800/50 font-bold text-blue-600 dark:text-blue-400"} placeholder="0" value={attendeesTotal} readOnly tabIndex={-1} /></Field>
-              <Field label="Male"><input type="number" className={inp + " text-center"} placeholder="0" value={attendeesMale} onChange={(e) => { setAttendeesMale(e.target.value); setAttendeesTotal(autoSum(e.target.value, attendeesFemale)); }} /></Field>
-              <Field label="Female"><input type="number" className={inp + " text-center"} placeholder="0" value={attendeesFemale} onChange={(e) => { setAttendeesFemale(e.target.value); setAttendeesTotal(autoSum(attendeesMale, e.target.value)); }} /></Field>
+              <Field label="Total"><input className={wrapInputStyle("attendeesTotal", inp + " text-center bg-gray-100/50 dark:bg-slate-800/50 font-bold text-blue-600 dark:text-blue-400")} placeholder="0" value={attendeesTotal} readOnly tabIndex={-1} /></Field>
+              <Field label="Male"><input type="number" className={inp + " text-center"} placeholder="0" value={attendeesMale} onChange={(e) => { setAttendeesMale(e.target.value); setAttendeesTotal(autoSum(e.target.value, attendeesFemale)); if (validationErrors.attendeesTotal) setValidationErrors({...validationErrors, attendeesTotal: false}); }} /></Field>
+              <Field label="Female"><input type="number" className={inp + " text-center"} placeholder="0" value={attendeesFemale} onChange={(e) => { setAttendeesFemale(e.target.value); setAttendeesTotal(autoSum(attendeesMale, e.target.value)); if (validationErrors.attendeesTotal) setValidationErrors({...validationErrors, attendeesTotal: false}); }} /></Field>
             </div>
           </div>
 
@@ -719,21 +773,30 @@ export function AfterTrainingReportForm({
             <p className="text-[12px] text-gray-400 dark:text-slate-500 font-medium mt-1">Explain the purpose of the training and what participants will achieve.</p>
           </div>
 
-          <Field label="II. Rationale">
+          <Field label="II. Rationale *">
             <textarea
-              className="min-h-[180px] w-full rounded-2xl border-2 border-gray-100 bg-gray-50/20 px-5 py-4 text-sm font-medium outline-none transition-all focus:border-blue-500/40 focus:ring-8 focus:ring-blue-500/5 focus:bg-white resize-y"
+              className={wrapInputStyle("rationale", "min-h-[180px] w-full rounded-2xl border-2 border-gray-100 dark:border-slate-800 bg-gray-50/20 dark:bg-slate-900/50 px-5 py-4 text-sm font-medium dark:text-white outline-none transition-all focus:border-blue-500/40 dark:focus:ring-8 dark:focus:ring-blue-500/5 focus:ring-8 focus:ring-blue-500/5 focus:bg-white dark:focus:bg-slate-800 resize-y")}
               placeholder="Describe the background and purpose of this training..."
               value={rationale}
-              onChange={(e) => setRationale(e.target.value)}
+              onChange={(e) => {
+                setRationale(e.target.value);
+                if (validationErrors.rationale) setValidationErrors({...validationErrors, rationale: false});
+              }}
             />
           </Field>
 
-          <BulletListEditor
-            label="III. Objectives — At the end of this course, participants will be able to:"
-            items={objectives}
-            onChange={setObjectives}
-            placeholder="e.g. Apply the key features of Canva to create digital design outputs"
-          />
+          <div className={validationErrors.objectives ? "p-4 rounded-3xl border-2 border-red-200 bg-red-50/30" : ""}>
+            <BulletListEditor
+              label="III. Objectives — At the end of this course, participants will be able to: *"
+              items={objectives}
+              onChange={(items) => {
+                setObjectives(items);
+                if (validationErrors.objectives) setValidationErrors({...validationErrors, objectives: false});
+              }}
+              placeholder="e.g. Apply the key features of Canva to create digital design outputs"
+            />
+            {validationErrors.objectives && <p className="text-[10px] font-bold text-red-500 mt-2 ml-1 uppercase tracking-wider">At least one objective is required</p>}
+          </div>
         </div>
       )}
 
@@ -747,12 +810,15 @@ export function AfterTrainingReportForm({
             <p className="text-[12px] text-gray-400 dark:text-slate-500 font-medium mt-1">Document what was covered, concerns raised, and next steps.</p>
           </div>
 
-          <Field label="IV. Topics Covered">
+          <Field label="IV. Topics Covered *">
             <textarea
-              className="min-h-[160px] w-full rounded-2xl border-2 border-gray-100 bg-gray-50/20 px-5 py-4 text-sm font-medium outline-none transition-all focus:border-blue-500/40 focus:ring-8 focus:ring-blue-500/5 focus:bg-white resize-y"
+              className={wrapInputStyle("topicsCovered", "min-h-[160px] w-full rounded-2xl border-2 border-gray-100 dark:border-slate-800 bg-gray-50/20 dark:bg-slate-900/50 px-5 py-4 text-sm font-medium dark:text-white outline-none transition-all focus:border-blue-500/40 dark:focus:ring-8 dark:focus:ring-blue-500/5 focus:ring-8 focus:ring-blue-500/5 focus:bg-white dark:focus:bg-slate-800 resize-y")}
               placeholder="Describe the topics and activities covered during the training..."
               value={topicsCovered}
-              onChange={(e) => setTopicsCovered(e.target.value)}
+              onChange={(e) => {
+                setTopicsCovered(e.target.value);
+                if (validationErrors.topicsCovered) setValidationErrors({...validationErrors, topicsCovered: false});
+              }}
             />
           </Field>
 
@@ -877,8 +943,8 @@ export function AfterTrainingReportForm({
           <div className="border-t border-gray-100 dark:border-slate-800 pt-6">
             <p className="text-[10px] font-bold text-gray-900 dark:text-slate-200 uppercase tracking-[0.2em] ml-1 mb-4">Signatories</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-              <Field label="Prepared By — Name"><input className={inp} placeholder="Full name" value={preparedByName} onChange={(e) => setPreparedByName(e.target.value)} /></Field>
-              <Field label="Approved By — Name"><input className={inp} placeholder="Full name" value={approvedByName} onChange={(e) => setApprovedByName(e.target.value)} /></Field>
+              <Field label="Prepared By — Name *"><input className={wrapInputStyle("preparedByName", inp)} placeholder="Full name" value={preparedByName} onChange={(e) => { setPreparedByName(e.target.value); if (validationErrors.preparedByName) setValidationErrors({...validationErrors, preparedByName: false}); }} /></Field>
+              <Field label="Approved By — Name *"><input className={wrapInputStyle("approvedByName", inp)} placeholder="Full name" value={approvedByName} onChange={(e) => { setApprovedByName(e.target.value); if (validationErrors.approvedByName) setValidationErrors({...validationErrors, approvedByName: false}); }} /></Field>
               <Field label="Prepared By — Position/Title"><input className={inp} placeholder="e.g. PDO I" value={preparedByPosition} onChange={(e) => setPreparedByPosition(e.target.value)} /></Field>
               <Field label="Approved By — Position/Title"><input className={inp} placeholder="e.g. Provincial Officer" value={approvedByPosition} onChange={(e) => setApprovedByPosition(e.target.value)} /></Field>
             </div>
@@ -897,6 +963,15 @@ export function AfterTrainingReportForm({
         </button>
 
         <div className="flex items-center gap-3">
+          {showValidationError && (
+             <div className="fixed bottom-24 right-6 bg-red-600 text-white px-5 py-3 rounded-2xl shadow-xl animate-fade-in flex items-center gap-3 z-50">
+               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
+                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008h-.008v-.008z" />
+               </svg>
+               <span className="text-[11px] font-black uppercase tracking-widest">Please fill in all required fields (*)</span>
+             </div>
+          )}
+
           {step === 3 && (
             <button
               type="button"
@@ -923,7 +998,7 @@ export function AfterTrainingReportForm({
           {step < 3 ? (
             <button
               type="button"
-              onClick={() => setStep((s) => s + 1)}
+              onClick={handleNext}
               className="rounded-2xl bg-blue-600 px-8 py-3.5 text-[12px] font-bold text-white hover:bg-blue-700 shadow-lg shadow-blue-600/20 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2 uppercase tracking-wider"
             >
               Next →
@@ -931,7 +1006,9 @@ export function AfterTrainingReportForm({
           ) : (
             <button
               type="button"
-              onClick={handleSubmit}
+              onClick={() => {
+                if (validateStep(step)) handleSubmit();
+              }}
               disabled={saving}
               className="rounded-2xl bg-green-600 px-8 py-3.5 text-[12px] font-bold text-white hover:bg-green-700 shadow-lg shadow-green-600/20 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center gap-3 uppercase tracking-wider disabled:opacity-60"
             >
