@@ -96,29 +96,29 @@ export function EditUserModal({ user, onClose }: EditUserModalProps) {
             onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
         >
             {/* Modal panel */}
-            <div className="relative w-full max-w-lg bg-white dark:bg-slate-800 rounded-3xl shadow-[0_32px_64px_-16px_rgba(0,0,0,0.6)] border border-gray-100 dark:border-slate-700 overflow-hidden animate-scale-in">
+            <div className="relative w-full max-w-lg bg-white dark:bg-slate-800 rounded-[2rem] sm:rounded-3xl shadow-[0_32px_64px_-16px_rgba(0,0,0,0.6)] border border-gray-100 dark:border-slate-700 overflow-hidden animate-scale-in max-h-[95vh] sm:max-h-none overflow-y-auto">
 
                 {/* Header */}
-                <div className="flex items-center justify-between px-6 sm:px-8 py-5 bg-gradient-to-r from-blue-600 to-indigo-700">
+                <div className="flex items-center justify-between px-5 sm:px-8 py-4 sm:py-5 bg-gradient-to-r from-blue-600 to-indigo-700">
                     <div className="flex items-center gap-3">
-                        <div className="p-2 bg-white/10 rounded-xl">
-                            <User size={20} className="text-white" strokeWidth={2.5} />
+                        <div className="p-1.5 sm:p-2 bg-white/10 rounded-xl">
+                            <User size={18} className="text-white" strokeWidth={2.5} />
                         </div>
                         <div>
-                            <p className="text-[10px] font-black text-blue-100 uppercase tracking-[0.2em]">Editing</p>
-                            <h2 className="text-lg font-black text-white leading-none capitalize">{user.username}</h2>
+                            <p className="text-[9px] sm:text-[10px] font-black text-blue-100 uppercase tracking-[0.2em]">Editing</p>
+                            <h2 className="text-base sm:text-lg font-black text-white leading-none capitalize">{user.username}</h2>
                         </div>
                     </div>
                     <button
                         onClick={onClose}
-                        className="p-2 rounded-xl hover:bg-white/10 text-white/70 hover:text-white transition-all"
+                        className="p-1.5 sm:p-2 rounded-xl hover:bg-white/10 text-white/70 hover:text-white transition-all"
                     >
-                        <X size={20} strokeWidth={2.5} />
+                        <X size={18} strokeWidth={2.5} />
                     </button>
                 </div>
 
                 {/* Form */}
-                <form onSubmit={handleSave} className="p-6 sm:p-8 space-y-5">
+                <form onSubmit={handleSave} className="p-5 sm:p-8 space-y-4 sm:space-y-5">
 
                     {/* Error / Success banners */}
                     {error && (
@@ -143,7 +143,7 @@ export function EditUserModal({ user, onClose }: EditUserModalProps) {
                             type="text"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
-                            className="w-full rounded-2xl border-2 border-gray-100 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 text-gray-900 dark:text-white px-5 py-3.5 text-sm font-semibold outline-none focus:border-blue-500/60 focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:text-gray-300 dark:placeholder:text-slate-600"
+                            className="w-full rounded-2xl border-2 border-gray-100 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 text-gray-900 dark:text-white px-5 py-2.5 sm:py-3.5 text-sm font-semibold outline-none focus:border-blue-500/60 focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:text-gray-300 dark:placeholder:text-slate-600"
                             placeholder="e.g. jhon_loyd"
                             required
                         />
@@ -158,7 +158,7 @@ export function EditUserModal({ user, onClose }: EditUserModalProps) {
                             type="text"
                             value={designation}
                             onChange={(e) => setDesignation(e.target.value)}
-                            className="w-full rounded-2xl border-2 border-gray-100 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 text-gray-900 dark:text-white px-5 py-3.5 text-sm font-semibold outline-none focus:border-blue-500/60 focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:text-gray-300 dark:placeholder:text-slate-600"
+                            className="w-full rounded-2xl border-2 border-gray-100 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 text-gray-900 dark:text-white px-5 py-2.5 sm:py-3.5 text-sm font-semibold outline-none focus:border-blue-500/60 focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:text-gray-300 dark:placeholder:text-slate-600"
                             placeholder="e.g. DICT Internship, Provincial Officer"
                         />
                     </div>
@@ -171,7 +171,7 @@ export function EditUserModal({ user, onClose }: EditUserModalProps) {
                         <select
                             value={role}
                             onChange={(e) => setRole(e.target.value)}
-                            className="w-full rounded-2xl border-2 border-gray-100 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 text-gray-900 dark:text-white px-5 py-3.5 text-sm font-semibold outline-none focus:border-blue-500/60 focus:ring-4 focus:ring-blue-500/10 transition-all appearance-none cursor-pointer"
+                            className="w-full rounded-2xl border-2 border-gray-100 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 text-gray-900 dark:text-white px-5 py-2.5 sm:py-3.5 text-sm font-semibold outline-none focus:border-blue-500/60 focus:ring-4 focus:ring-blue-500/10 transition-all appearance-none cursor-pointer"
                         >
                             <option value="staff">Staff</option>
                             <option value="admin">Admin</option>
@@ -195,7 +195,7 @@ export function EditUserModal({ user, onClose }: EditUserModalProps) {
                                 type={showPassword ? "text" : "password"}
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="w-full rounded-2xl border-2 border-gray-100 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 text-gray-900 dark:text-white px-5 py-3.5 pr-12 text-sm font-semibold outline-none focus:border-blue-500/60 focus:ring-4 focus:ring-blue-500/10 transition-all tracking-[0.12em] placeholder:text-gray-300 dark:placeholder:text-slate-600 placeholder:tracking-normal"
+                                className="w-full rounded-2xl border-2 border-gray-100 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 text-gray-900 dark:text-white px-5 py-2.5 sm:py-3.5 pr-12 text-sm font-semibold outline-none focus:border-blue-500/60 focus:ring-4 focus:ring-blue-500/10 transition-all tracking-[0.12em] placeholder:text-gray-300 dark:placeholder:text-slate-600 placeholder:tracking-normal"
                                 placeholder="Leave blank to keep current"
                                 minLength={password ? 6 : undefined}
                             />
@@ -219,7 +219,7 @@ export function EditUserModal({ user, onClose }: EditUserModalProps) {
                                 type={showConfirm ? "text" : "password"}
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
-                                className="w-full rounded-2xl border-2 border-gray-100 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 text-gray-900 dark:text-white px-5 py-3.5 pr-12 text-sm font-semibold outline-none focus:border-blue-500/60 focus:ring-4 focus:ring-blue-500/10 transition-all tracking-[0.12em] placeholder:text-gray-300 dark:placeholder:text-slate-600 placeholder:tracking-normal"
+                                className="w-full rounded-2xl border-2 border-gray-100 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 text-gray-900 dark:text-white px-5 py-2.5 sm:py-3.5 pr-12 text-sm font-semibold outline-none focus:border-blue-500/60 focus:ring-4 focus:ring-blue-500/10 transition-all tracking-[0.12em] placeholder:text-gray-300 dark:placeholder:text-slate-600 placeholder:tracking-normal"
                                 placeholder="Repeat the new password"
                             />
                             <button
@@ -237,14 +237,14 @@ export function EditUserModal({ user, onClose }: EditUserModalProps) {
                         <button
                             type="button"
                             onClick={onClose}
-                            className="flex-1 px-6 py-3.5 rounded-2xl border-2 border-gray-100 dark:border-slate-700 text-[12px] font-black uppercase tracking-widest text-gray-500 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-slate-700 transition-all"
+                            className="flex-1 px-6 py-3 sm:py-3.5 rounded-2xl border-2 border-gray-100 dark:border-slate-700 text-[12px] font-black uppercase tracking-widest text-gray-500 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-slate-700 transition-all"
                         >
                             Cancel
                         </button>
                         <button
                             type="submit"
                             disabled={loading || success}
-                            className="flex-1 flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-700 text-[12px] font-black uppercase tracking-widest text-white shadow-lg shadow-blue-600/20 hover:shadow-xl hover:shadow-blue-600/30 hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-60 transition-all"
+                            className="flex-1 flex items-center justify-center gap-2 px-6 py-3 sm:py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-700 text-[12px] font-black uppercase tracking-widest text-white shadow-lg shadow-blue-600/20 hover:shadow-xl hover:shadow-blue-600/30 hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-60 transition-all"
                         >
                             {loading ? (
                                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
