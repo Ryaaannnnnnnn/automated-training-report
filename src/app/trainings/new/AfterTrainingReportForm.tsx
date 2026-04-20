@@ -149,43 +149,59 @@ function SectorInputRow({
   };
 
   const inp =
-    "w-full rounded-lg border-2 border-gray-100 dark:border-slate-800 bg-gray-50/20 dark:bg-slate-900/50 px-2 py-2 text-sm font-medium dark:text-white outline-none transition-all focus:border-blue-500/40 dark:focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/5 focus:bg-white dark:focus:bg-slate-800 text-center";
+    "w-full rounded-lg border-2 border-gray-100 dark:border-slate-800 bg-gray-50/20 dark:bg-slate-900/50 px-2 py-2 text-sm font-medium dark:text-white outline-none transition-all focus:border-blue-500/40 dark:focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/5 focus:bg-white dark:focus:bg-slate-800 text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none";
+
   return (
-    <tr className="border-b border-gray-100 dark:border-slate-800">
-      <td className="py-2 pr-3 font-semibold text-sm text-gray-700 dark:text-slate-300 whitespace-nowrap">{label}:</td>
-      <td className="py-1 px-1">
-        <input 
-          className={inp + " bg-gray-50/50 dark:bg-slate-800/50 font-bold text-blue-600 dark:text-blue-400"} 
-          placeholder="Total" 
-          value={value.total} 
-          readOnly 
-          tabIndex={-1} 
-        />
-      </td>
-      <td className="py-1 px-1 text-xs text-center text-gray-400 dark:text-slate-500 font-medium">Male</td>
-      <td className="py-1 px-1">
-        <input 
-          className={inp} 
-          placeholder="M" 
-          value={value.male} 
-          onChange={(e) => handleMaleChange(e.target.value)} 
-        />
-      </td>
-      <td className="py-1 px-1 text-xs text-center text-gray-400 dark:text-slate-500 font-medium">Female</td>
-      <td className="py-1 px-1">
-        <input 
-          className={inp} 
-          placeholder="F" 
-          value={value.female} 
-          onChange={(e) => handleFemaleChange(e.target.value)} 
-        />
-      </td>
-    </tr>
+    <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 sm:gap-2 items-center p-3 sm:p-2 border-b border-gray-100 dark:border-slate-800 last:border-0 hover:bg-gray-50/30 dark:hover:bg-slate-800/20 transition-colors">
+      <div className="sm:col-span-3 font-black text-[11px] text-gray-900 dark:text-slate-200 uppercase tracking-widest">{label}:</div>
+      
+      {/* Total Column */}
+      <div className="sm:col-span-3">
+        <div className="flex items-center gap-2">
+          <span className="sm:hidden text-[9px] font-bold text-blue-600 dark:text-blue-400 uppercase w-10">Total:</span>
+          <input 
+            className={inp + " bg-gray-100/50 dark:bg-slate-800/70 font-bold text-blue-600 dark:text-blue-400"} 
+            placeholder="Total" 
+            value={value.total} 
+            readOnly 
+            tabIndex={-1} 
+          />
+        </div>
+      </div>
+
+      {/* Male Column */}
+      <div className="sm:col-span-3">
+        <div className="flex items-center gap-2">
+          <span className="sm:hidden text-[9px] font-bold text-gray-400 dark:text-slate-500 uppercase w-10 text-right">Male:</span>
+          <input 
+            type="number"
+            className={inp} 
+            placeholder="M" 
+            value={value.male} 
+            onChange={(e) => handleMaleChange(e.target.value)} 
+          />
+        </div>
+      </div>
+
+      {/* Female Column */}
+      <div className="sm:col-span-3">
+        <div className="flex items-center gap-2">
+          <span className="sm:hidden text-[9px] font-bold text-gray-400 dark:text-slate-500 uppercase w-10 text-right">Female:</span>
+          <input 
+            type="number"
+            className={inp} 
+            placeholder="F" 
+            value={value.female} 
+            onChange={(e) => handleFemaleChange(e.target.value)} 
+          />
+        </div>
+      </div>
+    </div>
   );
 }
 
 const inp =
-  "w-full rounded-2xl border-2 border-gray-100 dark:border-slate-800 bg-gray-50/20 dark:bg-slate-900/50 px-5 py-3.5 text-sm font-medium dark:text-white outline-none transition-all focus:border-blue-500/40 dark:focus:border-blue-500/50 focus:ring-8 focus:ring-blue-500/5 focus:bg-white dark:focus:bg-slate-800";
+  "w-full rounded-2xl border-2 border-gray-100 dark:border-slate-800 bg-gray-50/20 dark:bg-slate-900/50 px-5 py-3.5 text-sm font-medium dark:text-white outline-none transition-all focus:border-blue-500/40 dark:focus:border-blue-500/50 focus:ring-8 focus:ring-blue-500/5 focus:bg-white dark:focus:bg-slate-800 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none";
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
@@ -636,33 +652,31 @@ export function AfterTrainingReportForm({
           {/* Attendees */}
           <div>
             <p className="text-[10px] font-bold text-gray-900 dark:text-slate-200 uppercase tracking-[0.2em] ml-1 mb-3">Total # of Attendees <span className="text-gray-400 dark:text-slate-500 normal-case tracking-normal font-medium">(with/without submitted Evaluation Form/Output)</span></p>
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <Field label="Total"><input className={inp + " text-center bg-gray-100/50 dark:bg-slate-800/50 font-bold text-blue-600 dark:text-blue-400"} placeholder="0" value={attendeesTotal} readOnly tabIndex={-1} /></Field>
-              <Field label="Male"><input className={inp + " text-center"} placeholder="0" value={attendeesMale} onChange={(e) => { setAttendeesMale(e.target.value); setAttendeesTotal(autoSum(e.target.value, attendeesFemale)); }} /></Field>
-              <Field label="Female"><input className={inp + " text-center"} placeholder="0" value={attendeesFemale} onChange={(e) => { setAttendeesFemale(e.target.value); setAttendeesTotal(autoSum(attendeesMale, e.target.value)); }} /></Field>
+              <Field label="Male"><input type="number" className={inp + " text-center"} placeholder="0" value={attendeesMale} onChange={(e) => { setAttendeesMale(e.target.value); setAttendeesTotal(autoSum(e.target.value, attendeesFemale)); }} /></Field>
+              <Field label="Female"><input type="number" className={inp + " text-center"} placeholder="0" value={attendeesFemale} onChange={(e) => { setAttendeesFemale(e.target.value); setAttendeesTotal(autoSum(attendeesMale, e.target.value)); }} /></Field>
             </div>
           </div>
 
           {/* Sector Category */}
           <div>
             <p className="text-[10px] font-bold text-gray-900 dark:text-slate-200 uppercase tracking-[0.2em] ml-1 mb-3">Sector Category <span className="text-gray-400 dark:text-slate-500 normal-case tracking-normal font-medium">— Number of Beneficiary/ies with Sex Disaggregation</span></p>
-            <div className="rounded-xl border border-gray-100 dark:border-slate-800 overflow-hidden">
-              <table className="w-full text-sm">
-                <thead className="bg-gray-50 dark:bg-slate-800">
-                  <tr>
-                    <th className="text-left py-2 px-3 text-[10px] font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider">Sector</th>
-                    <th className="text-center py-2 px-2 text-[10px] font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider" colSpan={2}>Total</th>
-                    <th className="text-center py-2 px-2 text-[10px] font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider" colSpan={2}>Male</th>
-                    <th className="text-center py-2 px-2 text-[10px] font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider" colSpan={2}>Female</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <SectorInputRow label="NGA" value={nga} onChange={setNga} />
-                  <SectorInputRow label="LGU" value={lgu} onChange={setLgu} />
-                  <SectorInputRow label="SUC" value={suc} onChange={setSuc} />
-                  <SectorInputRow label="Others" value={others} onChange={setOthers} />
-                </tbody>
-              </table>
+            <div className="rounded-2xl border border-gray-100 dark:border-slate-800 overflow-hidden bg-gray-50/10 dark:bg-slate-900/40 shadow-inner">
+              {/* Header - Desktop Only */}
+              <div className="hidden sm:grid grid-cols-12 gap-2 bg-gray-50 dark:bg-slate-800/80 px-4 py-2 border-b border-gray-100 dark:border-slate-800">
+                <div className="col-span-3 text-[10px] font-black text-gray-500 dark:text-slate-400 uppercase tracking-widest">Sector</div>
+                <div className="col-span-3 text-[10px] font-black text-gray-500 dark:text-slate-400 uppercase tracking-widest text-center">Total</div>
+                <div className="col-span-3 text-[10px] font-black text-gray-500 dark:text-slate-400 uppercase tracking-widest text-center">Male</div>
+                <div className="col-span-3 text-[10px] font-black text-gray-500 dark:text-slate-400 uppercase tracking-widest text-center">Female</div>
+              </div>
+              
+              <div className="divide-y divide-gray-100 dark:divide-slate-800">
+                <SectorInputRow label="NGA" value={nga} onChange={setNga} />
+                <SectorInputRow label="LGU" value={lgu} onChange={setLgu} />
+                <SectorInputRow label="SUC" value={suc} onChange={setSuc} />
+                <SectorInputRow label="Others" value={others} onChange={setOthers} />
+              </div>
             </div>
           </div>
 
