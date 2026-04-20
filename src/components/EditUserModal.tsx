@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import { X, Save, User, Briefcase, Shield, Lock, Eye, EyeOff, AlertCircle, CheckCircle } from "lucide-react";
 
@@ -26,6 +27,16 @@ export function EditUserModal({ user, onClose }: EditUserModalProps) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState(false);
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+        // Prevent scrolling while modal is open
+        document.body.style.overflow = "hidden";
+        return () => {
+            document.body.style.overflow = "unset";
+        };
+    }, []);
 
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -76,14 +87,16 @@ export function EditUserModal({ user, onClose }: EditUserModalProps) {
         }
     };
 
-    return (
+    if (!mounted) return null;
+
+    return createPortal(
         /* Backdrop */
         <div
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md backdrop-saturate-50 animate-fade-in"
+            className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/92 backdrop-blur-[12px] backdrop-saturate-150 animate-fade-in"
             onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
         >
             {/* Modal panel */}
-            <div className="relative w-full max-w-lg bg-white dark:bg-slate-800 rounded-3xl shadow-2xl shadow-blue-900/20 border border-gray-100 dark:border-slate-700 overflow-hidden animate-scale-in">
+            <div className="relative w-full max-w-lg bg-white dark:bg-slate-800 rounded-3xl shadow-[0_32px_64px_-16px_rgba(0,0,0,0.6)] border border-gray-100 dark:border-slate-700 overflow-hidden animate-scale-in">
 
                 {/* Header */}
                 <div className="flex items-center justify-between px-6 sm:px-8 py-5 bg-gradient-to-r from-blue-600 to-indigo-700">
@@ -253,6 +266,7 @@ export function EditUserModal({ user, onClose }: EditUserModalProps) {
                 }
                 .animate-scale-in { animation: scale-in 0.22s cubic-bezier(0.34,1.56,0.64,1) both; }
             `}</style>
-        </div>
+        </div>,
+        document.body
     );
 }
