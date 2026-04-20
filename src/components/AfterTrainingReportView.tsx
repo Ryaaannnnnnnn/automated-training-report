@@ -91,6 +91,32 @@ export function AfterTrainingReportView({
     return diffDays + 1;
   };
 
+  const ReportFooter = ({ page }: { page: number }) => (
+    <div style={{ 
+      marginTop: "24px", 
+      paddingTop: "8px", 
+      borderTop: "2px solid #3b82f6", 
+      display: "flex", 
+      justifyContent: "space-between", 
+      fontSize: "9px", 
+      lineHeight: 1.4,
+      color: isDownloadMode ? "#333" : "var(--report-text)"
+    }}>
+      <div style={{ flex: 1 }}>
+        <div style={{ color: "#2563eb", fontWeight: "bold" }}>DICT Aklan Provincial Field Office</div>
+        <div>Mabini Street, Poblacion, Kalibo, Aklan</div>
+        <div>Philippines</div>
+      </div>
+      <div style={{ flex: 1, textAlign: "right" }}>
+        <div><span style={{ opacity: 0.8 }}>facebook.com/</span><span style={{ color: "#2563eb" }}>dictaklanprovince</span></div>
+        <div>268 6273</div>
+        <div style={{ marginTop: "2px", fontWeight: "bold", textTransform: "uppercase", fontSize: "8px" }}>
+          AFTER TRAINING REPORT - {coreTitle} | <span style={{ textDecoration: "underline" }}>Page {page} of 4</span>
+        </div>
+      </div>
+    </div>
+  );
+
   // Expose download function if needed via a button or externally
 
   // Expose download function if needed via a button or externally
@@ -218,6 +244,7 @@ export function AfterTrainingReportView({
               </tr>
             </tbody>
           </table>
+          <ReportFooter page={1} />
         </div>
 
         {/* Section 2 — Rationale, Objectives, Topics */}
@@ -249,6 +276,7 @@ export function AfterTrainingReportView({
               </tr>
             </tbody>
           </table>
+          <ReportFooter page={2} />
         </div>
 
         {/* Section 3 — Issues, Recommendations, Plans */}
@@ -283,6 +311,7 @@ export function AfterTrainingReportView({
               </tr>
             </tbody>
           </table>
+          <ReportFooter page={3} />
         </div>
 
         {/* Section 4 — Photo Documentation + Signatories */}
@@ -317,6 +346,7 @@ export function AfterTrainingReportView({
               <div style={{ opacity: 0.8 }}>{data.approvedByPosition}</div>
             </div>
           </div>
+          <ReportFooter page={4} />
         </div>
       </div>
     </div>
