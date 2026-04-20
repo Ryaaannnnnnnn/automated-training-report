@@ -160,10 +160,10 @@ function SectorInputRow({
       {/* Total Column */}
       <div className="sm:col-span-3">
         <div className="flex items-center gap-2">
-          <span className="sm:hidden text-[9px] font-bold text-blue-600 dark:text-blue-400 uppercase w-10">Total:</span>
+          <span className="sm:hidden text-[9px] font-bold text-blue-600 dark:text-blue-400 uppercase w-14 flex-shrink-0">Total:</span>
           <input 
             className={inp + " bg-gray-100/50 dark:bg-slate-800/70 font-bold text-blue-600 dark:text-blue-400"} 
-            placeholder="Total" 
+            placeholder="0" 
             value={value.total} 
             readOnly 
             tabIndex={-1} 
@@ -174,11 +174,11 @@ function SectorInputRow({
       {/* Male Column */}
       <div className="sm:col-span-3">
         <div className="flex items-center gap-2">
-          <span className="sm:hidden text-[9px] font-bold text-gray-400 dark:text-slate-500 uppercase w-10 text-right">Male:</span>
+          <span className="sm:hidden text-[9px] font-bold text-gray-400 dark:text-slate-500 uppercase w-14 flex-shrink-0 text-right">Male:</span>
           <input 
             type="number"
             className={inp} 
-            placeholder="M" 
+            placeholder="0" 
             value={value.male} 
             onChange={(e) => handleMaleChange(e.target.value)} 
           />
@@ -188,11 +188,11 @@ function SectorInputRow({
       {/* Female Column */}
       <div className="sm:col-span-3">
         <div className="flex items-center gap-2">
-          <span className="sm:hidden text-[9px] font-bold text-gray-400 dark:text-slate-500 uppercase w-10 text-right">Female:</span>
+          <span className="sm:hidden text-[9px] font-bold text-gray-400 dark:text-slate-500 uppercase w-14 flex-shrink-0 text-right">Female:</span>
           <input 
             type="number"
             className={inp} 
-            placeholder="F" 
+            placeholder="0" 
             value={value.female} 
             onChange={(e) => handleFemaleChange(e.target.value)} 
           />
@@ -461,7 +461,10 @@ export function AfterTrainingReportForm({
       if (!coreDate) errors.coreDate = true;
       if (!coreVenue.trim()) errors.coreVenue = true;
       if (!coreTrainer.trim() && !resourcePerson.trim()) errors.resourcePerson = true;
-      if (!attendeesTotal || parseInt(attendeesTotal) <= 0) errors.attendeesTotal = true;
+      if (!attendeesTotal || parseInt(attendeesTotal) <= 0) {
+        errors.attendeesMale = true;
+        errors.attendeesFemale = true;
+      }
     } else if (s === 1) {
       if (!rationale.trim()) errors.rationale = true;
       if (objectives.filter(o => o.trim()).length === 0) errors.objectives = true;
@@ -719,13 +722,12 @@ export function AfterTrainingReportForm({
             </div>
           </div>
 
-          {/* Attendees */}
           <div>
             <p className="text-[10px] font-bold text-gray-900 dark:text-slate-200 uppercase tracking-[0.2em] ml-1 mb-3">Total # of Attendees <span className="text-gray-400 dark:text-slate-500 normal-case tracking-normal font-medium">(with/without submitted Evaluation Form/Output)</span> <span className="text-red-500">*</span></p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <Field label="Total"><input className={wrapInputStyle("attendeesTotal", inp + " text-center bg-gray-100/50 dark:bg-slate-800/50 font-bold text-blue-600 dark:text-blue-400")} placeholder="0" value={attendeesTotal} readOnly tabIndex={-1} /></Field>
-              <Field label="Male"><input type="number" className={inp + " text-center"} placeholder="0" value={attendeesMale} onChange={(e) => { setAttendeesMale(e.target.value); setAttendeesTotal(autoSum(e.target.value, attendeesFemale)); if (validationErrors.attendeesTotal) setValidationErrors({...validationErrors, attendeesTotal: false}); }} /></Field>
-              <Field label="Female"><input type="number" className={inp + " text-center"} placeholder="0" value={attendeesFemale} onChange={(e) => { setAttendeesFemale(e.target.value); setAttendeesTotal(autoSum(attendeesMale, e.target.value)); if (validationErrors.attendeesTotal) setValidationErrors({...validationErrors, attendeesTotal: false}); }} /></Field>
+              <Field label="Total"><input className={inp + " text-center bg-gray-100/50 dark:bg-slate-800/50 font-bold text-blue-600 dark:text-blue-400"} placeholder="0" value={attendeesTotal} readOnly tabIndex={-1} /></Field>
+              <Field label="Male"><input type="number" className={wrapInputStyle("attendeesMale", inp + " text-center")} placeholder="0" value={attendeesMale} onChange={(e) => { setAttendeesMale(e.target.value); setAttendeesTotal(autoSum(e.target.value, attendeesFemale)); if (validationErrors.attendeesMale) setValidationErrors({...validationErrors, attendeesMale: false, attendeesFemale: false}); }} /></Field>
+              <Field label="Female"><input type="number" className={wrapInputStyle("attendeesFemale", inp + " text-center")} placeholder="0" value={attendeesFemale} onChange={(e) => { setAttendeesFemale(e.target.value); setAttendeesTotal(autoSum(attendeesMale, e.target.value)); if (validationErrors.attendeesFemale) setValidationErrors({...validationErrors, attendeesMale: false, attendeesFemale: false}); }} /></Field>
             </div>
           </div>
 
