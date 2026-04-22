@@ -157,8 +157,8 @@ function SectorInputRow({
     <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 sm:gap-2 items-center p-3 sm:p-2 border-b border-gray-100 dark:border-slate-800 last:border-0 hover:bg-gray-50/30 dark:hover:bg-slate-800/20 transition-colors">
       <div className="sm:col-span-3 font-black text-[11px] text-gray-900 dark:text-slate-200 uppercase tracking-widest">{label}:</div>
       
-      {/* Total Column */}
-      <div className="sm:col-span-3">
+      {/* Total Column — desktop: 2nd slot; mobile: rendered last via order-last */}
+      <div className="sm:col-span-3 order-last sm:order-none">
         <div className="flex items-center gap-2">
           <span className="sm:hidden text-[9px] font-bold text-blue-600 dark:text-blue-400 uppercase w-14 flex-shrink-0">Total:</span>
           <input 
@@ -724,10 +724,17 @@ export function AfterTrainingReportForm({
 
           <div>
             <p className="text-[10px] font-bold text-gray-900 dark:text-slate-200 uppercase tracking-[0.2em] ml-1 mb-3">Total # of Attendees <span className="text-gray-400 dark:text-slate-500 normal-case tracking-normal font-medium">(with/without submitted Evaluation Form/Output)</span> <span className="text-red-500">*</span></p>
+            {/* Mobile: Male, Female, Total | Desktop (sm): Total, Male, Female */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <Field label="Total"><input className={inp + " text-center bg-gray-100/50 dark:bg-slate-800/50 font-bold text-blue-600 dark:text-blue-400"} placeholder="0" value={attendeesTotal} readOnly tabIndex={-1} /></Field>
-              <Field label="Male"><input type="number" className={wrapInputStyle("attendeesMale", inp + " text-center")} placeholder="0" value={attendeesMale} onChange={(e) => { setAttendeesMale(e.target.value); setAttendeesTotal(autoSum(e.target.value, attendeesFemale)); if (validationErrors.attendeesMale) setValidationErrors({...validationErrors, attendeesMale: false, attendeesFemale: false}); }} /></Field>
-              <Field label="Female"><input type="number" className={wrapInputStyle("attendeesFemale", inp + " text-center")} placeholder="0" value={attendeesFemale} onChange={(e) => { setAttendeesFemale(e.target.value); setAttendeesTotal(autoSum(attendeesMale, e.target.value)); if (validationErrors.attendeesFemale) setValidationErrors({...validationErrors, attendeesMale: false, attendeesFemale: false}); }} /></Field>
+              <div className="order-last sm:order-first">
+                <Field label="Total"><input className={inp + " text-center bg-gray-100/50 dark:bg-slate-800/50 font-bold text-blue-600 dark:text-blue-400"} placeholder="0" value={attendeesTotal} readOnly tabIndex={-1} /></Field>
+              </div>
+              <div className="order-first sm:order-none">
+                <Field label="Male"><input type="number" className={wrapInputStyle("attendeesMale", inp + " text-center")} placeholder="0" value={attendeesMale} onChange={(e) => { setAttendeesMale(e.target.value); setAttendeesTotal(autoSum(e.target.value, attendeesFemale)); if (validationErrors.attendeesMale) setValidationErrors({...validationErrors, attendeesMale: false, attendeesFemale: false}); }} /></Field>
+              </div>
+              <div className="order-2 sm:order-none">
+                <Field label="Female"><input type="number" className={wrapInputStyle("attendeesFemale", inp + " text-center")} placeholder="0" value={attendeesFemale} onChange={(e) => { setAttendeesFemale(e.target.value); setAttendeesTotal(autoSum(attendeesMale, e.target.value)); if (validationErrors.attendeesFemale) setValidationErrors({...validationErrors, attendeesMale: false, attendeesFemale: false}); }} /></Field>
+              </div>
             </div>
           </div>
 
@@ -755,10 +762,17 @@ export function AfterTrainingReportForm({
           {/* Certificates */}
           <div>
             <p className="text-[10px] font-bold text-gray-900 dark:text-slate-200 uppercase tracking-[0.2em] ml-1 mb-3">Total # of Issued Certificates <span className="text-gray-400 dark:text-slate-500 normal-case tracking-normal font-medium">(with submitted Evaluation Form/Output)</span></p>
+            {/* Mobile: Male, Female, Total | Desktop (sm): Total, Male, Female */}
             <div className="grid grid-cols-3 gap-3">
-              <Field label="Total"><input className={inp + " text-center bg-gray-100/50 dark:bg-slate-800/50 font-bold text-blue-600 dark:text-blue-400"} placeholder="0" value={certsTotal} readOnly tabIndex={-1} /></Field>
-              <Field label="Male"><input className={inp + " text-center bg-gray-100/50 dark:bg-slate-800/50 font-bold text-blue-600 dark:text-blue-400"} placeholder="0" value={certsMale} readOnly tabIndex={-1} /></Field>
-              <Field label="Female"><input className={inp + " text-center bg-gray-100/50 dark:bg-slate-800/50 font-bold text-blue-600 dark:text-blue-400"} placeholder="0" value={certsFemale} readOnly tabIndex={-1} /></Field>
+              <div className="order-last sm:order-first col-span-1">
+                <Field label="Total"><input className={inp + " text-center bg-gray-100/50 dark:bg-slate-800/50 font-bold text-blue-600 dark:text-blue-400"} placeholder="0" value={certsTotal} readOnly tabIndex={-1} /></Field>
+              </div>
+              <div className="order-first sm:order-none col-span-1">
+                <Field label="Male"><input className={inp + " text-center bg-gray-100/50 dark:bg-slate-800/50 font-bold text-blue-600 dark:text-blue-400"} placeholder="0" value={certsMale} readOnly tabIndex={-1} /></Field>
+              </div>
+              <div className="order-2 sm:order-none col-span-1">
+                <Field label="Female"><input className={inp + " text-center bg-gray-100/50 dark:bg-slate-800/50 font-bold text-blue-600 dark:text-blue-400"} placeholder="0" value={certsFemale} readOnly tabIndex={-1} /></Field>
+              </div>
             </div>
           </div>
         </div>
