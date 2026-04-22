@@ -970,13 +970,18 @@ export function AfterTrainingReportForm({
 
       {/* ── Navigation Buttons ── */}
       <div className="flex items-center justify-between gap-4">
-        <button
-          type="button"
-          onClick={step === 0 ? onBack : () => setStep((s) => s - 1)}
-          className="rounded-2xl border-2 border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-6 py-3.5 text-[12px] font-bold text-gray-600 dark:text-slate-400 hover:border-gray-300 dark:hover:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-all flex items-center gap-2 uppercase tracking-wider"
-        >
-          ← {step === 0 ? "Back to Details" : "Previous"}
-        </button>
+        {/* Hidden on Step 1 — visible from Step 2 onwards as "Previous" */}
+        {step > 0 ? (
+          <button
+            type="button"
+            onClick={() => setStep((s) => s - 1)}
+            className="rounded-2xl border-2 border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-6 py-3.5 text-[12px] font-bold text-gray-600 dark:text-slate-400 hover:border-gray-300 dark:hover:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-all flex items-center gap-2 uppercase tracking-wider"
+          >
+            ← Previous
+          </button>
+        ) : (
+          <div />
+        )}
 
         <div className="flex items-center gap-3">
           {showValidationError && (
