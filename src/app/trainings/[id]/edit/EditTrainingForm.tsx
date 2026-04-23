@@ -94,7 +94,7 @@ export function EditTrainingForm({ id }: EditTrainingFormProps) {
 
             const data = (await res.json().catch(() => null)) as { ok?: boolean; error?: string } | null;
             if (!res.ok || !data?.ok) {
-                setError(data?.error ?? "Failed to update training");
+                setError(data?.error ?? "Failed to update training. Please check your inputs.");
                 return;
             }
 

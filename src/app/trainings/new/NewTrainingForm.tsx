@@ -151,7 +151,8 @@ export function NewTrainingForm() {
 
             const data = (await res.json().catch(() => null)) as { ok?: boolean; error?: string } | null;
             if (!res.ok || !data?.ok) {
-                setError(data?.error ?? "Failed to create training");
+                const errorMsg = data?.error || "Failed to create training. Please ensure all required fields are valid.";
+                setError(errorMsg);
                 return;
             }
 
