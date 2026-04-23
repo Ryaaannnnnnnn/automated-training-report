@@ -57,11 +57,23 @@ export function EditTrainingForm({ id }: EditTrainingFormProps) {
             .finally(() => setLoading(false));
     }, [id]);
 
-    async function handleUpdate(updatedReportData: any) {
+    async function handleUpdate(updatedReportData: any, newStatus?: string) {
         setError(null);
         setSaving(true);
 
         try {
+            // Determine final status
+            // 1. If explicit newStatus provided (like "DRAFT"), use it.
+            // 2. If no newStatus provided (normal Submit), and it was DRAFT, promote it.
+            let finalStatus = newStatus || status;
+            if (!newStatus && status === "DRAFT") {
+                // Fetch user to check role, or just assume the server handles it?
+                // The server route already has logic for role-based status on POST.
+                // For PATCH, we might need to be explicit or let the server handle defaults.
+                // Let's check if we can get user info here or just set to PENDING for safety.
+                finalStatus = "PENDING"; 
+            }
+
             const res = await fetch(`/api/trainings/${id}`, {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
@@ -74,7 +86,7 @@ export function EditTrainingForm({ id }: EditTrainingFormProps) {
                     description, 
                     startTime, 
                     endTime, 
-                    status,
+                    status: finalStatus,
                     trainingType,
                     reportData: JSON.stringify(updatedReportData)
                 }),
@@ -130,7 +142,7 @@ export function EditTrainingForm({ id }: EditTrainingFormProps) {
                 setCoreDescription={setDescription}
                 saving={saving}
                 onBack={() => router.push("/trainings")}
-                onSubmit={(data) => handleUpdate(data)}
+                onSubmit={(data, newStatus) => handleUpdate(data, newStatus)}
                 initialReportData={reportData}
             />
 

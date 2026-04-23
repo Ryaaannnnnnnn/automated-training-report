@@ -125,8 +125,8 @@ export function NewTrainingForm() {
     const [error, setError] = useState<string | null>(null);
     const [saving, setSaving] = useState(false);
 
-    // Submit with optional reportData
-    async function submitTraining(reportData?: object) {
+    // Submit with optional reportData and status
+    async function submitTraining(reportData?: object, status?: string) {
         setError(null);
         setSaving(true);
 
@@ -144,6 +144,7 @@ export function NewTrainingForm() {
                     startTime,
                     endTime,
                     trainingType,
+                    status: status || undefined,
                     reportData: reportData ? JSON.stringify(reportData) : undefined,
                 }),
             });
@@ -199,7 +200,7 @@ export function NewTrainingForm() {
                 setCoreDescription={setDescription}
                 saving={saving}
                 onBack={() => setPhase("type-select")}
-                onSubmit={(reportData) => submitTraining(reportData)}
+                onSubmit={(reportData, status) => submitTraining(reportData, status)}
             />
 
             {error ? <p className="text-sm text-red-600">{error}</p> : null}

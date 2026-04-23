@@ -24,7 +24,7 @@ interface Props {
   setCoreTrainer: (v: string) => void;
   coreDescription: string;
   setCoreDescription: (v: string) => void;
-  onSubmit: (reportData: ReportData) => void;
+  onSubmit: (reportData: ReportData, status?: "DRAFT" | "PENDING" | "APPROVED") => void;
   onBack: () => void;
   saving: boolean;
   initialReportData?: ReportData; // Added for editing support
@@ -413,9 +413,8 @@ export function AfterTrainingReportForm({
     }
   }
 
-  // ── Submit ───────────────────────────
-  function handleSubmit() {
-    const data: ReportData = {
+  function getReportData(): ReportData {
+    return {
       courseCode, duration, ilcdbFocal, trainingSupport, technicalSupport,
       resourcePerson, platformUsed, mode, targetParticipants,
       attendeesTotal, attendeesMale, attendeesFemale,
@@ -430,7 +429,15 @@ export function AfterTrainingReportForm({
       photos,
       preparedByName, preparedByPosition, approvedByName, approvedByPosition,
     };
-    onSubmit(data);
+  }
+
+  // ── Submit ───────────────────────────
+  function handleSubmit() {
+    onSubmit(getReportData());
+  }
+
+  function handleSaveDraft() {
+    onSubmit(getReportData(), "DRAFT");
   }
 
   // ── Steps ────────────────────────────
@@ -1017,36 +1024,70 @@ export function AfterTrainingReportForm({
           )}
 
           {step < 3 ? (
-            <button
-              type="button"
-              onClick={handleNext}
-              className="rounded-2xl bg-blue-600 px-8 py-3.5 text-[12px] font-bold text-white hover:bg-blue-700 shadow-lg shadow-blue-600/20 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2 uppercase tracking-wider"
-            >
-              Next →
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={() => {
-                if (validateStep(step)) handleSubmit();
-              }}
-              disabled={saving}
-              className="rounded-2xl bg-green-600 px-8 py-3.5 text-[12px] font-bold text-white hover:bg-green-700 shadow-lg shadow-green-600/20 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center gap-3 uppercase tracking-wider disabled:opacity-60"
-            >
-              {saving ? (
-                <>
-                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                  Saving...
-                </>
-              ) : (
-                <>
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={handleSaveDraft}
+                disabled={saving}
+                className="rounded-2xl border-2 border-amber-200 dark:border-amber-900/30 bg-amber-50 dark:bg-amber-900/20 px-6 py-3.5 text-[12px] font-bold text-amber-700 dark:text-amber-400 hover:bg-amber-100 dark:hover:bg-amber-900/40 hover:border-amber-300 dark:hover:border-amber-700 transition-all flex items-center gap-2 uppercase tracking-wider disabled:opacity-60"
+              >
+                {saving ? (
+                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-amber-300 border-t-amber-600" />
+                ) : (
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
                   </svg>
-                  Submit Report
-                </>
-              )}
-            </button>
+                )}
+                Save Draft
+              </button>
+              <button
+                type="button"
+                onClick={handleNext}
+                className="rounded-2xl bg-blue-600 px-8 py-3.5 text-[12px] font-bold text-white hover:bg-blue-700 shadow-lg shadow-blue-600/20 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2 uppercase tracking-wider"
+              >
+                Next →
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={handleSaveDraft}
+                disabled={saving}
+                className="rounded-2xl border-2 border-amber-200 dark:border-amber-900/30 bg-amber-50 dark:bg-amber-900/20 px-6 py-3.5 text-[12px] font-bold text-amber-700 dark:text-amber-400 hover:bg-amber-100 dark:hover:bg-amber-900/40 hover:border-amber-300 dark:hover:border-amber-700 transition-all flex items-center gap-2 uppercase tracking-wider disabled:opacity-60"
+              >
+                {saving ? (
+                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-amber-300 border-t-amber-600" />
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                  </svg>
+                )}
+                Save Draft
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  if (validateStep(step)) handleSubmit();
+                }}
+                disabled={saving}
+                className="rounded-2xl bg-green-600 px-8 py-3.5 text-[12px] font-bold text-white hover:bg-green-700 shadow-lg shadow-green-600/20 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center gap-3 uppercase tracking-wider disabled:opacity-60"
+              >
+                {saving ? (
+                  <>
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                    Saving...
+                  </>
+                ) : (
+                  <>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                    </svg>
+                    Submit Report
+                  </>
+                )}
+              </button>
+            </div>
           )}
         </div>
       </div>

@@ -64,7 +64,8 @@ export async function POST(request: Request) {
     }
   }
 
-  const status = user.role === "admin" ? "APPROVED" : "PENDING";
+  const statusFromBody = body?.status;
+  const status = statusFromBody === "DRAFT" ? "DRAFT" : (user.role === "admin" ? "APPROVED" : "PENDING");
 
   // Create training with all fields in one go using standard Prisma
   const training = await prisma.training.create({

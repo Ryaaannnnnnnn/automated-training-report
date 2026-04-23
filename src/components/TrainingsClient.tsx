@@ -8,10 +8,11 @@ import { DeleteTrainingButton } from "@/components/DeleteTrainingButton";
 import { EmptyState } from "@/components/DashboardWidgets";
 import { DownloadReportButton } from "@/components/DownloadReportButton";
 
-type Status = "ALL" | "PENDING" | "APPROVED" | "REJECTED";
+type Status = "ALL" | "DRAFT" | "PENDING" | "APPROVED" | "REJECTED";
 
 const STATUS_TABS: { label: string; value: Status }[] = [
   { label: "All", value: "ALL" },
+  { label: "Draft", value: "DRAFT" },
   { label: "Pending", value: "PENDING" },
   { label: "Approved", value: "APPROVED" },
   { label: "Rejected", value: "REJECTED" },
@@ -155,10 +156,11 @@ export function TrainingsClient({ trainings, currentUser, isAdmin }: TrainingsCl
                           <span
                             className={`inline-flex rounded-xl px-3 py-1.5 text-[10px] font-black uppercase tracking-widest shadow-sm border ${t.status === 'APPROVED' ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-100 dark:border-emerald-500/20 shadow-emerald-50 dark:shadow-none' :
                               t.status === 'PENDING' ? 'bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-100 dark:border-amber-500/20 shadow-amber-50 dark:shadow-none' :
-                                'bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-100 dark:border-rose-500/20 shadow-rose-50 dark:shadow-none'
+                                t.status === 'DRAFT' ? 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700' :
+                                  'bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-100 dark:border-rose-500/20 shadow-rose-50 dark:shadow-none'
                               }`}
                           >
-                            {t.status === 'APPROVED' ? 'Approved' : t.status === 'PENDING' ? 'Pending' : 'Rejected'}
+                            {t.status === 'APPROVED' ? 'Approved' : t.status === 'PENDING' ? 'Pending' : t.status === 'DRAFT' ? 'Draft' : 'Rejected'}
                           </span>
                         </td>
                         <td className="px-6 py-5">
@@ -214,10 +216,11 @@ export function TrainingsClient({ trainings, currentUser, isAdmin }: TrainingsCl
                         <span
                           className={`shrink-0 inline-flex rounded-xl px-2.5 py-1 text-[9px] font-black uppercase tracking-widest shadow-sm border ${t.status === 'APPROVED' ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-100 dark:border-emerald-500/20' :
                             t.status === 'PENDING' ? 'bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-100 dark:border-amber-500/20' :
-                              'bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-100 dark:border-rose-500/20'
+                              t.status === 'DRAFT' ? 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700' :
+                                'bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-100 dark:border-rose-500/20'
                             }`}
                         >
-                          {t.status === 'APPROVED' ? 'Approved' : t.status === 'PENDING' ? 'Pending' : 'Rejected'}
+                          {t.status === 'APPROVED' ? 'Approved' : t.status === 'PENDING' ? 'Pending' : t.status === 'DRAFT' ? 'Draft' : 'Rejected'}
                         </span>
                       </div>
 

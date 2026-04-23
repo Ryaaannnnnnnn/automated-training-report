@@ -60,7 +60,7 @@ export async function PATCH(
             typeof trainer !== "string" ||
             typeof description !== "string" ||
             (startTime !== undefined && typeof startTime !== "string") ||
-            (status !== undefined && !["PENDING", "APPROVED", "REJECTED"].includes(status)) ||
+            (status !== undefined && !["DRAFT", "PENDING", "APPROVED", "REJECTED"].includes(status)) ||
             (reportData !== undefined && typeof reportData !== "string")
         ) {
             return NextResponse.json({ ok: false, error: "Invalid payload" }, { status: 400 });

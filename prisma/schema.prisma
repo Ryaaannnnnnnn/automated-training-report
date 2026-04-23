@@ -19,6 +19,7 @@ enum UserStatus {
 }
 
 enum TrainingStatus {
+  DRAFT
   PENDING
   APPROVED
   REJECTED
