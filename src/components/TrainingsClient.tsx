@@ -173,7 +173,7 @@ export function TrainingsClient({ trainings, currentUser, isAdmin }: TrainingsCl
                                <Eye className="w-5 h-5 group-hover/btn:scale-110 transition-transform" />
                             </Link>
 
-                            <DownloadReportButton training={t} />
+                            {t.status !== "DRAFT" && <DownloadReportButton training={t} />}
 
                             {(isCreator || isAdmin) && (
                               <Link
@@ -186,7 +186,7 @@ export function TrainingsClient({ trainings, currentUser, isAdmin }: TrainingsCl
                                 </svg>
                               </Link>
                             )}
-                            {isAdmin && t.status !== "APPROVED" && (
+                            {isAdmin && t.status === "PENDING" && (
                               <TrainingApprovalButtons trainingId={t.id} currentStatus={t.status} />
                             )}
                             {(isCreator || isAdmin) && (
@@ -256,7 +256,7 @@ export function TrainingsClient({ trainings, currentUser, isAdmin }: TrainingsCl
                           >
                             <Eye className="w-4 h-4" />
                           </Link>
-                          <DownloadReportButton training={t} />
+                          {t.status !== "DRAFT" && <DownloadReportButton training={t} />}
                           {(isCreator || isAdmin) && (
                             <Link
                               href={`/trainings/${t.id}/edit`}
@@ -267,7 +267,7 @@ export function TrainingsClient({ trainings, currentUser, isAdmin }: TrainingsCl
                               </svg>
                             </Link>
                           )}
-                          {isAdmin && t.status !== "APPROVED" && (
+                          {isAdmin && t.status === "PENDING" && (
                             <TrainingApprovalButtons trainingId={t.id} currentStatus={t.status} />
                           )}
                           {(isCreator || isAdmin) && (
