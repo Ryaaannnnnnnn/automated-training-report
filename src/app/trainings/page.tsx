@@ -39,7 +39,7 @@ export default async function TrainingsPage() {
               Trainings <span className="text-blue-600 dark:text-blue-400">Management</span>
             </h1>
             <p className="text-gray-500 dark:text-slate-400 text-base sm:text-lg font-medium max-w-xl">
-              Review, monitor, and manage all organization training events and technical reports.
+              Review, monitor, and manage all organization training events and after training reports.
             </p>
           </div>
           <Link

@@ -105,7 +105,7 @@ export default async function TrainingDetailPage({
                                 <div className="p-2 rounded-xl bg-blue-50 text-blue-600">
                                     <FileText className="w-5 h-5" />
                                 </div>
-                                <h2 className="text-xl font-black text-gray-900 tracking-tight uppercase">Technical Report</h2>
+                                <h2 className="text-xl font-black text-gray-900 tracking-tight uppercase">After Training Report</h2>
                             </div>
                             <AfterTrainingReportView 
                                 data={reportData}
