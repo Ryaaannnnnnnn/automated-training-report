@@ -53,27 +53,95 @@ export default function RegisterPage() {
         return (
             // Force light mode — always light regardless of theme setting
             <div className="light" style={{ colorScheme: "light" }}>
-                <main className="relative flex min-h-screen items-center justify-center bg-gray-200 p-4">
-                    <div
-                        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat grayscale-[0.2]"
-                        style={{ backgroundImage: "url('/login-bg.jpg')", backgroundColor: "#f3f4f6" }}
+                {/* ── DESKTOP success screen (sm and above) ── */}
+                <main className="relative hidden sm:flex min-h-screen items-center justify-center p-4">
+                    {/* Background image */}
+                    <Image
+                        src="/login-bg.jpg"
+                        alt="DICT Building Background"
+                        fill
+                        priority
+                        className="object-cover object-center grayscale-[0.2]"
+                        style={{ zIndex: 0 }}
                     />
                     <div className="absolute inset-0 z-0 bg-black/5" />
 
-                    <div className="relative w-full max-w-[420px] overflow-hidden rounded-none sm:rounded-[24px] bg-white shadow-2xl border-none sm:border sm:border-white shadow-blue-900/10 transition-all duration-500" style={{ zIndex: 2 }}>
-                        <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-green-50 text-green-500">
-                            <CheckCircle size={48} />
+                    {/* Success card — mirrors the register card style */}
+                    <div
+                        className="relative w-full max-w-[420px] overflow-hidden rounded-[24px] bg-white shadow-2xl border border-white shadow-blue-900/10 transition-all duration-500"
+                        style={{ zIndex: 2 }}
+                    >
+                        {/* Blue header */}
+                        <div className="bg-[#007BE6] py-10 px-8 text-center text-white">
+                            <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-white/20 p-2 shadow-inner">
+                                <img
+                                    src="/logo.png"
+                                    alt="System Logo"
+                                    className="h-full w-full object-contain"
+                                    onError={(e) => {
+                                        const target = e.currentTarget;
+                                        target.style.display = "none";
+                                        if (target.parentElement) {
+                                            target.parentElement.innerHTML = '<div class="text-[#007BE6] font-bold text-2xl">DICT</div>';
+                                        }
+                                    }}
+                                />
+                            </div>
+                            <h1 className="text-xl font-semibold tracking-wide">After Training Report System</h1>
+                            <p className="mt-2 text-sm text-blue-50/80 font-medium">Account Registration</p>
                         </div>
-                        <h1 className="text-2xl font-semibold text-gray-900 mb-3 tracking-tight">Registration Successful!</h1>
-                        <p className="text-sm text-gray-500 mb-8 leading-relaxed">
-                            Your account has been created and is pending approval. Please wait for an administrator to activate your account.
-                        </p>
-                        <Link
-                            href="/login"
-                            className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#007BE6] py-3.5 text-sm font-semibold text-white shadow-lg shadow-[#007BE6]/20 transition-all hover:bg-[#006ACC]"
-                        >
-                            Back to Login
-                        </Link>
+
+                        {/* Content */}
+                        <div className="flex flex-col items-center p-10 bg-white text-center">
+                            <div className="mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-green-50 text-green-500 shadow-inner">
+                                <CheckCircle size={48} strokeWidth={1.5} />
+                            </div>
+                            <h2 className="text-2xl font-bold text-gray-900 mb-3 tracking-tight">Registration Successful!</h2>
+                            <p className="text-sm text-gray-500 mb-8 leading-relaxed max-w-[300px]">
+                                Your account has been created and is pending approval. Please wait for an{" "}
+                                <span className="font-semibold text-[#007BE6]">administrator</span> to activate your account.
+                            </p>
+                            <Link
+                                href="/login"
+                                className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#007BE6] py-3.5 text-sm font-black uppercase tracking-[0.2em] text-white shadow-xl shadow-blue-500/30 transition-all hover:bg-[#006ACC] hover:translate-y-[-2px] active:translate-y-[1px]"
+                            >
+                                Back to Login
+                            </Link>
+                        </div>
+                    </div>
+                </main>
+
+                {/* ── MOBILE success screen (below sm) — no background image ── */}
+                <main className="flex sm:hidden min-h-screen flex-col items-center justify-center bg-white px-6 py-12">
+                    {/* Success icon */}
+                    <div className="mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-green-50 text-green-500 shadow-md shadow-green-100">
+                        <CheckCircle size={56} strokeWidth={1.5} />
+                    </div>
+
+                    {/* Text */}
+                    <h1 className="text-2xl font-black text-gray-900 mb-3 tracking-tight text-center">Registration Successful!</h1>
+                    <p className="text-sm text-gray-500 leading-relaxed text-center mb-10 max-w-[300px]">
+                        Your account has been created and is pending approval. Please wait for an{" "}
+                        <span className="font-semibold text-[#007BE6]">administrator</span> to activate your account.
+                    </p>
+
+                    {/* Button */}
+                    <Link
+                        href="/login"
+                        className="flex w-full max-w-[320px] items-center justify-center gap-2 rounded-2xl bg-[#007BE6] py-4 text-sm font-black uppercase tracking-[0.2em] text-white shadow-xl shadow-blue-500/30 transition-all hover:bg-[#006ACC] active:translate-y-[1px]"
+                    >
+                        Back to Login
+                    </Link>
+
+                    {/* Institutional footer */}
+                    <div className="mt-10 overflow-hidden rounded-xl border border-blue-50 bg-[#F0F7FF] px-5 py-3 text-center w-full max-w-[320px]">
+                        <div className="flex flex-col items-center gap-1">
+                            <div className="flex items-center justify-center gap-1.5 text-[#0060B8]">
+                                <GraduationCap size={14} fill="currentColor" className="opacity-80" />
+                                <span className="text-[10px] font-bold uppercase tracking-tight">Department of Information and Communications Technology</span>
+                            </div>
+                            <span className="text-[10px] font-semibold text-blue-400 capitalize">Region VI AKLAN</span>
+                        </div>
                     </div>
                 </main>
             </div>
