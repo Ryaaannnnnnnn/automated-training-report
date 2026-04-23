@@ -41,6 +41,20 @@ export async function PATCH(
         const { id } = await params;
         const body = await request.json().catch(() => null);
 
+        // Fetch existing training to check ownership/permissions early
+        const existingTraining = await prisma.training.findUnique({
+            where: { id },
+        });
+
+        if (!existingTraining) {
+            return NextResponse.json({ ok: false, error: "Training not found" }, { status: 404 });
+        }
+
+        // ONLY the creator or an Admin can edit
+        if (existingTraining.createdById !== user.id && user.role !== "admin") {
+            return NextResponse.json({ ok: false, error: "Forbidden: Only the creator or an Admin can edit this training" }, { status: 403 });
+        }
+
         const title = body?.title;
         const dateRaw = body?.date;
         const endDateRaw = body?.endDate;
@@ -53,22 +67,32 @@ export async function PATCH(
         const trainingType = body?.trainingType;
         const reportData = body?.reportData;
 
+        const isDraft = status === "DRAFT" || (!status && existingTraining.status === "DRAFT");
+
         if (
-            typeof title !== "string" ||
-            typeof dateRaw !== "string" ||
-            typeof venue !== "string" ||
-            typeof trainer !== "string" ||
-            typeof description !== "string" ||
+            (title !== undefined && typeof title !== "string") ||
+            (dateRaw !== undefined && typeof dateRaw !== "string") ||
+            (venue !== undefined && typeof venue !== "string") ||
+            (trainer !== undefined && typeof trainer !== "string") ||
+            (description !== undefined && typeof description !== "string") ||
             (startTime !== undefined && typeof startTime !== "string") ||
             (status !== undefined && !["DRAFT", "PENDING", "APPROVED", "REJECTED"].includes(status)) ||
             (reportData !== undefined && typeof reportData !== "string")
         ) {
-            return NextResponse.json({ ok: false, error: "Invalid payload" }, { status: 400 });
+            return NextResponse.json({ ok: false, error: "Invalid payload: Types mismatch" }, { status: 400 });
         }
 
-        const date = new Date(dateRaw);
-        if (Number.isNaN(date.getTime())) {
-            return NextResponse.json({ ok: false, error: "Invalid date" }, { status: 400 });
+        // Title is required if explicitly provided
+        if (title !== undefined && title.trim() === "") {
+             return NextResponse.json({ ok: false, error: "Title cannot be empty" }, { status: 400 });
+        }
+
+        let date = undefined;
+        if (dateRaw !== undefined) {
+            date = new Date(dateRaw);
+            if (Number.isNaN(date.getTime())) {
+                return NextResponse.json({ ok: false, error: "Invalid date" }, { status: 400 });
+            }
         }
 
         let endDate = undefined;
@@ -83,19 +107,8 @@ export async function PATCH(
             }
         }
 
-        // Fetch existing training to check ownership/permissions
-        const existingTraining = await prisma.training.findUnique({
-            where: { id },
-        });
+        // Already checked above
 
-        if (!existingTraining) {
-            return NextResponse.json({ ok: false, error: "Training not found" }, { status: 404 });
-        }
-
-        // ONLY the creator or an Admin can edit
-        if (existingTraining.createdById !== user.id && user.role !== "admin") {
-            return NextResponse.json({ ok: false, error: "Forbidden: Only the creator or an Admin can edit this training" }, { status: 403 });
-        }
 
         // 1. Update with standard Prisma
         const updatedTraining = await prisma.training.update({

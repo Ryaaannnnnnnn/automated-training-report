@@ -41,19 +41,26 @@ export async function POST(request: Request) {
   const trainingType = body?.trainingType || "Training Report";
   const reportData = body?.reportData ?? null;
 
-  if (
-    typeof title !== "string" ||
+  const statusFromBody = body?.status;
+  const status = statusFromBody === "DRAFT" ? "DRAFT" : (user.role === "admin" ? "APPROVED" : "PENDING");
+  const isDraft = status === "DRAFT";
+
+  if (typeof title !== "string" || (!isDraft && (
     typeof dateRaw !== "string" ||
     typeof venue !== "string" ||
     typeof trainer !== "string" ||
     typeof description !== "string"
-  ) {
-    return NextResponse.json({ ok: false, error: "Invalid payload" }, { status: 400 });
+  ))) {
+    return NextResponse.json({ ok: false, error: "Invalid payload: Title is required" }, { status: 400 });
   }
 
-  const date = new Date(dateRaw);
+  let date = new Date(dateRaw || Date.now());
   if (Number.isNaN(date.getTime())) {
-    return NextResponse.json({ ok: false, error: "Invalid date" }, { status: 400 });
+    if (isDraft) {
+      date = new Date();
+    } else {
+      return NextResponse.json({ ok: false, error: "Invalid date" }, { status: 400 });
+    }
   }
 
   let endDate = null;
@@ -64,18 +71,15 @@ export async function POST(request: Request) {
     }
   }
 
-  const statusFromBody = body?.status;
-  const status = statusFromBody === "DRAFT" ? "DRAFT" : (user.role === "admin" ? "APPROVED" : "PENDING");
-
   // Create training with all fields in one go using standard Prisma
   const training = await prisma.training.create({
     data: {
       title,
       date,
       endDate,
-      venue,
-      trainer,
-      description,
+      venue: venue ?? "",
+      trainer: trainer ?? "",
+      description: description ?? "",
       status,
       startTime,
       endTime,

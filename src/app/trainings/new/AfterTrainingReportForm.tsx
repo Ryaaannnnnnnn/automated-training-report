@@ -437,6 +437,12 @@ export function AfterTrainingReportForm({
   }
 
   function handleSaveDraft() {
+    if (!coreTitle || coreTitle.trim() === "") {
+      setValidationErrors(prev => ({ ...prev, coreTitle: true }));
+      setShowValidationError(true);
+      setTimeout(() => setShowValidationError(false), 3000);
+      return;
+    }
     onSubmit(getReportData(), "DRAFT");
   }
 
