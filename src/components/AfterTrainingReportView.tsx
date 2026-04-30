@@ -162,7 +162,7 @@ export function AfterTrainingReportView({
   // For now, we render the report inside a container.
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6" suppressHydrationWarning>
 
       {/* The Actual Report Content */}
       <div 
@@ -179,7 +179,7 @@ export function AfterTrainingReportView({
           color: isDownloadMode ? "#333" : "var(--report-text, #333)"
         }}
       >
-        <style jsx>{`
+        <style>{`
           div {
             --report-bg: white;
             --report-text: #333;

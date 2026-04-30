@@ -31,7 +31,7 @@ export function LoadingBar() {
   return (
     <div className="fixed top-0 left-0 right-0 z-[9999] pointer-events-none">
       <div className="h-1 bg-gradient-to-r from-blue-600 via-indigo-500 to-blue-400 animate-loading-slide shadow-[0_0_10px_rgba(37,99,235,0.5)]" />
-      <style jsx>{`
+      <style>{`
         @keyframes loading-slide {
           0% { width: 0; opacity: 1; }
           50% { width: 70%; opacity: 1; }

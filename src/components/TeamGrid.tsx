@@ -114,7 +114,7 @@ export function TeamGrid({ members }: TeamGridProps) {
                                     </div>
                                     <div className="flex items-center gap-3 text-gray-400 dark:text-slate-500">
                                         <Calendar size={14} className="shrink-0" />
-                                        <span className="text-[10px] font-black uppercase tracking-widest">
+                                        <span className="text-[10px] font-black uppercase tracking-widest" suppressHydrationWarning>
                                             Member since {new Date(member.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                                         </span>
                                     </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AfterTrainingReportForm } from "./AfterTrainingReportForm";
 
 // Preset quick-pick times
@@ -115,8 +115,12 @@ export function NewTrainingForm() {
     const [phase, setPhase] = useState<Phase>("type-select");
     const [trainingType, setTrainingType] = useState("Training Report");
     const [title, setTitle] = useState("");
-    const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10));
+    const [date, setDate] = useState("");
     const [endDate, setEndDate] = useState<string>("");
+
+    useEffect(() => {
+        setDate(new Date().toISOString().slice(0, 10));
+    }, []);
     const [venue, setVenue] = useState("");
     const [trainer, setTrainer] = useState("");
     const [description, setDescription] = useState("");

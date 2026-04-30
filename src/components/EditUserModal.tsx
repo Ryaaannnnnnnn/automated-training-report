@@ -259,7 +259,7 @@ export function EditUserModal({ user, onClose }: EditUserModalProps) {
                 </form>
             </div>
 
-            <style jsx>{`
+            <style>{`
                 @keyframes scale-in {
                     from { opacity: 0; transform: scale(0.92) translateY(12px); }
                     to   { opacity: 1; transform: scale(1)    translateY(0); }
