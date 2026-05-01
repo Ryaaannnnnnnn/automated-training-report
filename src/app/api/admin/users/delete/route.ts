@@ -3,9 +3,9 @@ import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 
 export async function POST(request: Request) {
-    const user = await getCurrentUser();
+    const currentUser = await getCurrentUser();
 
-    if (!user || user.role !== "admin") {
+    if (!currentUser || currentUser.role !== "admin") {
         return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 403 });
     }
 
@@ -17,8 +17,28 @@ export async function POST(request: Request) {
     }
 
     // Prevent admin from deleting themselves
-    if (userId === user.id) {
+    if (userId === currentUser.id) {
         return NextResponse.json({ ok: false, error: "Cannot delete yourself" }, { status: 400 });
+    }
+
+    // Fetch the target user to check their super admin status
+    const targetUser = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { id: true, isSuperAdmin: true, role: true },
+    });
+
+    if (!targetUser) {
+        return NextResponse.json({ ok: false, error: "User not found" }, { status: 404 });
+    }
+
+    // Nobody can delete the super admin
+    if (targetUser.isSuperAdmin) {
+        return NextResponse.json({ ok: false, error: "The Super Admin account cannot be deleted" }, { status: 403 });
+    }
+
+    // Only the super admin can delete other admins
+    if (targetUser.role === "admin" && !currentUser.isSuperAdmin) {
+        return NextResponse.json({ ok: false, error: "Only the Super Admin can delete admin accounts" }, { status: 403 });
     }
 
     try {

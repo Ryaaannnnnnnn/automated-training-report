@@ -16,8 +16,9 @@ export default async function UsersManagementPage() {
 
     const allUsers = await prisma.user.findMany({
         orderBy: [
-            { status: "asc" }, // Pending first
-            { role: "asc" },   // Admin before staff
+            { isSuperAdmin: "desc" }, // Super admin always first
+            { status: "asc" },         // Pending first
+            { role: "asc" },           // Admin before staff
             { username: "asc" }
         ],
         select: {
@@ -25,12 +26,20 @@ export default async function UsersManagementPage() {
             username: true,
             email: true,
             role: true,
+            isSuperAdmin: true,
             status: true,
             designation: true,
             avatarUrl: true,
             createdAt: true,
         }
     });
+
+    // Get the current user's isSuperAdmin status for UI decisions
+    const fullCurrentUser = await prisma.user.findUnique({
+        where: { id: currentUser.id },
+        select: { isSuperAdmin: true },
+    });
+    const currentUserIsSuperAdmin = fullCurrentUser?.isSuperAdmin ?? false;
 
     return (
         <div className="min-h-screen bg-[#f8fafc] dark:bg-slate-900 transition-colors duration-300">
@@ -65,7 +74,7 @@ export default async function UsersManagementPage() {
                     </div>
                 </div>
 
-                <UserManagementClient users={allUsers as any} currentUser={{ id: currentUser.id }} />
+                <UserManagementClient users={allUsers as any} currentUser={{ id: currentUser.id, isSuperAdmin: currentUserIsSuperAdmin }} />
             </main>
         </div>
     );

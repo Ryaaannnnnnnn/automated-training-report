@@ -11,11 +11,13 @@ interface EditUserModalProps {
         username: string;
         designation: string | null;
         role: string;
+        isSuperAdmin?: boolean;
     };
     onClose: () => void;
+    currentUserIsSuperAdmin?: boolean;
 }
 
-export function EditUserModal({ user, onClose }: EditUserModalProps) {
+export function EditUserModal({ user, onClose, currentUserIsSuperAdmin }: EditUserModalProps) {
     const router = useRouter();
     const [username, setUsername] = useState(user.username);
     const [designation, setDesignation] = useState(user.designation ?? "");
@@ -168,14 +170,21 @@ export function EditUserModal({ user, onClose }: EditUserModalProps) {
                         <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 dark:text-slate-400 flex items-center gap-2">
                             <Shield size={12} /> System Role
                         </label>
-                        <select
-                            value={role}
-                            onChange={(e) => setRole(e.target.value)}
-                            className="w-full rounded-2xl border-2 border-gray-100 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 text-gray-900 dark:text-white px-5 py-2.5 sm:py-3.5 text-sm font-semibold outline-none focus:border-blue-500/60 focus:ring-4 focus:ring-blue-500/10 transition-all appearance-none cursor-pointer"
-                        >
-                            <option value="staff">Staff</option>
-                            <option value="admin">Admin</option>
-                        </select>
+                        {user.isSuperAdmin ? (
+                            <div className="w-full rounded-2xl border-2 border-amber-100 dark:border-amber-500/20 bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 px-5 py-2.5 sm:py-3.5 text-sm font-bold flex items-center gap-2 cursor-not-allowed">
+                                <Lock size={14} className="shrink-0" />
+                                Super Admin — Role is locked
+                            </div>
+                        ) : (
+                            <select
+                                value={role}
+                                onChange={(e) => setRole(e.target.value)}
+                                className="w-full rounded-2xl border-2 border-gray-100 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 text-gray-900 dark:text-white px-5 py-2.5 sm:py-3.5 text-sm font-semibold outline-none focus:border-blue-500/60 focus:ring-4 focus:ring-blue-500/10 transition-all appearance-none cursor-pointer"
+                            >
+                                <option value="staff">Staff</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        )}
                     </div>
 
                     {/* Divider */}

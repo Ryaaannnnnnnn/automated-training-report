@@ -6,7 +6,7 @@ import { DeleteUserButton } from "./DeleteUserButton";
 import { ResetPasswordButton } from "./ResetPasswordButton";
 import { EditUserModal } from "./EditUserModal";
 import { EmptyState, Skeleton } from "./DashboardWidgets";
-import { Search, Filter, Shield, User as UserIcon, Calendar, Pencil, Briefcase } from "lucide-react";
+import { Search, Filter, Shield, User as UserIcon, Calendar, Pencil, Briefcase, Crown, Lock } from "lucide-react";
 import Image from "next/image";
 
 interface User {
@@ -18,11 +18,12 @@ interface User {
     designation: string | null;
     avatarUrl: string | null;
     createdAt: Date;
+    isSuperAdmin: boolean;
 }
 
 interface UserManagementClientProps {
     users: User[];
-    currentUser: { id: string };
+    currentUser: { id: string; isSuperAdmin: boolean };
 }
 
 export function UserManagementClient({ users, currentUser }: UserManagementClientProps) {
@@ -50,6 +51,7 @@ export function UserManagementClient({ users, currentUser }: UserManagementClien
                 <EditUserModal
                     user={editingUser}
                     onClose={() => setEditingUser(null)}
+                    currentUserIsSuperAdmin={currentUser.isSuperAdmin}
                 />
             )}
 
@@ -112,122 +114,151 @@ export function UserManagementClient({ users, currentUser }: UserManagementClien
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-50 dark:divide-slate-700/50">
-                                {filteredUsers.map((user, idx) => (
-                                    <tr
-                                        key={user.id}
-                                        className="hover:bg-blue-50/20 dark:hover:bg-blue-500/5 transition-all even:bg-slate-50/30 dark:even:bg-slate-700/20 group animate-fade-in"
-                                        style={{ animationDelay: `${idx * 40}ms` }}
-                                    >
-                                        {/* Staff Profile */}
-                                        <td className="px-6 sm:px-8 py-4 sm:py-5">
-                                            <div className="flex items-center gap-4">
-                                                <div className="relative group-hover:scale-110 transition-transform duration-300">
-                                                    {user.avatarUrl ? (
-                                                        <div className="w-11 h-11 rounded-2xl overflow-hidden shadow-md shadow-blue-200 dark:shadow-blue-900/30 border-2 border-white dark:border-slate-700 relative">
-                                                            <Image
-                                                                src={user.avatarUrl}
-                                                                alt={user.username}
-                                                                fill
-                                                                className="object-cover"
-                                                            />
-                                                        </div>
-                                                    ) : (
-                                                        <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center font-bold text-lg text-white uppercase shadow-md shadow-blue-200 dark:shadow-blue-900/30">
-                                                            {user.username.charAt(0)}
-                                                        </div>
-                                                    )}
-                                                </div>
-                                                <div>
-                                                    <div className="flex items-center gap-2">
-                                                        <p className="font-bold text-gray-900 dark:text-slate-100 capitalize group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors text-base tracking-tight">{user.username}</p>
-                                                        {user.id === currentUser?.id && (
-                                                            <span className="text-[9px] font-black bg-blue-600 text-white px-2 py-0.5 rounded-lg uppercase tracking-widest shadow-sm">You</span>
+                                {filteredUsers.map((user, idx) => {
+                                    const isSelf = user.id === currentUser.id;
+                                    const isTargetSuperAdmin = user.isSuperAdmin;
+                                    // Regular admins cannot edit/delete the super admin
+                                    const canModify = isTargetSuperAdmin ? currentUser.isSuperAdmin : true;
+
+                                    return (
+                                        <tr
+                                            key={user.id}
+                                            className={`hover:bg-blue-50/20 dark:hover:bg-blue-500/5 transition-all even:bg-slate-50/30 dark:even:bg-slate-700/20 group animate-fade-in ${isTargetSuperAdmin ? "ring-1 ring-inset ring-amber-200 dark:ring-amber-500/20 bg-amber-50/30 dark:bg-amber-500/5" : ""}`}
+                                            style={{ animationDelay: `${idx * 40}ms` }}
+                                        >
+                                            {/* Staff Profile */}
+                                            <td className="px-6 sm:px-8 py-4 sm:py-5">
+                                                <div className="flex items-center gap-4">
+                                                    <div className="relative group-hover:scale-110 transition-transform duration-300">
+                                                        {user.avatarUrl ? (
+                                                            <div className="w-11 h-11 rounded-2xl overflow-hidden shadow-md shadow-blue-200 dark:shadow-blue-900/30 border-2 border-white dark:border-slate-700 relative">
+                                                                <Image
+                                                                    src={user.avatarUrl}
+                                                                    alt={user.username}
+                                                                    fill
+                                                                    className="object-cover"
+                                                                />
+                                                            </div>
+                                                        ) : (
+                                                            <div className={`w-11 h-11 rounded-2xl flex items-center justify-center font-bold text-lg text-white uppercase shadow-md ${isTargetSuperAdmin ? "bg-gradient-to-br from-amber-400 to-orange-500 shadow-amber-200 dark:shadow-amber-900/30" : "bg-gradient-to-br from-blue-500 to-indigo-600 shadow-blue-200 dark:shadow-blue-900/30"}`}>
+                                                                {isTargetSuperAdmin ? <Crown size={18} strokeWidth={2.5} /> : user.username.charAt(0)}
+                                                            </div>
+                                                        )}
+                                                        {isTargetSuperAdmin && (
+                                                            <div className="absolute -top-1.5 -right-1.5 bg-amber-400 dark:bg-amber-500 rounded-full p-0.5 shadow-sm">
+                                                                <Crown size={8} className="text-white" strokeWidth={3} />
+                                                            </div>
                                                         )}
                                                     </div>
-                                                    <p className="text-[11px] text-gray-400 dark:text-slate-500 font-bold uppercase tracking-widest mt-0.5">{user.email || "No email provided"}</p>
+                                                    <div>
+                                                        <div className="flex items-center gap-2 flex-wrap">
+                                                            <p className="font-bold text-gray-900 dark:text-slate-100 capitalize group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors text-base tracking-tight">{user.username}</p>
+                                                            {isSelf && (
+                                                                <span className="text-[9px] font-black bg-blue-600 text-white px-2 py-0.5 rounded-lg uppercase tracking-widest shadow-sm">You</span>
+                                                            )}
+                                                            {isTargetSuperAdmin && (
+                                                                <span className="text-[9px] font-black bg-amber-400 dark:bg-amber-500 text-white px-2 py-0.5 rounded-lg uppercase tracking-widest shadow-sm flex items-center gap-1">
+                                                                    <Crown size={8} strokeWidth={3} /> Super Admin
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                        <p className="text-[11px] text-gray-400 dark:text-slate-500 font-bold uppercase tracking-widest mt-0.5">{user.email || "No email provided"}</p>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </td>
+                                            </td>
 
-                                        {/* Designation */}
-                                        <td className="px-6 py-4 hidden sm:table-cell">
-                                            {user.designation ? (
-                                                <div className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-slate-300 font-semibold">
-                                                    <Briefcase size={13} className="text-gray-400 dark:text-slate-500 shrink-0" />
-                                                    <span className="truncate max-w-[140px]">{user.designation}</span>
-                                                </div>
-                                            ) : (
-                                                <span className="text-[10px] font-black text-gray-300 dark:text-slate-600 uppercase tracking-widest italic">—</span>
-                                            )}
-                                        </td>
+                                            {/* Designation */}
+                                            <td className="px-6 py-4 hidden sm:table-cell">
+                                                {user.designation ? (
+                                                    <div className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-slate-300 font-semibold">
+                                                        <Briefcase size={13} className="text-gray-400 dark:text-slate-500 shrink-0" />
+                                                        <span className="truncate max-w-[140px]">{user.designation}</span>
+                                                    </div>
+                                                ) : (
+                                                    <span className="text-[10px] font-black text-gray-300 dark:text-slate-600 uppercase tracking-widest italic">—</span>
+                                                )}
+                                            </td>
 
-                                        {/* System Role */}
-                                        <td className="px-6 py-4">
-                                            <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-sm border ${user.role === "admin"
-                                                ? "bg-purple-100 dark:bg-purple-500/10 text-purple-700 dark:text-purple-400 border-purple-200 dark:border-purple-500/20"
-                                                : "bg-blue-100 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-500/20"
-                                                }`}>
-                                                <UserIcon size={12} strokeWidth={3} />
-                                                {user.role}
-                                            </div>
-                                        </td>
-
-                                        {/* Account Status */}
-                                        <td className="px-6 py-4">
-                                            {user.role === "admin" ? (
-                                                <span className="inline-flex items-center px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-sm border bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-100 dark:border-purple-500/20">
-                                                    ACTIVE
-                                                </span>
-                                            ) : (
-                                                <span className={`inline-flex items-center px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-sm border ${user.status === "APPROVED" ? "bg-green-100 dark:bg-green-500/10 text-green-700 dark:text-green-400 border-green-200 dark:border-green-500/20" :
-                                                    user.status === "PENDING" ? "bg-orange-100 dark:bg-orange-500/10 text-orange-700 dark:text-orange-400 border-orange-200 dark:border-orange-500/20" :
-                                                        "bg-red-100 dark:bg-red-500/10 text-red-700 dark:text-red-400 border-red-200 dark:border-red-500/20"
+                                            {/* System Role */}
+                                            <td className="px-6 py-4">
+                                                <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-sm border ${isTargetSuperAdmin
+                                                    ? "bg-amber-100 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-500/20"
+                                                    : user.role === "admin"
+                                                        ? "bg-purple-100 dark:bg-purple-500/10 text-purple-700 dark:text-purple-400 border-purple-200 dark:border-purple-500/20"
+                                                        : "bg-blue-100 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-500/20"
                                                     }`}>
-                                                    {user.status}
-                                                </span>
-                                            )}
-                                        </td>
+                                                    {isTargetSuperAdmin ? <Crown size={12} strokeWidth={3} /> : <UserIcon size={12} strokeWidth={3} />}
+                                                    {isTargetSuperAdmin ? "Super Admin" : user.role}
+                                                </div>
+                                            </td>
 
-                                        {/* Joined Date */}
-                                        <td className="px-6 py-4 hidden md:table-cell">
-                                            <div className="flex items-center gap-2 text-slate-400 dark:text-slate-500">
-                                                <Calendar size={14} className="opacity-50" />
-                                                <span className="font-bold text-[11px] uppercase tracking-widest whitespace-nowrap">
-                                                    {new Date(user.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                                                </span>
-                                            </div>
-                                        </td>
-
-                                        {/* Security */}
-                                        <td className="px-6 py-4">
-                                            {user.role !== "admin" ? (
-                                                <ResetPasswordButton userId={user.id} username={user.username} />
-                                            ) : (
-                                                <span className="text-[10px] font-black text-slate-300 dark:text-slate-600 uppercase tracking-widest italic">Self-managed</span>
-                                            )}
-                                        </td>
-
-                                        {/* Actions */}
-                                        <td className="px-6 py-4 text-right">
-                                            <div className="flex items-center justify-end gap-2 scale-90 sm:scale-100">
-                                                {user.status === "PENDING" && (
-                                                    <UserApprovalButtons userId={user.id} currentStatus={user.status} />
+                                            {/* Account Status */}
+                                            <td className="px-6 py-4">
+                                                {user.role === "admin" ? (
+                                                    <span className="inline-flex items-center px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-sm border bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-100 dark:border-purple-500/20">
+                                                        ACTIVE
+                                                    </span>
+                                                ) : (
+                                                    <span className={`inline-flex items-center px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-sm border ${user.status === "APPROVED" ? "bg-green-100 dark:bg-green-500/10 text-green-700 dark:text-green-400 border-green-200 dark:border-green-500/20" :
+                                                        user.status === "PENDING" ? "bg-orange-100 dark:bg-orange-500/10 text-orange-700 dark:text-orange-400 border-orange-200 dark:border-orange-500/20" :
+                                                            "bg-red-100 dark:bg-red-500/10 text-red-700 dark:text-red-400 border-red-200 dark:border-red-500/20"
+                                                        }`}>
+                                                        {user.status}
+                                                    </span>
                                                 )}
-                                                {/* Edit button — always visible */}
-                                                <button
-                                                    onClick={() => setEditingUser(user)}
-                                                    className="p-2 rounded-xl bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-500/20 hover:bg-blue-100 dark:hover:bg-blue-500/20 hover:scale-110 active:scale-95 transition-all shadow-sm"
-                                                    title="Edit user"
-                                                >
-                                                    <Pencil size={14} strokeWidth={2.5} />
-                                                </button>
-                                                {user.id !== currentUser.id && (
-                                                    <DeleteUserButton userId={user.id} />
+                                            </td>
+
+                                            {/* Joined Date */}
+                                            <td className="px-6 py-4 hidden md:table-cell">
+                                                <div className="flex items-center gap-2 text-slate-400 dark:text-slate-500">
+                                                    <Calendar size={14} className="opacity-50" />
+                                                    <span className="font-bold text-[11px] uppercase tracking-widest whitespace-nowrap">
+                                                        {new Date(user.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                                                    </span>
+                                                </div>
+                                            </td>
+
+                                            {/* Security */}
+                                            <td className="px-6 py-4">
+                                                {user.role !== "admin" ? (
+                                                    <ResetPasswordButton userId={user.id} username={user.username} />
+                                                ) : (
+                                                    <span className="text-[10px] font-black text-slate-300 dark:text-slate-600 uppercase tracking-widest italic">Self-managed</span>
                                                 )}
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
+                                            </td>
+
+                                            {/* Actions */}
+                                            <td className="px-6 py-4 text-right">
+                                                <div className="flex items-center justify-end gap-2 scale-90 sm:scale-100">
+                                                    {user.status === "PENDING" && (
+                                                        <UserApprovalButtons userId={user.id} currentStatus={user.status} />
+                                                    )}
+                                                    {/* Edit button — locked for super admin if current user is not super admin */}
+                                                    {canModify ? (
+                                                        <button
+                                                            onClick={() => setEditingUser(user)}
+                                                            className="p-2 rounded-xl bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-500/20 hover:bg-blue-100 dark:hover:bg-blue-500/20 hover:scale-110 active:scale-95 transition-all shadow-sm"
+                                                            title="Edit user"
+                                                        >
+                                                            <Pencil size={14} strokeWidth={2.5} />
+                                                        </button>
+                                                    ) : (
+                                                        <div
+                                                            className="p-2 rounded-xl bg-gray-50 dark:bg-slate-700/50 text-gray-300 dark:text-slate-600 border border-gray-100 dark:border-slate-700 cursor-not-allowed"
+                                                            title="Only the Super Admin can edit this account"
+                                                        >
+                                                            <Lock size={14} strokeWidth={2.5} />
+                                                        </div>
+                                                    )}
+                                                    {/* Delete button — hidden for self, hidden for super admin unless you ARE the super admin */}
+                                                    {!isSelf && canModify && (
+                                                        <DeleteUserButton userId={user.id} />
+                                                    )}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
                             </tbody>
                         </table>
                     </div>
@@ -236,3 +267,5 @@ export function UserManagementClient({ users, currentUser }: UserManagementClien
         </div>
     );
 }
+
+
