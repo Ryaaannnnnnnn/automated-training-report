@@ -20,6 +20,30 @@ interface TeamGridProps {
     members: TeamMember[];
 }
 
+function getOfflineTime(date: Date | string | null | undefined) {
+    if (!date) return "Currently Offline";
+    
+    const past = new Date(date);
+    const now = new Date();
+    const diffInMs = Math.max(0, now.getTime() - past.getTime());
+    
+    const diffInMins = Math.floor(diffInMs / (1000 * 60));
+    if (diffInMins < 1) return "Offline just now";
+    if (diffInMins < 60) return `Offline for ${diffInMins} min${diffInMins !== 1 ? 's' : ''}`;
+    
+    const diffInHours = Math.floor(diffInMins / 60);
+    if (diffInHours < 24) return `Offline for ${diffInHours} hr${diffInHours !== 1 ? 's' : ''}`;
+    
+    const diffInDays = Math.floor(diffInHours / 24);
+    if (diffInDays < 30) return `Offline for ${diffInDays} day${diffInDays !== 1 ? 's' : ''}`;
+    
+    const diffInMonths = Math.floor(diffInDays / 30);
+    if (diffInMonths < 12) return `Offline for ${diffInMonths} mo${diffInMonths !== 1 ? 's' : ''}`;
+    
+    const diffInYears = Math.floor(diffInDays / 365);
+    return `Offline for ${diffInYears} yr${diffInYears !== 1 ? 's' : ''}`;
+}
+
 export function TeamGrid({ members }: TeamGridProps) {
     const [searchQuery, setSearchQuery] = useState("");
 
@@ -102,8 +126,8 @@ export function TeamGrid({ members }: TeamGridProps) {
                                 </div>
 
                                 {/* Status Label */}
-                                <div className={`text-[9px] font-black uppercase tracking-[0.2em] mt-3 ${online ? "text-emerald-500 animate-pulse" : "text-slate-400"}`}>
-                                    {online ? "Online Now" : "Currently Offline"}
+                                <div className={`text-[9px] font-black uppercase tracking-[0.2em] mt-3 ${online ? "text-emerald-500 animate-pulse" : "text-slate-400"}`} suppressHydrationWarning>
+                                    {online ? "Online Now" : getOfflineTime(member.lastActive)}
                                 </div>
 
                                 {/* Details Footer */}
