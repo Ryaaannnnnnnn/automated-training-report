@@ -21,6 +21,7 @@ export default async function TeamPage() {
             avatarUrl: true,
             createdAt: true,
             lastActive: true,
+            isSuperAdmin: true,
         },
         orderBy: [
             { role: "asc" },

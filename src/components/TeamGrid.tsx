@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { User, Shield, Search, Mail, Calendar, Briefcase } from "lucide-react";
+import { User, Shield, Search, Mail, Calendar, Briefcase, Crown } from "lucide-react";
 import Image from "next/image";
 
 interface TeamMember {
@@ -14,6 +14,7 @@ interface TeamMember {
     createdAt: Date;
     lastActive: Date;
     isOnline: boolean;
+    isSuperAdmin?: boolean;
 }
 
 interface TeamGridProps {
@@ -114,8 +115,15 @@ export function TeamGrid({ members }: TeamGridProps) {
                                             {member.username}
                                         </h3>
                                     </div>
-                                    <div className="inline-block px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[10px] font-black uppercase tracking-widest border border-blue-100 dark:border-blue-500/20">
-                                        {member.role}
+                                    <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${
+                                        member.isSuperAdmin
+                                            ? "bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-500/20"
+                                            : member.role === "admin"
+                                                ? "bg-orange-50 dark:bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-200 dark:border-orange-500/20"
+                                                : "bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-100 dark:border-blue-500/20"
+                                    }`}>
+                                        {member.isSuperAdmin && <Crown size={12} strokeWidth={3} className="text-amber-500" />}
+                                        {member.isSuperAdmin ? "SUPER ADMIN" : member.role}
                                     </div>
                                     {member.designation && (
                                         <div className="flex items-center justify-center gap-1.5 mt-1">
