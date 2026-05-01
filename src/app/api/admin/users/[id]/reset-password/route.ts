@@ -20,6 +20,19 @@ export async function POST(
         return NextResponse.json({ ok: false, error: "Invalid password" }, { status: 400 });
     }
 
+    const targetUser = await prisma.user.findUnique({ where: { id } });
+    if (!targetUser) {
+        return NextResponse.json({ ok: false, error: "User not found" }, { status: 404 });
+    }
+
+    if (targetUser.id === currentUser.id) {
+        return NextResponse.json({ ok: false, error: "Cannot reset your own password here. Use profile settings." }, { status: 400 });
+    }
+
+    if (targetUser.role === "admin" && !currentUser.isSuperAdmin) {
+        return NextResponse.json({ ok: false, error: "Only the Super Admin can reset the password of an administrator." }, { status: 403 });
+    }
+
     const hashedPassword = await bcrypt.hash(password, 12);
 
     await prisma.user.update({

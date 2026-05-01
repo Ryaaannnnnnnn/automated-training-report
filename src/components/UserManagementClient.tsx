@@ -220,7 +220,7 @@ export function UserManagementClient({ users, currentUser }: UserManagementClien
 
                                             {/* Security */}
                                             <td className="px-6 py-4">
-                                                {user.role !== "admin" ? (
+                                                {(!isSelf && canModify && (currentUser.isSuperAdmin || user.role !== "admin")) ? (
                                                     <ResetPasswordButton userId={user.id} username={user.username} />
                                                 ) : (
                                                     <span className="text-[10px] font-black text-slate-300 dark:text-slate-600 uppercase tracking-widest italic">Self-managed</span>
