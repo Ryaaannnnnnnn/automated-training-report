@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { LogoutButton } from "@/components/LogoutButton";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import Image from "next/image";
+import { Crown } from "lucide-react";
 
 const navItems = [
     {
@@ -83,9 +84,10 @@ interface SidebarProps {
     username?: string;
     role?: string;
     avatarUrl?: string | null;
+    isSuperAdmin?: boolean;
 }
 
-export function Sidebar({ username, role, avatarUrl }: SidebarProps) {
+export function Sidebar({ username, role, avatarUrl, isSuperAdmin }: SidebarProps) {
     const [open, setOpen] = useState(false);
     const pathname = usePathname();
 
@@ -158,7 +160,10 @@ export function Sidebar({ username, role, avatarUrl }: SidebarProps) {
                             )}
                             <div className="text-right leading-tight">
                                 <p className="text-[10px] font-bold text-blue-300/60 uppercase tracking-widest">Hi,</p>
-                                <p className="font-semibold capitalize text-sm">{username}</p>
+                                <p className="font-semibold capitalize text-sm flex items-center gap-1.5">
+                                    {username}
+                                    {isSuperAdmin && <Crown size={12} className="text-amber-400" strokeWidth={3} />}
+                                </p>
                             </div>
                         </div>
                     )}
@@ -229,11 +234,23 @@ export function Sidebar({ username, role, avatarUrl }: SidebarProps) {
                             )}
                             <div>
                                 <p className="font-bold capitalize text-sm tracking-tight">{username}</p>
-                                <span className={`inline-block text-[10px] px-2 py-0.5 rounded-full font-bold mt-1 uppercase tracking-wider ${role === "admin"
-                                    ? "bg-orange-500/20 text-orange-300"
-                                    : "bg-blue-500/20 text-blue-300"
-                                    }`}>
-                                    {role ? role.charAt(0).toUpperCase() + role.slice(1) : "User"}
+                                <span className={`inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full font-bold mt-1 uppercase tracking-wider ${
+                                    isSuperAdmin
+                                        ? "bg-amber-500/20 text-amber-300"
+                                        : role === "admin"
+                                        ? "bg-orange-500/20 text-orange-300"
+                                        : "bg-blue-500/20 text-blue-300"
+                                }`}>
+                                    {isSuperAdmin ? (
+                                        <>
+                                            <Crown size={10} strokeWidth={3} />
+                                            Super Admin
+                                        </>
+                                    ) : role ? (
+                                        role.charAt(0).toUpperCase() + role.slice(1)
+                                    ) : (
+                                        "User"
+                                    )}
                                 </span>
                             </div>
                         </div>

@@ -65,7 +65,7 @@ export default async function AboutPage() {
 
   return (
     <div className="min-h-screen bg-[#f8fafc] dark:bg-slate-900 transition-colors duration-300 text-slate-900 dark:text-slate-100">
-      <Sidebar username={user.username} role={user.role} avatarUrl={user.avatarUrl} />
+      <Sidebar username={user.username} role={user.role} avatarUrl={user.avatarUrl} isSuperAdmin={user.isSuperAdmin} />
 
       <main className="mx-auto max-w-7xl px-4 sm:px-6 py-12 sm:py-20 pt-32 sm:pt-44 animate-page-fade">
         {/* Header Section */}

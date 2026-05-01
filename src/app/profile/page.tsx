@@ -13,7 +13,7 @@ export default async function ProfilePage() {
 
     return (
         <div className="min-h-screen bg-[#f8fafc] dark:bg-slate-900 transition-colors duration-300">
-            <Sidebar username={user.username} role={user.role} avatarUrl={user.avatarUrl} />
+            <Sidebar username={user.username} role={user.role} avatarUrl={user.avatarUrl} isSuperAdmin={user.isSuperAdmin} />
 
             <main className="mx-auto max-w-3xl px-6 py-8 animate-page-fade">
                 <div className="h-16 md:h-20" />

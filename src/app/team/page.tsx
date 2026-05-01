@@ -36,7 +36,7 @@ export default async function TeamPage() {
 
     return (
         <div className="min-h-screen bg-[#f8fafc] dark:bg-slate-900 transition-colors duration-300">
-            <Sidebar username={currentUser.username} role={currentUser.role} avatarUrl={currentUser.avatarUrl} />
+            <Sidebar username={currentUser.username} role={currentUser.role} avatarUrl={currentUser.avatarUrl} isSuperAdmin={currentUser.isSuperAdmin} />
 
             <main className="mx-auto max-w-7xl px-4 py-8 animate-page-fade">
                 <div className="h-16 md:h-20" />
